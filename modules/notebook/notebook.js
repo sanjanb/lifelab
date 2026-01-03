@@ -87,6 +87,7 @@ function renderNotebookView(container, notebook) {
         <p class="notebook-subtitle">Monthly Notebook</p>
       </div>
       
+      <div id="monthly-overview-container"></div>
       <div id="trend-graph-container"></div>
       <div id="daily-entries-container"></div>
       <div id="monthly-reflection-container"></div>
@@ -94,9 +95,99 @@ function renderNotebookView(container, notebook) {
   `;
 
   // Render each section
+  renderMonthlyOverview(notebook);
   renderTrendGraph(notebook);
   renderDailyEntries(notebook);
   renderMonthlyReflection(notebook);
+}
+
+/**
+ * Calculate monthly outcome statistics
+ * 
+ * @param {Object} notebook - Monthly notebook data
+ * @returns {Object} Outcome counts
+ */
+function calculateMonthlyOutcomes(notebook) {
+  const outcomes = {
+    wins: 0,
+    neutral: 0,
+    losses: 0,
+    unrated: 0
+  };
+
+  notebook.days.forEach(day => {
+    if (day.manualOutcome === 'win') {
+      outcomes.wins++;
+    } else if (day.manualOutcome === 'neutral') {
+      outcomes.neutral++;
+    } else if (day.manualOutcome === 'loss') {
+      outcomes.losses++;
+    } else {
+      outcomes.unrated++;
+    }
+  });
+
+  return outcomes;
+}
+
+/**
+ * Render monthly overview section
+ * Shows win/neutral/loss counts visually without percentages
+ * 
+ * @param {Object} notebook - Monthly notebook data
+ */
+function renderMonthlyOverview(notebook) {
+  const container = document.getElementById("monthly-overview-container");
+  if (!container) return;
+
+  const outcomes = calculateMonthlyOutcomes(notebook);
+  
+  // Don't show overview if no outcomes rated yet
+  const totalRated = outcomes.wins + outcomes.neutral + outcomes.losses;
+  if (totalRated === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="monthly-overview">
+      <div class="overview-title">Month at a Glance</div>
+      <div class="outcome-bars">
+        <div class="outcome-bar">
+          <div class="outcome-bar-label">
+            <span class="outcome-icon win">✓</span>
+            <span class="outcome-text">Wins</span>
+          </div>
+          <div class="outcome-bar-visual">
+            <div class="outcome-bar-fill win" style="width: ${outcomes.wins * 10}px"></div>
+            <span class="outcome-count">${outcomes.wins}</span>
+          </div>
+        </div>
+        
+        <div class="outcome-bar">
+          <div class="outcome-bar-label">
+            <span class="outcome-icon neutral">−</span>
+            <span class="outcome-text">Neutral</span>
+          </div>
+          <div class="outcome-bar-visual">
+            <div class="outcome-bar-fill neutral" style="width: ${outcomes.neutral * 10}px"></div>
+            <span class="outcome-count">${outcomes.neutral}</span>
+          </div>
+        </div>
+        
+        <div class="outcome-bar">
+          <div class="outcome-bar-label">
+            <span class="outcome-icon loss">✗</span>
+            <span class="outcome-text">Losses</span>
+          </div>
+          <div class="outcome-bar-visual">
+            <div class="outcome-bar-fill loss" style="width: ${outcomes.losses * 10}px"></div>
+            <span class="outcome-count">${outcomes.losses}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 /**
