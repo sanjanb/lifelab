@@ -12,6 +12,7 @@
  */
 function initializeHabitsModule(containerId) {
   renderQuickEntryForm(containerId);
+  refreshHabitHistory();
 }
 
 /**
