@@ -14,6 +14,7 @@
 .notebook-header {
   margin-bottom: 2rem;
   text-align: center;
+  position: relative;
 }
 
 .notebook-title {
@@ -26,6 +27,32 @@
 .notebook-subtitle {
   font-size: 0.95rem;
   color: #666;
+}
+
+.export-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border: 2px solid #5093d9;
+  color: #5093d9;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.export-button:hover:not(:disabled) {
+  background: #5093d9;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.export-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Monthly Overview */

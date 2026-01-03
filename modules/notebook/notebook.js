@@ -104,7 +104,7 @@ function renderNotebookView(container, notebook) {
   renderTrendGraph(notebook);
   renderDailyEntries(notebook);
   renderMonthlyReflection(notebook);
-  
+
   // Attach export button listener
   attachExportListener();
 }
@@ -663,6 +663,143 @@ function renderMonthlyReflection(notebook) {
       notebook.monthlyReflection = e.target.value;
       saveMonthlyNotebook(notebook);
     }, 1000); // Save 1 second after user stops typing
+  });
+}
+
+/**
+ * Export all monthly notebooks to JSON
+ * Manual export only - no auto-sync
+ * 
+ * @returns {Object} Export package with metadata
+ */
+function exportMonthlyNotebooks() {
+  try {
+    // Get all monthly notebooks from storage
+    const notebooks = getAllMonthlyNotebooks();
+    
+    if (!notebooks || notebooks.length === 0) {
+      return {
+        success: false,
+        error: "No notebooks to export"
+      };
+    }
+
+    // Create export package
+    const exportData = {
+      // Metadata
+      exportDate: new Date().toISOString(),
+      exportVersion: "1.0",
+      appName: "LifeLab",
+      appVersion: "1.0.0",
+      
+      // Count summary
+      notebookCount: notebooks.length,
+      dateRange: {
+        earliest: `${notebooks[notebooks.length - 1].year}-${String(notebooks[notebooks.length - 1].month).padStart(2, '0')}`,
+        latest: `${notebooks[0].year}-${String(notebooks[0].month).padStart(2, '0')}`
+      },
+      
+      // All notebooks
+      notebooks: notebooks
+    };
+
+    return {
+      success: true,
+      data: exportData
+    };
+  } catch (error) {
+    console.error("exportMonthlyNotebooks error:", error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+
+/**
+ * Download export data as JSON file
+ * Triggers browser download
+ * 
+ * @param {Object} exportData - Data to export
+ */
+function downloadExportFile(exportData) {
+  try {
+    // Convert to JSON string (pretty-printed for readability)
+    const jsonString = JSON.stringify(exportData, null, 2);
+    
+    // Create blob
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    
+    // Create download link
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    
+    // Generate filename with current date
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+    link.download = `lifelab-export-${dateStr}.json`;
+    
+    // Trigger download
+    document.body.appendChild(link);
+    link.click();
+    
+    // Cleanup
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    return true;
+  } catch (error) {
+    console.error("downloadExportFile error:", error);
+    return false;
+  }
+}
+
+/**
+ * Attach event listener to export button
+ */
+function attachExportListener() {
+  const exportButton = document.getElementById("export-notebooks-button");
+  
+  if (!exportButton) return;
+  
+  exportButton.addEventListener("click", () => {
+    // Disable button during export
+    exportButton.disabled = true;
+    exportButton.textContent = "Exporting...";
+    
+    // Perform export
+    const result = exportMonthlyNotebooks();
+    
+    if (result.success) {
+      // Download file
+      const downloaded = downloadExportFile(result.data);
+      
+      if (downloaded) {
+        // Show success feedback
+        exportButton.textContent = "Exported ✓";
+        setTimeout(() => {
+          exportButton.textContent = "Export Data";
+          exportButton.disabled = false;
+        }, 2000);
+      } else {
+        // Download failed
+        exportButton.textContent = "Export Failed";
+        alert("Failed to download export file. Please try again.");
+        setTimeout(() => {
+          exportButton.textContent = "Export Data";
+          exportButton.disabled = false;
+        }, 2000);
+      }
+    } else {
+      // Export failed
+      exportButton.textContent = "Export Failed";
+      alert(result.error || "Failed to export notebooks. Please try again.");
+      setTimeout(() => {
+        exportButton.textContent = "Export Data";
+        exportButton.disabled = false;
+      }, 2000);
+    }
   });
 }
 
