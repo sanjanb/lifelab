@@ -171,8 +171,7 @@ function refreshHabitHistory() {
   const allEntries = getEntries("habits");
 
   if (!allEntries || allEntries.length === 0) {
-    container.innerHTML =
-      '<p class="text-muted text-small">No entries yet</p>';
+    container.innerHTML = '<p class="text-muted text-small">No entries yet</p>';
     return;
   }
 
