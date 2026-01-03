@@ -367,7 +367,6 @@ function navigateToNotebook() {
   initializeMonthlyNotebook();
 }
 
-
 /**
  * Navigate to timeline view
  * Shows timeline with entries from all domains

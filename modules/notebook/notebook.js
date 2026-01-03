@@ -1,19 +1,19 @@
 /**
  * Monthly Notebook Module
- * 
+ *
  * Provides a notebook-style view of a full month with:
  * - Trend visualization
  * - Daily rows with domain presence
  * - Manual outcome selection
  * - Monthly reflection
- * 
+ *
  * Design philosophy: Feel like a paper notebook, not a productivity app
  */
 
 /**
  * Initialize the monthly notebook module
  * Called when user navigates to the notebook view
- * 
+ *
  * @param {number} year - Four-digit year (optional, defaults to current)
  * @param {number} month - Month number 1-12 (optional, defaults to current)
  */
@@ -31,16 +31,19 @@ function initializeMonthlyNotebook(year, month) {
   }
 
   // Show sync status
-  container.innerHTML = '<div class="sync-status syncing">Syncing data...</div>';
+  container.innerHTML =
+    '<div class="sync-status syncing">Syncing data...</div>';
 
   // Perform non-destructive sync
   const syncResult = performNonDestructiveSync(targetYear, targetMonth);
-  
+
   if (!syncResult.success) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-title">Sync Error</div>
-        <div class="empty-state-message">${syncResult.error || 'Failed to sync notebook'}</div>
+        <div class="empty-state-message">${
+          syncResult.error || "Failed to sync notebook"
+        }</div>
       </div>
     `;
     return;
@@ -64,14 +67,17 @@ function initializeMonthlyNotebook(year, month) {
 
 /**
  * Render the complete notebook view
- * 
+ *
  * @param {HTMLElement} container - Container element
  * @param {Object} notebook - Monthly notebook data
  */
 function renderNotebookView(container, notebook) {
-  const monthName = new Date(notebook.year, notebook.month - 1).toLocaleDateString('en-US', { 
-    month: 'long', 
-    year: 'numeric' 
+  const monthName = new Date(
+    notebook.year,
+    notebook.month - 1
+  ).toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
   });
 
   container.innerHTML = `
@@ -95,7 +101,7 @@ function renderNotebookView(container, notebook) {
 
 /**
  * Render trend graph showing domain activity per day
- * 
+ *
  * @param {Object} notebook - Monthly notebook data
  */
 function renderTrendGraph(notebook) {
@@ -103,17 +109,22 @@ function renderTrendGraph(notebook) {
   if (!container) return;
 
   // Get activity counts per day
-  const activityCounts = getMonthlyDomainActivity(notebook.year, notebook.month);
+  const activityCounts = getMonthlyDomainActivity(
+    notebook.year,
+    notebook.month
+  );
   if (!activityCounts) {
-    container.innerHTML = '';
+    container.innerHTML = "";
     return;
   }
 
   // Generate trend marks
-  const marksHtml = activityCounts.map((count, index) => {
-    const day = index + 1;
-    return `<div class="trend-mark" data-count="${count}" data-day="${day}" title="Day ${day}: ${count} domains"></div>`;
-  }).join('');
+  const marksHtml = activityCounts
+    .map((count, index) => {
+      const day = index + 1;
+      return `<div class="trend-mark" data-count="${count}" data-day="${day}" title="Day ${day}: ${count} domains"></div>`;
+    })
+    .join("");
 
   container.innerHTML = `
     <div class="trend-graph">
@@ -125,7 +136,7 @@ function renderTrendGraph(notebook) {
 
 /**
  * Render daily entry rows
- * 
+ *
  * @param {Object} notebook - Monthly notebook data
  */
 function renderDailyEntries(notebook) {
@@ -133,20 +144,28 @@ function renderDailyEntries(notebook) {
   if (!container) return;
 
   const domains = getAllDomains();
-  
-  const entriesHtml = notebook.days.map((day, index) => {
-    const date = new Date(day.date);
-    const dayNum = index + 1;
-    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-    const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-    // Generate domain indicators
-    const indicatorsHtml = domains.map(domain => {
-      const isActive = day.domainSignals[domain.id] === true;
-      return `<div class="domain-indicator ${isActive ? 'active' : ''}" data-domain="${domain.displayName}"></div>`;
-    }).join('');
+  const entriesHtml = notebook.days
+    .map((day, index) => {
+      const date = new Date(day.date);
+      const dayNum = index + 1;
+      const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
+      const dateStr = date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
 
-    return `
+      // Generate domain indicators
+      const indicatorsHtml = domains
+        .map((domain) => {
+          const isActive = day.domainSignals[domain.id] === true;
+          return `<div class="domain-indicator ${
+            isActive ? "active" : ""
+          }" data-domain="${domain.displayName}"></div>`;
+        })
+        .join("");
+
+      return `
       <div class="daily-entry" data-day-index="${index}">
         <div class="entry-row">
           <div class="entry-date">
@@ -159,15 +178,21 @@ function renderDailyEntries(notebook) {
           </div>
           
           <div class="outcome-selector">
-            <button class="outcome-button ${day.manualOutcome === 'win' ? 'selected' : ''}" 
+            <button class="outcome-button ${
+              day.manualOutcome === "win" ? "selected" : ""
+            }" 
                     data-outcome="win" 
                     data-day-index="${index}"
                     title="Win">✓</button>
-            <button class="outcome-button ${day.manualOutcome === 'neutral' ? 'selected' : ''}" 
+            <button class="outcome-button ${
+              day.manualOutcome === "neutral" ? "selected" : ""
+            }" 
                     data-outcome="neutral" 
                     data-day-index="${index}"
                     title="Neutral">−</button>
-            <button class="outcome-button ${day.manualOutcome === 'loss' ? 'selected' : ''}" 
+            <button class="outcome-button ${
+              day.manualOutcome === "loss" ? "selected" : ""
+            }" 
                     data-outcome="loss" 
                     data-day-index="${index}"
                     title="Loss">✗</button>
@@ -175,7 +200,8 @@ function renderDailyEntries(notebook) {
         </div>
       </div>
     `;
-  }).join('');
+    })
+    .join("");
 
   container.innerHTML = `<div class="daily-entries">${entriesHtml}</div>`;
 
@@ -185,35 +211,37 @@ function renderDailyEntries(notebook) {
 
 /**
  * Attach event listeners to outcome buttons
- * 
+ *
  * @param {Object} notebook - Monthly notebook data
  */
 function attachOutcomeListeners(notebook) {
-  const buttons = document.querySelectorAll('.outcome-button');
-  
-  buttons.forEach(button => {
-    button.addEventListener('click', (e) => {
+  const buttons = document.querySelectorAll(".outcome-button");
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", (e) => {
       const dayIndex = parseInt(button.dataset.dayIndex);
       const outcome = button.dataset.outcome;
-      
+
       // Get current outcome for this day
       const currentOutcome = notebook.days[dayIndex].manualOutcome;
-      
+
       // Toggle: if clicking the same outcome, clear it; otherwise set new outcome
       const newOutcome = currentOutcome === outcome ? null : outcome;
-      
+
       // Update notebook
       const success = updateDayEntry(notebook.year, notebook.month, dayIndex, {
-        manualOutcome: newOutcome
+        manualOutcome: newOutcome,
       });
 
       if (success) {
         // Update UI
-        const dayButtons = document.querySelectorAll(`.outcome-button[data-day-index="${dayIndex}"]`);
-        dayButtons.forEach(btn => btn.classList.remove('selected'));
-        
+        const dayButtons = document.querySelectorAll(
+          `.outcome-button[data-day-index="${dayIndex}"]`
+        );
+        dayButtons.forEach((btn) => btn.classList.remove("selected"));
+
         if (newOutcome) {
-          button.classList.add('selected');
+          button.classList.add("selected");
         }
 
         // Update notebook object in memory
@@ -225,7 +253,7 @@ function attachOutcomeListeners(notebook) {
 
 /**
  * Render monthly reflection section
- * 
+ *
  * @param {Object} notebook - Monthly notebook data
  */
 function renderMonthlyReflection(notebook) {
@@ -233,7 +261,7 @@ function renderMonthlyReflection(notebook) {
   if (!container) return;
 
   // Monthly reflection is stored on the notebook object itself, not in days
-  const reflection = notebook.monthlyReflection || '';
+  const reflection = notebook.monthlyReflection || "";
 
   container.innerHTML = `
     <div class="monthly-reflection">
@@ -246,10 +274,10 @@ function renderMonthlyReflection(notebook) {
   `;
 
   // Attach save listener (debounced)
-  const textarea = document.getElementById('monthly-reflection-input');
+  const textarea = document.getElementById("monthly-reflection-input");
   let saveTimeout;
-  
-  textarea.addEventListener('input', (e) => {
+
+  textarea.addEventListener("input", (e) => {
     clearTimeout(saveTimeout);
     saveTimeout = setTimeout(() => {
       // Save reflection to notebook
@@ -261,7 +289,7 @@ function renderMonthlyReflection(notebook) {
 
 /**
  * Navigate to a different month
- * 
+ *
  * @param {number} year - Four-digit year
  * @param {number} month - Month number 1-12
  */
