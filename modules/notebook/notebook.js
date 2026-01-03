@@ -579,6 +579,7 @@ function renderDailyEntries(notebook) {
   // Attach event listeners
   attachOutcomeListeners(notebook);
   attachIntentListeners(notebook);
+  attachQualityListeners(notebook);
   attachReflectionListeners(notebook);
   attachExpandListeners();
 }
