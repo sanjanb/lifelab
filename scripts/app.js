@@ -66,6 +66,20 @@ function initializeNavigation() {
   });
 
   navElement.appendChild(timelineItem);
+
+  // Add Monthly Notebook navigation item
+  const notebookItem = document.createElement("a");
+  notebookItem.href = "#";
+  notebookItem.className = "nav-item nav-item-special";
+  notebookItem.textContent = "Notebook";
+  notebookItem.dataset.view = "notebook";
+
+  notebookItem.addEventListener("click", (e) => {
+    e.preventDefault();
+    navigateToNotebook();
+  });
+
+  navElement.appendChild(notebookItem);
 }
 
 /**
@@ -291,7 +305,68 @@ function navigateToDashboard() {
   if (timelineView) {
     timelineView.style.display = "none";
   }
+
+  // Hide notebook view
+  const notebookView = document.getElementById("notebook-view");
+  if (notebookView) {
+    notebookView.style.display = "none";
+  }
 }
+
+/**
+ * Navigate to monthly notebook view
+ * Shows current month's notebook
+ */
+function navigateToNotebook() {
+  // Update active nav state
+  const navItems = document.querySelectorAll(".nav-item");
+  navItems.forEach((item) => {
+    if (item.dataset.view === "notebook") {
+      item.classList.add("active");
+    } else {
+      item.classList.remove("active");
+    }
+  });
+
+  // Get main content area
+  const mainElement = document.getElementById("main");
+  if (!mainElement) return;
+
+  // Hide dashboard
+  const dashboard = mainElement.querySelector(".dashboard");
+  if (dashboard) {
+    dashboard.style.display = "none";
+  }
+
+  // Hide all domain views
+  const allDomainViews = document.querySelectorAll(".domain-view");
+  allDomainViews.forEach((view) => {
+    view.style.display = "none";
+  });
+
+  // Hide timeline view
+  const timelineView = document.getElementById("timeline-view");
+  if (timelineView) {
+    timelineView.style.display = "none";
+  }
+
+  // Check if notebook view already exists
+  let notebookView = document.getElementById("notebook-view");
+
+  if (!notebookView) {
+    // Create notebook view container
+    notebookView = document.createElement("div");
+    notebookView.id = "notebook-view";
+    mainElement.appendChild(notebookView);
+  }
+
+  // Show notebook view
+  notebookView.style.display = "block";
+
+  // Initialize notebook for current month
+  initializeMonthlyNotebook();
+}
+
 
 /**
  * Navigate to timeline view
@@ -323,6 +398,12 @@ function navigateToTimeline() {
   allDomainViews.forEach((view) => {
     view.style.display = "none";
   });
+
+  // Hide notebook view
+  const notebookView = document.getElementById("notebook-view");
+  if (notebookView) {
+    notebookView.style.display = "none";
+  }
 
   // Check if timeline view already exists
   let timelineView = document.getElementById("timeline-view");
