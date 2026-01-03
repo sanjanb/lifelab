@@ -135,6 +135,9 @@ function navigateToDomain(domainId) {
     // Create new domain view using template
     domainView = createDomainViewTemplate(domain);
     mainElement.appendChild(domainView);
+    
+    // Initialize domain-specific module
+    initializeDomainModule(domainId);
   }
 
   // Hide all domain views
@@ -277,21 +280,21 @@ function createDomainViewTemplate(domain) {
 /**
  * Initialize domain-specific modules after view is created
  * Calls domain-specific initialization functions
- * 
+ *
  * @param {string} domainId - The domain identifier
  */
 function initializeDomainModule(domainId) {
   // Initialize domain-specific functionality based on domain ID
   switch (domainId) {
-    case 'habits':
-      if (typeof initializeHabitsModule === 'function') {
+    case "habits":
+      if (typeof initializeHabitsModule === "function") {
         initializeHabitsModule(`quick-entry-${domainId}`);
       }
       break;
     // Other domains will be added here in future phases
-    case 'learning':
-    case 'career':
-    case 'health':
+    case "learning":
+    case "career":
+    case "health":
       // Placeholder for future implementation
       break;
     default:
