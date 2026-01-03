@@ -669,18 +669,18 @@ function renderMonthlyReflection(notebook) {
 /**
  * Export all monthly notebooks to JSON
  * Manual export only - no auto-sync
- * 
+ *
  * @returns {Object} Export package with metadata
  */
 function exportMonthlyNotebooks() {
   try {
     // Get all monthly notebooks from storage
     const notebooks = getAllMonthlyNotebooks();
-    
+
     if (!notebooks || notebooks.length === 0) {
       return {
         success: false,
-        error: "No notebooks to export"
+        error: "No notebooks to export",
       };
     }
 
@@ -691,27 +691,32 @@ function exportMonthlyNotebooks() {
       exportVersion: "1.0",
       appName: "LifeLab",
       appVersion: "1.0.0",
-      
+
       // Count summary
       notebookCount: notebooks.length,
       dateRange: {
-        earliest: `${notebooks[notebooks.length - 1].year}-${String(notebooks[notebooks.length - 1].month).padStart(2, '0')}`,
-        latest: `${notebooks[0].year}-${String(notebooks[0].month).padStart(2, '0')}`
+        earliest: `${notebooks[notebooks.length - 1].year}-${String(
+          notebooks[notebooks.length - 1].month
+        ).padStart(2, "0")}`,
+        latest: `${notebooks[0].year}-${String(notebooks[0].month).padStart(
+          2,
+          "0"
+        )}`,
       },
-      
+
       // All notebooks
-      notebooks: notebooks
+      notebooks: notebooks,
     };
 
     return {
       success: true,
-      data: exportData
+      data: exportData,
     };
   } catch (error) {
     console.error("exportMonthlyNotebooks error:", error);
     return {
       success: false,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -719,35 +724,35 @@ function exportMonthlyNotebooks() {
 /**
  * Download export data as JSON file
  * Triggers browser download
- * 
+ *
  * @param {Object} exportData - Data to export
  */
 function downloadExportFile(exportData) {
   try {
     // Convert to JSON string (pretty-printed for readability)
     const jsonString = JSON.stringify(exportData, null, 2);
-    
+
     // Create blob
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    
+    const blob = new Blob([jsonString], { type: "application/json" });
+
     // Create download link
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    
+
     // Generate filename with current date
     const now = new Date();
-    const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+    const dateStr = now.toISOString().split("T")[0]; // YYYY-MM-DD
     link.download = `lifelab-export-${dateStr}.json`;
-    
+
     // Trigger download
     document.body.appendChild(link);
     link.click();
-    
+
     // Cleanup
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    
+
     return true;
   } catch (error) {
     console.error("downloadExportFile error:", error);
@@ -760,21 +765,21 @@ function downloadExportFile(exportData) {
  */
 function attachExportListener() {
   const exportButton = document.getElementById("export-notebooks-button");
-  
+
   if (!exportButton) return;
-  
+
   exportButton.addEventListener("click", () => {
     // Disable button during export
     exportButton.disabled = true;
     exportButton.textContent = "Exporting...";
-    
+
     // Perform export
     const result = exportMonthlyNotebooks();
-    
+
     if (result.success) {
       // Download file
       const downloaded = downloadExportFile(result.data);
-      
+
       if (downloaded) {
         // Show success feedback
         exportButton.textContent = "Exported ✓";
