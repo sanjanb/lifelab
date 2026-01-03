@@ -1,13 +1,4 @@
-Below is a **clean, copy-paste ready Markdown plan** you can put directly into your repo (for example: `BUILD_PLAN.md`).
 
-It is written **for Copilot control**, not for humans only.
-Each phase is intentionally scoped so Copilot does not wander.
-
-I’ve also embedded design constraints so future-you doesn’t accidentally break the philosophy.
-
----
-
-```md
 # LifeLab – Build Plan
 
 This document defines the phased construction of **LifeLab**, a personal life instrumentation system.
