@@ -543,6 +543,28 @@ function renderDailyEntries(notebook) {
             placeholder="What happened today?">${
               day.reflectionNote || ""
             }</textarea>
+          
+          <div class="day-quality-selector">
+            <label class="day-quality-label">Quality (optional):</label>
+            <div class="quality-buttons">
+              <button class="quality-button ${
+                day.dayQuality === "low" ? "selected" : ""
+              }" 
+                      data-quality="low" 
+                      data-day-index="${index}">Low</button>
+              <button class="quality-button ${
+                day.dayQuality === "medium" ? "selected" : ""
+              }" 
+                      data-quality="medium" 
+                      data-day-index="${index}">Medium</button>
+              <button class="quality-button ${
+                day.dayQuality === "high" ? "selected" : ""
+              }" 
+                      data-quality="high" 
+                      data-day-index="${index}">High</button>
+            </div>
+          </div>
+          
           <div class="day-active-domains">
             <strong>Active:</strong> ${activeDomainsText}
           </div>
