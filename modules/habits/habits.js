@@ -126,6 +126,11 @@ function handleHabitSubmit(event) {
     if (typeof refreshHabitHistory === "function") {
       refreshHabitHistory();
     }
+    
+    // Update trends display
+    if (typeof refreshHabitTrends === "function") {
+      refreshHabitTrends();
+    }
   } else {
     alert("Failed to save habit. Please try again.");
   }
