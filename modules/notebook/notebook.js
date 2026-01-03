@@ -165,9 +165,19 @@ function renderDailyEntries(notebook) {
         })
         .join("");
 
+      // Get active domains list for display
+      const activeDomains = domains
+        .filter((domain) => day.domainSignals[domain.id] === true)
+        .map((domain) => domain.displayName);
+      const activeDomainsText =
+        activeDomains.length > 0
+          ? activeDomains.join(", ")
+          : "No activity";
+
       return `
       <div class="daily-entry" data-day-index="${index}">
-        <div class="entry-row">
+        <div class="entry-row" data-day-index="${index}">
+          <span class="entry-expand-indicator">▸</span>
           <div class="entry-date">
             ${dateStr}
             <span class="entry-date-day">${dayName}</span>
@@ -177,7 +187,7 @@ function renderDailyEntries(notebook) {
             ${indicatorsHtml}
           </div>
           
-          <div class="outcome-selector">
+          <div class="outcome-selector" onclick="event.stopPropagation()">
             <button class="outcome-button ${
               day.manualOutcome === "win" ? "selected" : ""
             }" 
@@ -198,6 +208,17 @@ function renderDailyEntries(notebook) {
                     title="Loss">✗</button>
           </div>
         </div>
+        
+        <div class="day-reflection">
+          <label class="day-reflection-label">Day Note</label>
+          <textarea 
+            class="day-reflection-input" 
+            data-day-index="${index}"
+            placeholder="What happened today?">${day.reflectionNote || ""}</textarea>
+          <div class="day-active-domains">
+            <strong>Active:</strong> ${activeDomainsText}
+          </div>
+        </div>
       </div>
     `;
     })
@@ -207,6 +228,8 @@ function renderDailyEntries(notebook) {
 
   // Attach event listeners
   attachOutcomeListeners(notebook);
+  attachReflectionListeners(notebook);
+  attachExpandListeners();
 }
 
 /**
@@ -246,6 +269,61 @@ function attachOutcomeListeners(notebook) {
 
         // Update notebook object in memory
         notebook.days[dayIndex].manualOutcome = newOutcome;
+      }
+    });
+  });
+}
+
+/**
+ * Attach event listeners for day reflection notes
+ * 
+ * @param {Object} notebook - Monthly notebook data
+ */
+function attachReflectionListeners(notebook) {
+  const textareas = document.querySelectorAll(".day-reflection-input");
+  
+  textareas.forEach((textarea) => {
+    let saveTimeout;
+    
+    textarea.addEventListener("input", (e) => {
+      const dayIndex = parseInt(textarea.dataset.dayIndex);
+      
+      // Debounce saves (wait 1 second after user stops typing)
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(() => {
+        const success = updateDayEntry(
+          notebook.year,
+          notebook.month,
+          dayIndex,
+          {
+            reflectionNote: e.target.value,
+          }
+        );
+
+        if (success) {
+          // Update notebook object in memory
+          notebook.days[dayIndex].reflectionNote = e.target.value;
+        }
+      }, 1000);
+    });
+  });
+}
+
+/**
+ * Attach event listeners for expanding/collapsing day entries
+ */
+function attachExpandListeners() {
+  const entryRows = document.querySelectorAll(".entry-row");
+  
+  entryRows.forEach((row) => {
+    row.addEventListener("click", (e) => {
+      const dayIndex = row.dataset.dayIndex;
+      const entry = document.querySelector(
+        `.daily-entry[data-day-index="${dayIndex}"]`
+      );
+      
+      if (entry) {
+        entry.classList.toggle("expanded");
       }
     });
   });

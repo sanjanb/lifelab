@@ -112,10 +112,26 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
+.daily-entry.expanded {
+  border-color: #5093d9;
+}
+
 .entry-row {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.entry-expand-indicator {
+  font-size: 0.75rem;
+  color: #aaa;
+  transition: transform 0.2s;
+}
+
+.daily-entry.expanded .entry-expand-indicator {
+  transform: rotate(90deg);
 }
 
 .entry-date {
@@ -227,6 +243,57 @@
   color: #fff;
 }
 
+/* Day Reflection (expandable) */
+.day-reflection {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  display: none;
+}
+
+.daily-entry.expanded .day-reflection {
+  display: block;
+}
+
+.day-reflection-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.day-reflection-input {
+  width: 100%;
+  min-height: 60px;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.day-reflection-input:focus {
+  outline: none;
+  border-color: #5093d9;
+}
+
+.day-reflection-input::placeholder {
+  color: #aaa;
+}
+
+.day-active-domains {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.day-active-domains strong {
+  color: #333;
+}
 /* Monthly Reflection */
 .monthly-reflection {
   background: #fff;
