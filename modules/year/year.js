@@ -1,9 +1,9 @@
 /**
  * Year View Module
- * 
+ *
  * Purpose: Derived view composed from monthly notebooks
  * Philosophy: Observe patterns, don't judge performance
- * 
+ *
  * Key principles:
  * - Year data is NEVER stored separately
  * - All data derived from monthly notebooks
@@ -32,23 +32,23 @@ window.initializeYearView = initializeYearView;
  */
 function aggregateYearData(year) {
   const allNotebooks = getAllMonthlyNotebooks();
-  
+
   // Filter notebooks for the specified year
-  const yearNotebooks = allNotebooks.filter(nb => nb.year === year);
-  
+  const yearNotebooks = allNotebooks.filter((nb) => nb.year === year);
+
   if (yearNotebooks.length === 0) {
     return null;
   }
-  
+
   // Sort by month
   yearNotebooks.sort((a, b) => a.month - b.month);
-  
+
   return {
     year,
     notebooks: yearNotebooks,
     monthlyOutcomes: calculateMonthlyOutcomes(yearNotebooks),
     quarterlyDomains: calculateQuarterlyDomains(yearNotebooks),
-    seasonalPatterns: detectSeasonalPatterns(yearNotebooks)
+    seasonalPatterns: detectSeasonalPatterns(yearNotebooks),
   };
 }
 
@@ -58,22 +58,22 @@ function aggregateYearData(year) {
  * @returns {Array} Array of {month, wins, neutrals, losses, total}
  */
 function calculateMonthlyOutcomes(notebooks) {
-  return notebooks.map(notebook => {
+  return notebooks.map((notebook) => {
     const outcomes = { wins: 0, neutrals: 0, losses: 0 };
-    
-    notebook.days.forEach(day => {
-      if (day.manualOutcome === 'win') outcomes.wins++;
-      else if (day.manualOutcome === 'neutral') outcomes.neutrals++;
-      else if (day.manualOutcome === 'loss') outcomes.losses++;
+
+    notebook.days.forEach((day) => {
+      if (day.manualOutcome === "win") outcomes.wins++;
+      else if (day.manualOutcome === "neutral") outcomes.neutrals++;
+      else if (day.manualOutcome === "loss") outcomes.losses++;
     });
-    
+
     return {
       month: notebook.month,
       monthName: getMonthName(notebook.month),
       wins: outcomes.wins,
       neutrals: outcomes.neutrals,
       losses: outcomes.losses,
-      total: notebook.days.length
+      total: notebook.days.length,
     };
   });
 }
@@ -88,43 +88,43 @@ function calculateQuarterlyDomains(notebooks) {
     { quarter: 1, months: [1, 2, 3], domains: {} },
     { quarter: 2, months: [4, 5, 6], domains: {} },
     { quarter: 3, months: [7, 8, 9], domains: {} },
-    { quarter: 4, months: [10, 11, 12], domains: {} }
+    { quarter: 4, months: [10, 11, 12], domains: {} },
   ];
-  
+
   const allDomains = getAllDomains();
-  
+
   // Count domain participation for each quarter
-  notebooks.forEach(notebook => {
-    const quarter = quarters.find(q => q.months.includes(notebook.month));
+  notebooks.forEach((notebook) => {
+    const quarter = quarters.find((q) => q.months.includes(notebook.month));
     if (!quarter) return;
-    
-    notebook.days.forEach(day => {
-      Object.keys(day.domainSignals || {}).forEach(domainId => {
+
+    notebook.days.forEach((day) => {
+      Object.keys(day.domainSignals || {}).forEach((domainId) => {
         if (day.domainSignals[domainId]) {
           quarter.domains[domainId] = (quarter.domains[domainId] || 0) + 1;
         }
       });
     });
   });
-  
+
   // Convert to sorted arrays
-  return quarters.map(q => {
+  return quarters.map((q) => {
     const domainArray = Object.entries(q.domains)
       .map(([domainId, count]) => {
-        const domain = allDomains.find(d => d.id === domainId);
+        const domain = allDomains.find((d) => d.id === domainId);
         return {
           id: domainId,
           name: domain ? domain.name : domainId,
-          count: count
+          count: count,
         };
       })
       .sort((a, b) => b.count - a.count)
       .slice(0, 5); // Top 5 domains per quarter
-    
+
     return {
       quarter: q.quarter,
       quarterName: `Q${q.quarter}`,
-      domains: domainArray
+      domains: domainArray,
     };
   });
 }
@@ -137,71 +137,72 @@ function calculateQuarterlyDomains(notebooks) {
 function detectSeasonalPatterns(notebooks) {
   const patterns = [];
   const allDomains = getAllDomains();
-  
+
   // Analyze domain participation across seasons
   const seasons = [
-    { name: 'Winter', months: [12, 1, 2], domainCounts: {} },
-    { name: 'Spring', months: [3, 4, 5], domainCounts: {} },
-    { name: 'Summer', months: [6, 7, 8], domainCounts: {} },
-    { name: 'Fall', months: [9, 10, 11], domainCounts: {} }
+    { name: "Winter", months: [12, 1, 2], domainCounts: {} },
+    { name: "Spring", months: [3, 4, 5], domainCounts: {} },
+    { name: "Summer", months: [6, 7, 8], domainCounts: {} },
+    { name: "Fall", months: [9, 10, 11], domainCounts: {} },
   ];
-  
-  notebooks.forEach(notebook => {
-    const season = seasons.find(s => s.months.includes(notebook.month));
+
+  notebooks.forEach((notebook) => {
+    const season = seasons.find((s) => s.months.includes(notebook.month));
     if (!season) return;
-    
-    notebook.days.forEach(day => {
-      Object.keys(day.domainSignals || {}).forEach(domainId => {
+
+    notebook.days.forEach((day) => {
+      Object.keys(day.domainSignals || {}).forEach((domainId) => {
         if (day.domainSignals[domainId]) {
-          season.domainCounts[domainId] = (season.domainCounts[domainId] || 0) + 1;
+          season.domainCounts[domainId] =
+            (season.domainCounts[domainId] || 0) + 1;
         }
       });
     });
   });
-  
+
   // Identify dominant domains per season
-  seasons.forEach(season => {
+  seasons.forEach((season) => {
     const sortedDomains = Object.entries(season.domainCounts)
       .map(([domainId, count]) => {
-        const domain = allDomains.find(d => d.id === domainId);
+        const domain = allDomains.find((d) => d.id === domainId);
         return { id: domainId, name: domain ? domain.name : domainId, count };
       })
       .sort((a, b) => b.count - a.count);
-    
+
     if (sortedDomains.length > 0) {
       const dominant = sortedDomains[0];
       patterns.push({
-        type: 'seasonal_domain',
+        type: "seasonal_domain",
         text: `${season.name}: "${dominant.name}" most active`,
-        detail: `${dominant.count} active days in ${season.name.toLowerCase()}`
+        detail: `${dominant.count} active days in ${season.name.toLowerCase()}`,
       });
     }
   });
-  
+
   // Analyze outcome trends across year
   const monthlyOutcomes = calculateMonthlyOutcomes(notebooks);
   const firstHalf = monthlyOutcomes.slice(0, 6);
   const secondHalf = monthlyOutcomes.slice(6);
-  
+
   const firstHalfWins = firstHalf.reduce((sum, m) => sum + m.wins, 0);
   const secondHalfWins = secondHalf.reduce((sum, m) => sum + m.wins, 0);
-  
+
   if (firstHalfWins > 0 || secondHalfWins > 0) {
     if (secondHalfWins > firstHalfWins * 1.3) {
       patterns.push({
-        type: 'outcome_trend',
-        text: 'Year gained momentum: More wins in second half',
-        detail: `${firstHalfWins} wins H1 → ${secondHalfWins} wins H2`
+        type: "outcome_trend",
+        text: "Year gained momentum: More wins in second half",
+        detail: `${firstHalfWins} wins H1 → ${secondHalfWins} wins H2`,
       });
     } else if (firstHalfWins > secondHalfWins * 1.3) {
       patterns.push({
-        type: 'outcome_trend',
-        text: 'Year started strong: More wins in first half',
-        detail: `${firstHalfWins} wins H1 → ${secondHalfWins} wins H2`
+        type: "outcome_trend",
+        text: "Year started strong: More wins in first half",
+        detail: `${firstHalfWins} wins H1 → ${secondHalfWins} wins H2`,
       });
     }
   }
-  
+
   return patterns;
 }
 
@@ -210,16 +211,16 @@ function detectSeasonalPatterns(notebooks) {
  * @param {number} year - Year to display
  */
 function renderYearView(year) {
-  const container = document.getElementById('year-view');
+  const container = document.getElementById("year-view");
   if (!container) return;
-  
+
   const yearData = aggregateYearData(year);
-  
+
   if (!yearData) {
     renderEmptyState(container, year);
     return;
   }
-  
+
   container.innerHTML = `
     <div class="year-view">
       ${renderYearHeader(year)}
@@ -228,7 +229,7 @@ function renderYearView(year) {
       ${renderSeasonalPatterns(yearData.seasonalPatterns)}
     </div>
   `;
-  
+
   attachYearNavListeners();
 }
 
@@ -257,13 +258,14 @@ function renderYearHeader(year) {
  * @returns {string} HTML for monthly outcomes
  */
 function renderMonthlyOutcomes(monthlyOutcomes) {
-  const monthCards = monthlyOutcomes.map(month => {
-    const maxCount = Math.max(month.wins, month.neutrals, month.losses, 1);
-    const winWidth = (month.wins / maxCount) * 100;
-    const neutralWidth = (month.neutrals / maxCount) * 100;
-    const lossWidth = (month.losses / maxCount) * 100;
-    
-    return `
+  const monthCards = monthlyOutcomes
+    .map((month) => {
+      const maxCount = Math.max(month.wins, month.neutrals, month.losses, 1);
+      const winWidth = (month.wins / maxCount) * 100;
+      const neutralWidth = (month.neutrals / maxCount) * 100;
+      const lossWidth = (month.losses / maxCount) * 100;
+
+      return `
       <div class="month-card">
         <div class="month-card-header">${month.monthName}</div>
         <div class="month-outcome-bars">
@@ -291,8 +293,9 @@ function renderMonthlyOutcomes(monthlyOutcomes) {
         </div>
       </div>
     `;
-  }).join('');
-  
+    })
+    .join("");
+
   return `
     <section class="monthly-outcomes-section">
       <h2 class="section-title">Monthly Outcomes</h2>
@@ -309,17 +312,23 @@ function renderMonthlyOutcomes(monthlyOutcomes) {
  * @returns {string} HTML for quarterly domains
  */
 function renderQuarterlyDomains(quarterlyDomains) {
-  const quarterCards = quarterlyDomains.map(quarter => {
-    const domainItems = quarter.domains.length > 0
-      ? quarter.domains.map(domain => `
+  const quarterCards = quarterlyDomains
+    .map((quarter) => {
+      const domainItems =
+        quarter.domains.length > 0
+          ? quarter.domains
+              .map(
+                (domain) => `
           <div class="quarter-domain-item">
             <span class="quarter-domain-name">${domain.name}</span>
             <span class="quarter-domain-count">${domain.count} days</span>
           </div>
-        `).join('')
-      : '<div class="quarter-domain-item"><span class="quarter-domain-name">No activity recorded</span></div>';
-    
-    return `
+        `
+              )
+              .join("")
+          : '<div class="quarter-domain-item"><span class="quarter-domain-name">No activity recorded</span></div>';
+
+      return `
       <div class="quarter-card">
         <div class="quarter-card-header">${quarter.quarterName}</div>
         <div class="quarter-domains">
@@ -327,8 +336,9 @@ function renderQuarterlyDomains(quarterlyDomains) {
         </div>
       </div>
     `;
-  }).join('');
-  
+    })
+    .join("");
+
   return `
     <section class="quarterly-domains-section">
       <h2 class="section-title">Dominant Domains by Quarter</h2>
@@ -345,15 +355,20 @@ function renderQuarterlyDomains(quarterlyDomains) {
  * @returns {string} HTML for seasonal patterns
  */
 function renderSeasonalPatterns(seasonalPatterns) {
-  const observations = seasonalPatterns.length > 0
-    ? seasonalPatterns.map(pattern => `
+  const observations =
+    seasonalPatterns.length > 0
+      ? seasonalPatterns
+          .map(
+            (pattern) => `
         <div class="seasonal-observation">
           <div class="seasonal-pattern-text">${pattern.text}</div>
           <div class="seasonal-detail">${pattern.detail}</div>
         </div>
-      `).join('')
-    : '<div class="seasonal-observation"><div class="seasonal-pattern-text">Not enough data to detect seasonal patterns</div></div>';
-  
+      `
+          )
+          .join("")
+      : '<div class="seasonal-observation"><div class="seasonal-pattern-text">Not enough data to detect seasonal patterns</div></div>';
+
   return `
     <section class="seasonal-patterns-section">
       <h2 class="section-title">Seasonal Patterns</h2>
@@ -377,7 +392,7 @@ function renderEmptyState(container, year) {
       </div>
     </div>
   `;
-  
+
   attachYearNavListeners();
 }
 
@@ -387,16 +402,16 @@ function renderEmptyState(container, year) {
 function attachYearNavListeners() {
   const prevButton = document.querySelector('[data-action="prev"]');
   const nextButton = document.querySelector('[data-action="next"]');
-  
+
   if (prevButton) {
-    prevButton.addEventListener('click', () => {
+    prevButton.addEventListener("click", () => {
       currentYear--;
       renderYearView(currentYear);
     });
   }
-  
+
   if (nextButton) {
-    nextButton.addEventListener('click', () => {
+    nextButton.addEventListener("click", () => {
       currentYear++;
       renderYearView(currentYear);
     });
@@ -409,7 +424,19 @@ function attachYearNavListeners() {
  * @returns {string} Month name
  */
 function getMonthName(month) {
-  const names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return names[month - 1] || 'Unknown';
+  const names = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  return names[month - 1] || "Unknown";
 }
