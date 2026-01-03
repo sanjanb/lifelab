@@ -1,0 +1,276 @@
+/**
+ * Year View Styles
+ * 
+ * Design goal: Show patterns over time without scorekeeping
+ * Visual language: Observational, not judgmental
+ */
+
+.year-view {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.year-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.year-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 0.5rem;
+}
+
+.year-subtitle {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.year-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.year-nav-button {
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border: 2px solid #ddd;
+  color: #666;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.year-nav-button:hover {
+  border-color: #5093d9;
+  color: #5093d9;
+}
+
+.year-display {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Monthly Outcomes Grid */
+.monthly-outcomes-section {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.months-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.month-card {
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 1rem;
+  transition: box-shadow 0.2s;
+}
+
+.month-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.month-card-header {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.month-outcome-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.month-outcome-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.month-outcome-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.month-outcome-icon.win {
+  background: #4caf50;
+  color: #fff;
+}
+
+.month-outcome-icon.neutral {
+  background: #9e9e9e;
+  color: #fff;
+}
+
+.month-outcome-icon.loss {
+  background: #f44336;
+  color: #fff;
+}
+
+.month-outcome-bar {
+  flex: 1;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.month-outcome-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.month-outcome-fill.win {
+  background: #4caf50;
+}
+
+.month-outcome-fill.neutral {
+  background: #9e9e9e;
+}
+
+.month-outcome-fill.loss {
+  background: #f44336;
+}
+
+.month-outcome-count {
+  min-width: 20px;
+  text-align: right;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #666;
+}
+
+/* Quarterly Domains */
+.quarterly-domains-section {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.quarters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.quarter-card {
+  background: #fafafa;
+  border-left: 4px solid #5093d9;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.quarter-card-header {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.quarter-domains {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.quarter-domain-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.quarter-domain-name {
+  color: #555;
+}
+
+.quarter-domain-count {
+  font-weight: 600;
+  color: #5093d9;
+}
+
+/* Seasonal Patterns */
+.seasonal-patterns-section {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.seasonal-observation {
+  background: #f5f9ff;
+  border-left: 3px solid #5093d9;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.seasonal-observation:last-child {
+  margin-bottom: 0;
+}
+
+.seasonal-pattern-text {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.seasonal-detail {
+  font-size: 0.85rem;
+  color: #777;
+  margin-top: 0.5rem;
+}
+
+/* Empty State */
+.year-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #888;
+}
+
+.year-empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.year-empty-state-message {
+  font-size: 0.95rem;
+}
