@@ -10,7 +10,21 @@
 document.addEventListener("DOMContentLoaded", function () {
   initializeNavigation();
   initializeDashboard();
+  initializeHeaderNavigation();
 });
+
+/**
+ * Initialize header navigation
+ * Clicking the header title returns to dashboard
+ */
+function initializeHeaderNavigation() {
+  const headerTitle = document.getElementById("header-title");
+  if (headerTitle) {
+    headerTitle.addEventListener("click", () => {
+      navigateToDashboard();
+    });
+  }
+}
 
 /**
  * Initialize navigation menu dynamically from config
@@ -54,6 +68,7 @@ function initializeDashboard() {
   domains.forEach((domain) => {
     const card = document.createElement("div");
     card.className = "card";
+    card.style.cursor = "pointer";
 
     const title = document.createElement("h3");
     title.className = "card-title";
@@ -71,18 +86,27 @@ function initializeDashboard() {
     card.appendChild(description);
     card.appendChild(placeholder);
 
+    // Add click handler to navigate to domain
+    card.addEventListener("click", () => {
+      navigateToDomain(domain.id);
+    });
+
     dashboardGrid.appendChild(card);
   });
 }
 
 /**
  * Navigate to a specific domain view
- * This is a placeholder for future domain-specific view rendering
+ * Renders domain view dynamically without page reload
  *
  * @param {string} domainId - The domain to navigate to
  */
 function navigateToDomain(domainId) {
-  console.log(`Navigation to ${domainId} - view rendering to be implemented`);
+  const domain = getDomainById(domainId);
+  if (!domain) {
+    console.error(`Domain not found: ${domainId}`);
+    return;
+  }
 
   // Update active nav state
   const navItems = document.querySelectorAll(".nav-item");
@@ -94,7 +118,61 @@ function navigateToDomain(domainId) {
     }
   });
 
-  // Domain-specific view rendering will be implemented in Phase 3
+  // Get main content area
+  const mainElement = document.getElementById("main");
+  if (!mainElement) return;
+
+  // Hide dashboard, show domain view
+  const dashboard = mainElement.querySelector(".dashboard");
+  if (dashboard) {
+    dashboard.style.display = "none";
+  }
+
+  // Check if domain view already exists
+  let domainView = document.getElementById(`domain-${domainId}`);
+  
+  if (!domainView) {
+    // Create new domain view using template
+    domainView = createDomainViewTemplate(domain);
+    mainElement.appendChild(domainView);
+  }
+
+  // Hide all domain views
+  const allDomainViews = document.querySelectorAll(".domain-view");
+  allDomainViews.forEach((view) => {
+    view.style.display = "none";
+  });
+
+  // Show current domain view
+  domainView.style.display = "block";
+}
+
+/**
+ * Navigate back to dashboard
+ * Shows dashboard and hides all domain views
+ */
+function navigateToDashboard() {
+  // Clear active nav state
+  const navItems = document.querySelectorAll(".nav-item");
+  navItems.forEach((item) => {
+    item.classList.remove("active");
+  });
+
+  // Get main content area
+  const mainElement = document.getElementById("main");
+  if (!mainElement) return;
+
+  // Show dashboard
+  const dashboard = mainElement.querySelector(".dashboard");
+  if (dashboard) {
+    dashboard.style.display = "block";
+  }
+
+  // Hide all domain views
+  const allDomainViews = document.querySelectorAll(".domain-view");
+  allDomainViews.forEach((view) => {
+    view.style.display = "none";
+  });
 }
 
 /**
