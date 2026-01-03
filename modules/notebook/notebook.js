@@ -363,7 +363,10 @@ function renderDomainParticipation(notebook) {
 }
 
 /**
- * Render trend graph showing domain activity per day
+ * Render consistency graph showing domain activity per day
+ * X-axis: days of month
+ * Y-axis: number of domains active (raw count)
+ * No smoothing, no goal lines - descriptive only
  *
  * @param {Object} notebook - Monthly notebook data
  */
@@ -371,7 +374,7 @@ function renderTrendGraph(notebook) {
   const container = document.getElementById("trend-graph-container");
   if (!container) return;
 
-  // Get activity counts per day
+  // Get activity counts per day (raw counts, no smoothing)
   const activityCounts = getMonthlyDomainActivity(
     notebook.year,
     notebook.month
@@ -381,18 +384,45 @@ function renderTrendGraph(notebook) {
     return;
   }
 
-  // Generate trend marks
-  const marksHtml = activityCounts
+  const maxCount = Math.max(...activityCounts, 1); // Ensure at least 1 for scale
+  const totalDays = activityCounts.length;
+
+  // Generate graph bars (each represents one day)
+  const barsHtml = activityCounts
     .map((count, index) => {
       const day = index + 1;
-      return `<div class="trend-mark" data-count="${count}" data-day="${day}" title="Day ${day}: ${count} domains"></div>`;
+      const heightPercent = maxCount > 0 ? (count / maxCount) * 100 : 0;
+      
+      return `
+        <div class="consistency-day" title="Day ${day}: ${count} ${count === 1 ? 'domain' : 'domains'}">
+          <div class="consistency-bar" style="height: ${heightPercent}%">
+            <span class="consistency-value">${count}</span>
+          </div>
+          <div class="consistency-day-label">${day}</div>
+        </div>
+      `;
     })
     .join("");
 
+  // Generate Y-axis labels (domain count)
+  const yAxisLabels = [];
+  for (let i = maxCount; i >= 0; i--) {
+    yAxisLabels.push(`<div class="y-axis-label">${i}</div>`);
+  }
+
   container.innerHTML = `
-    <div class="trend-graph">
-      <div class="trend-graph-title">Domain Activity</div>
-      <div class="trend-marks">${marksHtml}</div>
+    <div class="consistency-graph">
+      <div class="consistency-graph-title">Consistency Graph</div>
+      <div class="consistency-graph-subtitle">Daily domain activity (raw counts)</div>
+      <div class="consistency-graph-container">
+        <div class="y-axis">
+          ${yAxisLabels.join('')}
+        </div>
+        <div class="consistency-bars">
+          ${barsHtml}
+        </div>
+      </div>
+      <div class="x-axis-label">Day of Month</div>
     </div>
   `;
 }
