@@ -815,6 +815,253 @@ function attachExportListener() {
 }
 
 /**
+ * Validate import data structure
+ * 
+ * @param {Object} importData - Data to validate
+ * @returns {Object} Validation result
+ */
+function validateImportData(importData) {
+  const errors = [];
+
+  // Check top-level structure
+  if (!importData || typeof importData !== 'object') {
+    return {
+      valid: false,
+      errors: ["Import data must be an object"]
+    };
+  }
+
+  // Check required metadata fields
+  if (!importData.exportDate) {
+    errors.push("Missing exportDate in metadata");
+  }
+
+  if (!importData.notebooks || !Array.isArray(importData.notebooks)) {
+    return {
+      valid: false,
+      errors: ["Import data must contain a notebooks array"]
+    };
+  }
+
+  // Validate each notebook
+  importData.notebooks.forEach((notebook, index) => {
+    if (!notebook.year || !Number.isInteger(notebook.year)) {
+      errors.push(`Notebook ${index}: missing or invalid year`);
+    }
+
+    if (!notebook.month || !Number.isInteger(notebook.month) || 
+        notebook.month < 1 || notebook.month > 12) {
+      errors.push(`Notebook ${index}: missing or invalid month`);
+    }
+
+    if (!Array.isArray(notebook.days)) {
+      errors.push(`Notebook ${index}: missing days array`);
+    } else {
+      // Validate each day
+      notebook.days.forEach((day, dayIndex) => {
+        if (!day.date || typeof day.date !== 'string') {
+          errors.push(`Notebook ${index}, Day ${dayIndex}: missing or invalid date`);
+        }
+
+        if (!day.domainSignals || typeof day.domainSignals !== 'object') {
+          errors.push(`Notebook ${index}, Day ${dayIndex}: missing or invalid domainSignals`);
+        }
+      });
+    }
+  });
+
+  return {
+    valid: errors.length === 0,
+    errors: errors
+  };
+}
+
+/**
+ * Check for conflicts with existing notebooks
+ * 
+ * @param {Array} importNotebooks - Notebooks to import
+ * @returns {Object} Conflict information
+ */
+function checkImportConflicts(importNotebooks) {
+  const conflicts = [];
+  const newNotebooks = [];
+
+  importNotebooks.forEach(notebook => {
+    const existing = getMonthlyNotebook(notebook.year, notebook.month);
+    
+    if (existing) {
+      conflicts.push({
+        year: notebook.year,
+        month: notebook.month,
+        label: `${notebook.year}-${String(notebook.month).padStart(2, '0')}`
+      });
+    } else {
+      newNotebooks.push({
+        year: notebook.year,
+        month: notebook.month,
+        label: `${notebook.year}-${String(notebook.month).padStart(2, '0')}`
+      });
+    }
+  });
+
+  return {
+    hasConflicts: conflicts.length > 0,
+    conflicts: conflicts,
+    newNotebooks: newNotebooks,
+    conflictCount: conflicts.length,
+    newCount: newNotebooks.length
+  };
+}
+
+/**
+ * Import monthly notebooks from data
+ * 
+ * @param {Object} importData - Validated import data
+ * @param {boolean} overwriteExisting - Whether to overwrite existing notebooks
+ * @returns {Object} Import result
+ */
+function importMonthlyNotebooks(importData, overwriteExisting = false) {
+  try {
+    let importedCount = 0;
+    let skippedCount = 0;
+    const errors = [];
+
+    importData.notebooks.forEach(notebook => {
+      const existing = getMonthlyNotebook(notebook.year, notebook.month);
+
+      if (existing && !overwriteExisting) {
+        skippedCount++;
+        return;
+      }
+
+      // Save notebook
+      const success = saveMonthlyNotebook(notebook);
+      
+      if (success) {
+        importedCount++;
+      } else {
+        errors.push(`Failed to import ${notebook.year}-${notebook.month}`);
+      }
+    });
+
+    return {
+      success: errors.length === 0,
+      importedCount,
+      skippedCount,
+      errors
+    };
+  } catch (error) {
+    console.error("importMonthlyNotebooks error:", error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+
+/**
+ * Attach event listener to import button
+ */
+function attachImportListener() {
+  const importButton = document.getElementById("import-notebooks-button");
+  
+  if (!importButton) return;
+  
+  importButton.addEventListener("click", () => {
+    // Create file input element
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'application/json,.json';
+    
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Disable button during import
+      importButton.disabled = true;
+      importButton.textContent = "Importing...";
+
+      try {
+        // Read file
+        const text = await file.text();
+        const importData = JSON.parse(text);
+
+        // Validate structure
+        const validation = validateImportData(importData);
+        
+        if (!validation.valid) {
+          alert("Invalid import file:\n\n" + validation.errors.join("\n"));
+          importButton.textContent = "Import Failed";
+          setTimeout(() => {
+            importButton.textContent = "Import Data";
+            importButton.disabled = false;
+          }, 2000);
+          return;
+        }
+
+        // Check for conflicts
+        const conflicts = checkImportConflicts(importData.notebooks);
+
+        let overwriteExisting = false;
+
+        if (conflicts.hasConflicts) {
+          // Show confirmation dialog
+          const message = `Found ${conflicts.conflictCount} existing notebook(s):\n${conflicts.conflicts.map(c => c.label).join(', ')}\n\nAlso found ${conflicts.newCount} new notebook(s).\n\nOverwrite existing notebooks?`;
+          
+          overwriteExisting = confirm(message);
+          
+          if (!overwriteExisting && conflicts.newCount === 0) {
+            // User declined and there are no new notebooks
+            alert("Import cancelled. No new notebooks to import.");
+            importButton.textContent = "Import Data";
+            importButton.disabled = false;
+            return;
+          }
+        }
+
+        // Perform import
+        const result = importMonthlyNotebooks(importData, overwriteExisting);
+
+        if (result.success || result.importedCount > 0) {
+          const message = `Import complete!\n\nImported: ${result.importedCount}\nSkipped: ${result.skippedCount}`;
+          alert(message);
+          
+          importButton.textContent = "Imported ✓";
+          
+          // Reload current view
+          setTimeout(() => {
+            importButton.textContent = "Import Data";
+            importButton.disabled = false;
+            
+            // Refresh the notebook view
+            const now = new Date();
+            initializeMonthlyNotebook(now.getFullYear(), now.getMonth() + 1);
+          }, 2000);
+        } else {
+          alert("Import failed:\n\n" + (result.errors?.join("\n") || result.error || "Unknown error"));
+          importButton.textContent = "Import Failed";
+          setTimeout(() => {
+            importButton.textContent = "Import Data";
+            importButton.disabled = false;
+          }, 2000);
+        }
+      } catch (error) {
+        console.error("Import error:", error);
+        alert("Failed to parse import file. Please ensure it's a valid JSON file.");
+        importButton.textContent = "Import Failed";
+        setTimeout(() => {
+          importButton.textContent = "Import Data";
+          importButton.disabled = false;
+        }, 2000);
+      }
+    });
+
+    // Trigger file selection
+    fileInput.click();
+  });
+}
+
+/**
  * Navigate to a different month
  *
  * @param {number} year - Four-digit year
