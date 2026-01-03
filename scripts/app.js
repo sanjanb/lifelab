@@ -135,7 +135,7 @@ function navigateToDomain(domainId) {
     // Create new domain view using template
     domainView = createDomainViewTemplate(domain);
     mainElement.appendChild(domainView);
-    
+
     // Initialize domain-specific module
     initializeDomainModule(domainId);
   }
