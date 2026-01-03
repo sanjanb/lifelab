@@ -80,6 +80,20 @@ function initializeNavigation() {
   });
 
   navElement.appendChild(notebookItem);
+
+  // Add Year View navigation item
+  const yearItem = document.createElement("a");
+  yearItem.href = "#";
+  yearItem.className = "nav-item nav-item-special";
+  yearItem.textContent = "Year";
+  yearItem.dataset.view = "year";
+
+  yearItem.addEventListener("click", (e) => {
+    e.preventDefault();
+    navigateToYear();
+  });
+
+  navElement.appendChild(yearItem);
 }
 
 /**
@@ -311,6 +325,12 @@ function navigateToDashboard() {
   if (notebookView) {
     notebookView.style.display = "none";
   }
+
+  // Hide year view
+  const yearView = document.getElementById("year-view");
+  if (yearView) {
+    yearView.style.display = "none";
+  }
 }
 
 /**
@@ -350,6 +370,12 @@ function navigateToNotebook() {
     timelineView.style.display = "none";
   }
 
+  // Hide year view
+  const yearView = document.getElementById("year-view");
+  if (yearView) {
+    yearView.style.display = "none";
+  }
+
   // Check if notebook view already exists
   let notebookView = document.getElementById("notebook-view");
 
@@ -365,6 +391,66 @@ function navigateToNotebook() {
 
   // Initialize notebook for current month
   initializeMonthlyNotebook();
+}
+
+/**
+ * Navigate to year view
+ * Shows derived year overview composed from monthly notebooks
+ */
+function navigateToYear() {
+  // Update active nav state
+  const navItems = document.querySelectorAll(".nav-item");
+  navItems.forEach((item) => {
+    if (item.dataset.view === "year") {
+      item.classList.add("active");
+    } else {
+      item.classList.remove("active");
+    }
+  });
+
+  // Get main content area
+  const mainElement = document.getElementById("main");
+  if (!mainElement) return;
+
+  // Hide dashboard
+  const dashboard = mainElement.querySelector(".dashboard");
+  if (dashboard) {
+    dashboard.style.display = "none";
+  }
+
+  // Hide all domain views
+  const allDomainViews = document.querySelectorAll(".domain-view");
+  allDomainViews.forEach((view) => {
+    view.style.display = "none";
+  });
+
+  // Hide timeline view
+  const timelineView = document.getElementById("timeline-view");
+  if (timelineView) {
+    timelineView.style.display = "none";
+  }
+
+  // Hide notebook view
+  const notebookView = document.getElementById("notebook-view");
+  if (notebookView) {
+    notebookView.style.display = "none";
+  }
+
+  // Check if year view already exists
+  let yearView = document.getElementById("year-view");
+
+  if (!yearView) {
+    // Create year view container
+    yearView = document.createElement("div");
+    yearView.id = "year-view";
+    mainElement.appendChild(yearView);
+  }
+
+  // Show year view
+  yearView.style.display = "block";
+
+  // Initialize year view
+  initializeYearView();
 }
 
 /**
@@ -402,6 +488,12 @@ function navigateToTimeline() {
   const notebookView = document.getElementById("notebook-view");
   if (notebookView) {
     notebookView.style.display = "none";
+  }
+
+  // Hide year view
+  const yearView = document.getElementById("year-view");
+  if (yearView) {
+    yearView.style.display = "none";
   }
 
   // Check if timeline view already exists
