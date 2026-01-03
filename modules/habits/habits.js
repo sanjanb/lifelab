@@ -158,3 +158,110 @@ function showSuccessMessage(message) {
     msgElement.remove();
   }, 3000);
 }
+
+/**
+ * Refresh and render habit history
+ * Displays the most recent habit entries (up to 14)
+ */
+function refreshHabitHistory() {
+  const container = document.getElementById("history-habits");
+  if (!container) return;
+
+  // Get all entries from storage
+  const allEntries = getEntries("habits");
+
+  if (!allEntries || allEntries.length === 0) {
+    container.innerHTML =
+      '<p class="text-muted text-small">No entries yet</p>';
+    return;
+  }
+
+  // Sort by timestamp (newest first) and take last 14
+  const recentEntries = allEntries
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .slice(0, 14);
+
+  // Clear container
+  container.innerHTML = "";
+
+  // Create entry list
+  const entryList = document.createElement("div");
+  entryList.className = "entry-list";
+
+  recentEntries.forEach((entry) => {
+    const entryItem = createEntryItem(entry);
+    entryList.appendChild(entryItem);
+  });
+
+  container.appendChild(entryList);
+}
+
+/**
+ * Create a single entry item element
+ *
+ * @param {Object} entry - The entry object
+ * @returns {HTMLElement} Entry item element
+ */
+function createEntryItem(entry) {
+  const item = document.createElement("div");
+  item.className = "entry-item";
+  item.dataset.entryId = entry.id;
+
+  // Entry content section
+  const content = document.createElement("div");
+  content.className = "entry-content";
+
+  // Entry value (habit name)
+  const valueElement = document.createElement("div");
+  valueElement.className = "entry-value";
+  valueElement.textContent = entry.value;
+
+  // Entry metadata (timestamp)
+  const metaElement = document.createElement("div");
+  metaElement.className = "entry-meta text-muted text-small";
+  metaElement.textContent = formatDateTime(entry.timestamp);
+
+  content.appendChild(valueElement);
+  content.appendChild(metaElement);
+
+  // Entry notes (if present)
+  if (entry.notes) {
+    const notesElement = document.createElement("div");
+    notesElement.className = "entry-notes text-small";
+    notesElement.textContent = entry.notes;
+    content.appendChild(notesElement);
+  }
+
+  // Delete button
+  const deleteButton = document.createElement("button");
+  deleteButton.className = "btn-delete";
+  deleteButton.textContent = "Delete";
+  deleteButton.title = "Delete this entry";
+  deleteButton.addEventListener("click", () => handleDeleteEntry(entry.id));
+
+  // Assemble item
+  item.appendChild(content);
+  item.appendChild(deleteButton);
+
+  return item;
+}
+
+/**
+ * Handle deletion of a habit entry
+ *
+ * @param {string} entryId - The ID of the entry to delete
+ */
+function handleDeleteEntry(entryId) {
+  if (!confirm("Are you sure you want to delete this entry?")) {
+    return;
+  }
+
+  const success = deleteEntry("habits", entryId);
+
+  if (success) {
+    // Refresh history to update UI
+    refreshHabitHistory();
+  } else {
+    alert("Failed to delete entry. Please try again.");
+  }
+}
