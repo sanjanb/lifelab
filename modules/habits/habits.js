@@ -260,7 +260,119 @@ function handleDeleteEntry(entryId) {
   if (success) {
     // Refresh history to update UI
     refreshHabitHistory();
+    refreshHabitTrends();
   } else {
     alert("Failed to delete entry. Please try again.");
   }
+}
+
+/**
+ * Calculate current streak
+ * Counts consecutive calendar days with at least one entry, working backwards from today
+ * Generic implementation - does not assume specific frequency
+ *
+ * @param {Array} entries - Array of entry objects
+ * @returns {number} Current streak count (in days)
+ */
+function calculateCurrentStreak(entries) {
+  if (!entries || entries.length === 0) {
+    return 0;
+  }
+
+  // Get unique dates with entries (YYYY-MM-DD format)
+  const entryDates = new Set();
+  entries.forEach((entry) => {
+    const date = new Date(entry.timestamp);
+    const dateString = date.toISOString().split("T")[0];
+    entryDates.add(dateString);
+  });
+
+  // Start from today and count backwards
+  let streak = 0;
+  let currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+
+  while (true) {
+    const dateString = currentDate.toISOString().split("T")[0];
+
+    if (entryDates.has(dateString)) {
+      streak++;
+      // Move to previous day
+      currentDate.setDate(currentDate.getDate() - 1);
+    } else if (streak === 0) {
+      // Allow grace period: if no entry today, check yesterday
+      currentDate.setDate(currentDate.getDate() - 1);
+      const yesterdayString = currentDate.toISOString().split("T")[0];
+      if (entryDates.has(yesterdayString)) {
+        streak = 1;
+        currentDate.setDate(currentDate.getDate() - 1);
+      } else {
+        break;
+      }
+    } else {
+      // Streak is broken
+      break;
+    }
+  }
+
+  return streak;
+}
+
+/**
+ * Calculate longest streak ever
+ * Finds the longest consecutive sequence of calendar days with entries
+ *
+ * @param {Array} entries - Array of entry objects
+ * @returns {number} Longest streak count (in days)
+ */
+function calculateLongestStreak(entries) {
+  if (!entries || entries.length === 0) {
+    return 0;
+  }
+
+  // Get unique dates with entries (YYYY-MM-DD format) and sort them
+  const entryDates = new Set();
+  entries.forEach((entry) => {
+    const date = new Date(entry.timestamp);
+    const dateString = date.toISOString().split("T")[0];
+    entryDates.add(dateString);
+  });
+
+  const sortedDates = Array.from(entryDates).sort();
+
+  let longestStreak = 0;
+  let currentStreak = 1;
+
+  for (let i = 1; i < sortedDates.length; i++) {
+    const prevDate = new Date(sortedDates[i - 1]);
+    const currDate = new Date(sortedDates[i]);
+
+    // Calculate difference in days
+    const diffTime = currDate - prevDate;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    if (diffDays === 1) {
+      // Consecutive day
+      currentStreak++;
+    } else {
+      // Streak broken, check if it was the longest
+      longestStreak = Math.max(longestStreak, currentStreak);
+      currentStreak = 1;
+    }
+  }
+
+  // Check final streak
+  longestStreak = Math.max(longestStreak, currentStreak);
+
+  return longestStreak;
+}
+
+/**
+ * Calculate total number of entries
+ *
+ * @param {Array} entries - Array of entry objects
+ * @returns {number} Total entry count
+ */
+function calculateTotalEntries(entries) {
+  return entries ? entries.length : 0;
 }
