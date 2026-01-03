@@ -52,6 +52,20 @@ function initializeNavigation() {
 
     navElement.appendChild(navItem);
   });
+
+  // Add Timeline navigation item
+  const timelineItem = document.createElement("a");
+  timelineItem.href = "#";
+  timelineItem.className = "nav-item nav-item-special";
+  timelineItem.textContent = "Timeline";
+  timelineItem.dataset.view = "timeline";
+
+  timelineItem.addEventListener("click", (e) => {
+    e.preventDefault();
+    navigateToTimeline();
+  });
+
+  navElement.appendChild(timelineItem);
 }
 
 /**
@@ -176,6 +190,184 @@ function navigateToDashboard() {
   allDomainViews.forEach((view) => {
     view.style.display = "none";
   });
+
+  // Hide timeline view
+  const timelineView = document.getElementById("timeline-view");
+  if (timelineView) {
+    timelineView.style.display = "none";
+  }
+}
+
+/**
+ * Navigate to timeline view
+ * Shows timeline with entries from all domains
+ */
+function navigateToTimeline() {
+  // Update active nav state
+  const navItems = document.querySelectorAll(".nav-item");
+  navItems.forEach((item) => {
+    if (item.dataset.view === "timeline") {
+      item.classList.add("active");
+    } else {
+      item.classList.remove("active");
+    }
+  });
+
+  // Get main content area
+  const mainElement = document.getElementById("main");
+  if (!mainElement) return;
+
+  // Hide dashboard
+  const dashboard = mainElement.querySelector(".dashboard");
+  if (dashboard) {
+    dashboard.style.display = "none";
+  }
+
+  // Hide all domain views
+  const allDomainViews = document.querySelectorAll(".domain-view");
+  allDomainViews.forEach((view) => {
+    view.style.display = "none";
+  });
+
+  // Check if timeline view already exists
+  let timelineView = document.getElementById("timeline-view");
+
+  if (!timelineView) {
+    // Create timeline view
+    timelineView = createTimelineView();
+    mainElement.appendChild(timelineView);
+  }
+
+  // Refresh timeline content
+  refreshTimelineView();
+
+  // Show timeline view
+  timelineView.style.display = "block";
+}
+
+/**
+ * Create timeline view container
+ * @returns {HTMLElement} Timeline view element
+ */
+function createTimelineView() {
+  const container = document.createElement("div");
+  container.className = "timeline-view";
+  container.id = "timeline-view";
+
+  const header = document.createElement("div");
+  header.className = "domain-header";
+
+  const title = document.createElement("h2");
+  title.className = "domain-title";
+  title.textContent = "Timeline";
+
+  const description = document.createElement("p");
+  description.className = "domain-description text-muted";
+  description.textContent = "All activities across all domains";
+
+  header.appendChild(title);
+  header.appendChild(description);
+
+  const content = document.createElement("div");
+  content.className = "timeline-container";
+  content.id = "timeline-container";
+
+  container.appendChild(header);
+  container.appendChild(content);
+
+  return container;
+}
+
+/**
+ * Refresh timeline view with all entries from all domains
+ */
+function refreshTimelineView() {
+  const container = document.getElementById("timeline-container");
+  if (!container) return;
+
+  const domains = getAllDomains();
+  const allEntries = [];
+
+  // Collect entries from all domains
+  domains.forEach((domain) => {
+    const entries = getEntries(domain.id);
+    if (entries && entries.length > 0) {
+      entries.forEach((entry) => {
+        allEntries.push({
+          ...entry,
+          domainId: domain.id,
+          domainName: domain.displayName,
+        });
+      });
+    }
+  });
+
+  if (allEntries.length === 0) {
+    container.innerHTML =
+      '<p class="text-muted text-small">No entries yet. Start logging activities in any domain!</p>';
+    return;
+  }
+
+  // Sort by timestamp (newest first)
+  allEntries.sort((a, b) => b.timestamp - a.timestamp);
+
+  // Clear container
+  container.innerHTML = "";
+
+  // Create timeline list
+  const timelineList = document.createElement("div");
+  timelineList.className = "timeline-list";
+
+  allEntries.forEach((entry) => {
+    const timelineItem = createTimelineItem(entry);
+    timelineList.appendChild(timelineItem);
+  });
+
+  container.appendChild(timelineList);
+}
+
+/**
+ * Create a timeline item element
+ * @param {Object} entry - Entry object with domainId and domainName
+ * @returns {HTMLElement} Timeline item element
+ */
+function createTimelineItem(entry) {
+  const item = document.createElement("div");
+  item.className = "timeline-item";
+
+  const content = document.createElement("div");
+  content.className = "timeline-content";
+
+  // Domain tag
+  const domainTag = document.createElement("span");
+  domainTag.className = "timeline-domain-tag";
+  domainTag.textContent = entry.domainName;
+
+  // Entry value
+  const valueElement = document.createElement("div");
+  valueElement.className = "timeline-value";
+  valueElement.textContent = entry.value;
+
+  // Entry metadata (timestamp)
+  const metaElement = document.createElement("div");
+  metaElement.className = "timeline-meta text-muted text-small";
+  metaElement.textContent = formatDateTime(entry.timestamp);
+
+  content.appendChild(domainTag);
+  content.appendChild(valueElement);
+  content.appendChild(metaElement);
+
+  // Entry notes (if present)
+  if (entry.notes) {
+    const notesElement = document.createElement("div");
+    notesElement.className = "timeline-notes text-small";
+    notesElement.textContent = entry.notes;
+    content.appendChild(notesElement);
+  }
+
+  item.appendChild(content);
+
+  return item;
 }
 
 /**
