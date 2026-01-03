@@ -103,7 +103,7 @@ function renderNotebookView(container, notebook) {
 
 /**
  * Calculate monthly outcome statistics
- * 
+ *
  * @param {Object} notebook - Monthly notebook data
  * @returns {Object} Outcome counts
  */
@@ -112,15 +112,15 @@ function calculateMonthlyOutcomes(notebook) {
     wins: 0,
     neutral: 0,
     losses: 0,
-    unrated: 0
+    unrated: 0,
   };
 
-  notebook.days.forEach(day => {
-    if (day.manualOutcome === 'win') {
+  notebook.days.forEach((day) => {
+    if (day.manualOutcome === "win") {
       outcomes.wins++;
-    } else if (day.manualOutcome === 'neutral') {
+    } else if (day.manualOutcome === "neutral") {
       outcomes.neutral++;
-    } else if (day.manualOutcome === 'loss') {
+    } else if (day.manualOutcome === "loss") {
       outcomes.losses++;
     } else {
       outcomes.unrated++;
@@ -133,7 +133,7 @@ function calculateMonthlyOutcomes(notebook) {
 /**
  * Render monthly overview section
  * Shows win/neutral/loss counts visually without percentages
- * 
+ *
  * @param {Object} notebook - Monthly notebook data
  */
 function renderMonthlyOverview(notebook) {
@@ -141,11 +141,11 @@ function renderMonthlyOverview(notebook) {
   if (!container) return;
 
   const outcomes = calculateMonthlyOutcomes(notebook);
-  
+
   // Don't show overview if no outcomes rated yet
   const totalRated = outcomes.wins + outcomes.neutral + outcomes.losses;
   if (totalRated === 0) {
-    container.innerHTML = '';
+    container.innerHTML = "";
     return;
   }
 
@@ -159,7 +159,9 @@ function renderMonthlyOverview(notebook) {
             <span class="outcome-text">Wins</span>
           </div>
           <div class="outcome-bar-visual">
-            <div class="outcome-bar-fill win" style="width: ${outcomes.wins * 10}px"></div>
+            <div class="outcome-bar-fill win" style="width: ${
+              outcomes.wins * 10
+            }px"></div>
             <span class="outcome-count">${outcomes.wins}</span>
           </div>
         </div>
@@ -170,7 +172,9 @@ function renderMonthlyOverview(notebook) {
             <span class="outcome-text">Neutral</span>
           </div>
           <div class="outcome-bar-visual">
-            <div class="outcome-bar-fill neutral" style="width: ${outcomes.neutral * 10}px"></div>
+            <div class="outcome-bar-fill neutral" style="width: ${
+              outcomes.neutral * 10
+            }px"></div>
             <span class="outcome-count">${outcomes.neutral}</span>
           </div>
         </div>
@@ -181,7 +185,9 @@ function renderMonthlyOverview(notebook) {
             <span class="outcome-text">Losses</span>
           </div>
           <div class="outcome-bar-visual">
-            <div class="outcome-bar-fill loss" style="width: ${outcomes.losses * 10}px"></div>
+            <div class="outcome-bar-fill loss" style="width: ${
+              outcomes.losses * 10
+            }px"></div>
             <span class="outcome-count">${outcomes.losses}</span>
           </div>
         </div>
