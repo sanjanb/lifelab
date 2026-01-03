@@ -79,14 +79,14 @@ function renderNotebookView(container, notebook) {
     month: "long",
     year: "numeric",
   });
-  
+
   const isClosed = notebook._closed === true;
-  const closedIndicator = isClosed 
-    ? '<span class="closed-badge">🔒 Closed</span>' 
-    : '';
+  const closedIndicator = isClosed
+    ? '<span class="closed-badge">🔒 Closed</span>'
+    : "";
 
   container.innerHTML = `
-    <div class="notebook-view ${isClosed ? 'notebook-closed' : ''}">
+    <div class="notebook-view ${isClosed ? "notebook-closed" : ""}">
       <div class="notebook-header">
         <h2 class="notebook-title">${monthName} ${closedIndicator}</h2>
         <p class="notebook-subtitle">Monthly Notebook</p>
@@ -97,11 +97,15 @@ function renderNotebookView(container, notebook) {
           <button class="action-button primary" id="export-notebooks-button" title="Export all monthly notebooks to JSON">
             Export Data
           </button>
-          ${!isClosed ? `
+          ${
+            !isClosed
+              ? `
             <button class="action-button warning" id="close-month-button" title="Close this month (makes it read-only)">
               Close Month
             </button>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
       </div>
       
@@ -242,7 +246,7 @@ function analyzeDomainParticipation(notebook, domainId) {
   const totalActiveDays = activeDays.length;
 
   // Get domain configuration for trait-aware phrasing
-  const domain = getAllDomains().find(d => d.id === domainId);
+  const domain = getAllDomains().find((d) => d.id === domainId);
   const traits = domain?.analysistraits || {};
 
   if (totalActiveDays === 0) {
@@ -530,21 +534,21 @@ function renderDailyEntries(notebook) {
                     data-intent="active" 
                     data-day-index="${index}"
                     title="Active day"
-                    ${isClosed ? 'disabled' : ''}>◉</button>
+                    ${isClosed ? "disabled" : ""}>◉</button>
             <button class="intent-button ${
               day.dayIntent === "rest" ? "selected" : ""
             }" 
                     data-intent="rest" 
                     data-day-index="${index}"
                     title="Rest day"
-                    ${isClosed ? 'disabled' : ''}>◐</button>
+                    ${isClosed ? "disabled" : ""}>◐</button>
             <button class="intent-button ${
               day.dayIntent === "offline" ? "selected" : ""
             }" 
                     data-intent="offline" 
                     data-day-index="${index}"
                     title="Offline/unplugged"
-                    ${isClosed ? 'disabled' : ''}>◯</button>
+                    ${isClosed ? "disabled" : ""}>◯</button>
           </div>
           
           <div class="outcome-selector" onclick="event.stopPropagation()">
@@ -554,55 +558,57 @@ function renderDailyEntries(notebook) {
                     data-outcome="win" 
                     data-day-index="${index}"
                     title="Win"
-                    ${isClosed ? 'disabled' : ''}>✓</button>
+                    ${isClosed ? "disabled" : ""}>✓</button>
             <button class="outcome-button ${
               day.manualOutcome === "neutral" ? "selected" : ""
             }" 
                     data-outcome="neutral" 
                     data-day-index="${index}"
                     title="Neutral"
-                    ${isClosed ? 'disabled' : ''}>−</button>
+                    ${isClosed ? "disabled" : ""}>−</button>
             <button class="outcome-button ${
               day.manualOutcome === "loss" ? "selected" : ""
             }" 
                     data-outcome="loss" 
                     data-day-index="${index}"
                     title="Loss"
-                    ${isClosed ? 'disabled' : ''}>✗</button>
+                    ${isClosed ? "disabled" : ""}>✗</button>
           </div>
         </div>
         
         <div class="day-reflection">
-          <label class="day-reflection-label">Day Note ${isClosed ? '(Read-only)' : ''}</label>
+          <label class="day-reflection-label">Day Note ${
+            isClosed ? "(Read-only)" : ""
+          }</label>
           <textarea 
             class="day-reflection-input" 
             data-day-index="${index}"
             placeholder="What happened today?"
-            ${isClosed ? 'readonly' : ''}>${
-              day.reflectionNote || ""
-            }</textarea>
+            ${isClosed ? "readonly" : ""}>${day.reflectionNote || ""}</textarea>
           
           <div class="day-quality-selector">
-            <label class="day-quality-label">Quality ${isClosed ? '(Read-only)' : ''}:</label>
+            <label class="day-quality-label">Quality ${
+              isClosed ? "(Read-only)" : ""
+            }:</label>
             <div class="quality-buttons">
               <button class="quality-button ${
                 day.dayQuality === "low" ? "selected" : ""
               }" 
                       data-quality="low" 
                       data-day-index="${index}"
-                      ${isClosed ? 'disabled' : ''}>Low</button>
+                      ${isClosed ? "disabled" : ""}>Low</button>
               <button class="quality-button ${
                 day.dayQuality === "medium" ? "selected" : ""
               }" 
                       data-quality="medium" 
                       data-day-index="${index}"
-                      ${isClosed ? 'disabled' : ''}>Medium</button>
+                      ${isClosed ? "disabled" : ""}>Medium</button>
               <button class="quality-button ${
                 day.dayQuality === "high" ? "selected" : ""
               }" 
                       data-quality="high" 
                       data-day-index="${index}"
-                      ${isClosed ? 'disabled' : ''}>High</button>
+                      ${isClosed ? "disabled" : ""}>High</button>
             </div>
           </div>
           
@@ -816,26 +822,26 @@ function attachExpandListeners() {
 /**
  * Get monthly sentence starter based on month
  * Rotates through different prompts to encourage reflection
- * 
+ *
  * @param {number} month - Month number (1-12)
  * @returns {string} Sentence starter
  */
 function getMonthlyReflectionStarter(month) {
   const starters = [
-    "This month felt like...",                    // Jan
-    "I underestimated...",                        // Feb
-    "What surprised me was...",                   // Mar
-    "The hardest part was...",                    // Apr
-    "I'm noticing a pattern where...",            // May
-    "This month taught me...",                    // Jun
-    "I wasn't expecting...",                      // Jul
-    "The biggest shift was...",                   // Aug
-    "Looking back, I see...",                     // Sep
-    "What became clear this month...",            // Oct
-    "I'm learning that...",                       // Nov
-    "By the end of this month...",                // Dec
+    "This month felt like...", // Jan
+    "I underestimated...", // Feb
+    "What surprised me was...", // Mar
+    "The hardest part was...", // Apr
+    "I'm noticing a pattern where...", // May
+    "This month taught me...", // Jun
+    "I wasn't expecting...", // Jul
+    "The biggest shift was...", // Aug
+    "Looking back, I see...", // Sep
+    "What became clear this month...", // Oct
+    "I'm learning that...", // Nov
+    "By the end of this month...", // Dec
   ];
-  
+
   return starters[month - 1] || starters[0];
 }
 
@@ -845,7 +851,9 @@ function getMonthlyReflectionStarter(month) {
  * @returns {boolean} True if reflection exists and is not empty
  */
 function hasMonthlyReflection(notebook) {
-  return notebook.monthlyReflection && notebook.monthlyReflection.trim().length > 0;
+  return (
+    notebook.monthlyReflection && notebook.monthlyReflection.trim().length > 0
+  );
 }
 
 /**
@@ -862,26 +870,34 @@ function renderMonthlyReflection(notebook) {
   const starter = getMonthlyReflectionStarter(notebook.month);
   const hasReflection = hasMonthlyReflection(notebook);
   const isClosed = notebook._closed === true;
-  
+
   // Show gentle reminder if reflection is missing (not blocking, just visible)
-  const reminderClass = hasReflection ? '' : 'reflection-reminder-visible';
+  const reminderClass = hasReflection ? "" : "reflection-reminder-visible";
 
   container.innerHTML = `
-    <div class="monthly-reflection ${reminderClass} ${isClosed ? 'read-only' : ''}">
-      <div class="reflection-title">Monthly Reflection ${isClosed ? '(Read-only)' : ''}</div>
+    <div class="monthly-reflection ${reminderClass} ${
+    isClosed ? "read-only" : ""
+  }">
+      <div class="reflection-title">Monthly Reflection ${
+        isClosed ? "(Read-only)" : ""
+      }</div>
       <div class="reflection-starter">${starter}</div>
       <textarea 
         class="reflection-textarea" 
         id="monthly-reflection-input"
         placeholder="Complete the thought above (one sentence encouraged)"
         maxlength="500"
-        ${isClosed ? 'readonly' : ''}>${reflection}</textarea>
-      <div class="reflection-hint ${!hasReflection ? 'reflection-missing' : ''}">
-        ${!hasReflection && !isClosed
-          ? '⚠ Reflection helps close the month intentionally' 
-          : isClosed
-          ? 'Month closed - reflection preserved'
-          : 'Reflection saved'}
+        ${isClosed ? "readonly" : ""}>${reflection}</textarea>
+      <div class="reflection-hint ${
+        !hasReflection ? "reflection-missing" : ""
+      }">
+        ${
+          !hasReflection && !isClosed
+            ? "⚠ Reflection helps close the month intentionally"
+            : isClosed
+            ? "Month closed - reflection preserved"
+            : "Reflection saved"
+        }
       </div>
     </div>
   `;
@@ -897,7 +913,7 @@ function renderMonthlyReflection(notebook) {
         // Save reflection to notebook
         notebook.monthlyReflection = e.target.value;
         saveMonthlyNotebook(notebook);
-        
+
         // Re-render to update reminder visibility
         renderMonthlyReflection(notebook);
       }, 1000); // Save 1 second after user stops typing
@@ -1316,45 +1332,50 @@ function attachImportListener() {
 /**
  * Attach event listener for close month button
  * Closes the month and makes it read-only
- * 
+ *
  * @param {Object} notebook - Monthly notebook data
  */
 function attachCloseMonthListener(notebook) {
-  const closeButton = document.getElementById('close-month-button');
+  const closeButton = document.getElementById("close-month-button");
   if (!closeButton) return;
 
-  closeButton.addEventListener('click', () => {
+  closeButton.addEventListener("click", () => {
     // Check if reflection is complete
-    const hasReflection = notebook.monthlyReflection && notebook.monthlyReflection.trim().length > 0;
-    
+    const hasReflection =
+      notebook.monthlyReflection &&
+      notebook.monthlyReflection.trim().length > 0;
+
     if (!hasReflection) {
       const proceed = confirm(
-        'No monthly reflection found.\n\n' +
-        'Reflection helps close the month intentionally.\n\n' +
-        'Close anyway?'
+        "No monthly reflection found.\n\n" +
+          "Reflection helps close the month intentionally.\n\n" +
+          "Close anyway?"
       );
-      
+
       if (!proceed) return;
     }
-    
+
     // Final confirmation
     const confirmed = confirm(
-      `Close ${new Date(notebook.year, notebook.month - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}?\n\n` +
-      'This will make all daily outcomes, quality, intent, and notes read-only.\n\n' +
-      'This action preserves truth and cannot be undone.'
+      `Close ${new Date(notebook.year, notebook.month - 1).toLocaleDateString(
+        "en-US",
+        { month: "long", year: "numeric" }
+      )}?\n\n` +
+        "This will make all daily outcomes, quality, intent, and notes read-only.\n\n" +
+        "This action preserves truth and cannot be undone."
     );
-    
+
     if (!confirmed) return;
-    
+
     // Close the month
     const success = closeMonthlyNotebook(notebook.year, notebook.month);
-    
+
     if (success) {
       // Refresh the view to show closed state
       initializeMonthlyNotebook(notebook.year, notebook.month);
-      alert('Month closed successfully. All entries are now read-only.');
+      alert("Month closed successfully. All entries are now read-only.");
     } else {
-      alert('Failed to close month. Please try again.');
+      alert("Failed to close month. Please try again.");
     }
   });
 }
