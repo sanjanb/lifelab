@@ -126,7 +126,7 @@ function handleHabitSubmit(event) {
     if (typeof refreshHabitHistory === "function") {
       refreshHabitHistory();
     }
-    
+
     // Update trends display
     if (typeof refreshHabitTrends === "function") {
       refreshHabitTrends();
@@ -381,4 +381,86 @@ function calculateLongestStreak(entries) {
  */
 function calculateTotalEntries(entries) {
   return entries ? entries.length : 0;
+}
+
+/**
+ * Refresh and render habit trends
+ * Displays streak statistics and insights
+ */
+function refreshHabitTrends() {
+  const container = document.getElementById("trend-habits");
+  if (!container) return;
+
+  // Get all entries from storage
+  const allEntries = getEntries("habits");
+
+  // Clear container
+  container.innerHTML = "";
+
+  // Calculate statistics
+  const currentStreak = calculateCurrentStreak(allEntries);
+  const longestStreak = calculateLongestStreak(allEntries);
+  const totalEntries = calculateTotalEntries(allEntries);
+
+  // Create stats grid
+  const statsGrid = document.createElement("div");
+  statsGrid.className = "stats-grid";
+
+  // Current streak stat
+  const currentStreakStat = createStatCard(
+    "Current Streak",
+    currentStreak,
+    currentStreak === 1 ? "day" : "days"
+  );
+
+  // Longest streak stat
+  const longestStreakStat = createStatCard(
+    "Longest Streak",
+    longestStreak,
+    longestStreak === 1 ? "day" : "days"
+  );
+
+  // Total entries stat
+  const totalEntriesStat = createStatCard(
+    "Total Entries",
+    totalEntries,
+    totalEntries === 1 ? "entry" : "entries"
+  );
+
+  statsGrid.appendChild(currentStreakStat);
+  statsGrid.appendChild(longestStreakStat);
+  statsGrid.appendChild(totalEntriesStat);
+
+  container.appendChild(statsGrid);
+}
+
+/**
+ * Create a stat card element
+ *
+ * @param {string} label - The stat label
+ * @param {number} value - The stat value
+ * @param {string} unit - The unit of measurement
+ * @returns {HTMLElement} Stat card element
+ */
+function createStatCard(label, value, unit) {
+  const card = document.createElement("div");
+  card.className = "stat-card";
+
+  const valueElement = document.createElement("div");
+  valueElement.className = "stat-value";
+  valueElement.textContent = value;
+
+  const unitElement = document.createElement("div");
+  unitElement.className = "stat-unit text-muted text-small";
+  unitElement.textContent = unit;
+
+  const labelElement = document.createElement("div");
+  labelElement.className = "stat-label text-muted text-small";
+  labelElement.textContent = label;
+
+  card.appendChild(valueElement);
+  card.appendChild(unitElement);
+  card.appendChild(labelElement);
+
+  return card;
 }
