@@ -291,11 +291,20 @@ function initializeDomainModule(domainId) {
         initializeHabitsModule(`quick-entry-${domainId}`);
       }
       break;
-    // Other domains will be added here in future phases
     case "learning":
+      if (typeof initializeLearningModule === "function") {
+        initializeLearningModule(`quick-entry-${domainId}`);
+      }
+      break;
     case "career":
+      if (typeof initializeCareerModule === "function") {
+        initializeCareerModule(`quick-entry-${domainId}`);
+      }
+      break;
     case "health":
-      // Placeholder for future implementation
+      if (typeof initializeHealthModule === "function") {
+        initializeHealthModule(`quick-entry-${domainId}`);
+      }
       break;
     default:
       console.warn(`No module initializer found for domain: ${domainId}`);
