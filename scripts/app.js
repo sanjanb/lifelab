@@ -273,3 +273,28 @@ function createDomainViewTemplate(domain) {
 
   return container;
 }
+
+/**
+ * Initialize domain-specific modules after view is created
+ * Calls domain-specific initialization functions
+ * 
+ * @param {string} domainId - The domain identifier
+ */
+function initializeDomainModule(domainId) {
+  // Initialize domain-specific functionality based on domain ID
+  switch (domainId) {
+    case 'habits':
+      if (typeof initializeHabitsModule === 'function') {
+        initializeHabitsModule(`quick-entry-${domainId}`);
+      }
+      break;
+    // Other domains will be added here in future phases
+    case 'learning':
+    case 'career':
+    case 'health':
+      // Placeholder for future implementation
+      break;
+    default:
+      console.warn(`No module initializer found for domain: ${domainId}`);
+  }
+}
