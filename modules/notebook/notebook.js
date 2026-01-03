@@ -392,9 +392,11 @@ function renderTrendGraph(notebook) {
     .map((count, index) => {
       const day = index + 1;
       const heightPercent = maxCount > 0 ? (count / maxCount) * 100 : 0;
-      
+
       return `
-        <div class="consistency-day" title="Day ${day}: ${count} ${count === 1 ? 'domain' : 'domains'}">
+        <div class="consistency-day" title="Day ${day}: ${count} ${
+        count === 1 ? "domain" : "domains"
+      }">
           <div class="consistency-bar" style="height: ${heightPercent}%">
             <span class="consistency-value">${count}</span>
           </div>
@@ -416,7 +418,7 @@ function renderTrendGraph(notebook) {
       <div class="consistency-graph-subtitle">Daily domain activity (raw counts)</div>
       <div class="consistency-graph-container">
         <div class="y-axis">
-          ${yAxisLabels.join('')}
+          ${yAxisLabels.join("")}
         </div>
         <div class="consistency-bars">
           ${barsHtml}
