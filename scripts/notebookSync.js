@@ -16,7 +16,7 @@
  *    Generic algorithm based on entry timestamps.
  *
  * 5. No UI dependencies. Pure data transformation.
- * 
+ *
  * 6. NON-DESTRUCTIVE SYNC RULE (CRITICAL):
  *    Sync ONLY updates domainSignals (automated presence tracking).
  *    Sync NEVER touches manualOutcome or reflectionNote.
@@ -75,11 +75,17 @@ function aggregateDomainToNotebook(domainId, year, month) {
     const entriesByDate = mapEntriesToDates(entries, year, month);
 
     // Update notebook with presence signals
+    // NON-DESTRUCTIVE: Only updates domainSignals, preserves manualOutcome and reflectionNote
     notebook.days.forEach((day, index) => {
       const dateKey = day.date; // ISO format YYYY-MM-DD
 
       // Mark presence: true if domain has entries on this date, false otherwise
+      // This is the ONLY field modified during sync
       day.domainSignals[domainId] = entriesByDate.has(dateKey);
+      
+      // NEVER touch these fields during sync:
+      // - day.manualOutcome (user's manual judgment)
+      // - day.reflectionNote (user's personal notes)
     });
 
     // Save updated notebook
