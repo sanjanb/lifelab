@@ -181,28 +181,28 @@ function getStorageKey(domainId) {
 
 /**
  * Monthly Notebook Storage
- * 
+ *
  * DESIGN DECISIONS:
- * 
+ *
  * 1. Storage key format: "lifelab_notebook_YYYY_MM"
  *    This allows easy identification and filtering of notebook data.
- * 
+ *
  * 2. Each notebook is stored as a complete, self-contained JSON object.
  *    This enables atomic GitHub backups and simple export/import.
- * 
+ *
  * 3. No auto-creation on read. getMonthlyNotebook returns null if not found.
- *    This preserves the distinction between "notebook doesn't exist yet" 
+ *    This preserves the distinction between "notebook doesn't exist yet"
  *    and "notebook exists but is empty."
- * 
+ *
  * 4. Updates are always full notebook writes, not partial updates.
  *    This keeps the API simple and matches localStorage constraints.
- * 
+ *
  * 5. No UI logic. These functions are pure storage operations.
  */
 
 /**
  * Generate storage key for a monthly notebook
- * 
+ *
  * @param {number} year - Four-digit year
  * @param {number} month - Month number 1-12
  * @returns {string} Storage key
@@ -216,7 +216,7 @@ function getNotebookStorageKey(year, month) {
 /**
  * Get a monthly notebook from storage
  * Returns null if notebook doesn't exist
- * 
+ *
  * @param {number} year - Four-digit year
  * @param {number} month - Month number 1-12
  * @returns {Object|null} Monthly notebook or null if not found
@@ -241,7 +241,7 @@ function getMonthlyNotebook(year, month) {
     }
 
     const notebook = JSON.parse(data);
-    
+
     // Basic validation
     if (!notebook.year || !notebook.month || !Array.isArray(notebook.days)) {
       console.error("getMonthlyNotebook: invalid notebook structure");
@@ -259,7 +259,7 @@ function getMonthlyNotebook(year, month) {
  * Create a new monthly notebook
  * Uses the structure from monthlyNotebook.js
  * Returns the created notebook
- * 
+ *
  * @param {number} year - Four-digit year
  * @param {number} month - Month number 1-12
  * @returns {Object|null} Created notebook or null on error
@@ -297,7 +297,7 @@ function createMonthlyNotebook(year, month) {
         date: isoDate,
         domainSignals: {},
         manualOutcome: null,
-        reflectionNote: ""
+        reflectionNote: "",
       });
     }
 
@@ -307,7 +307,7 @@ function createMonthlyNotebook(year, month) {
       month,
       days,
       _created: new Date().toISOString(),
-      _version: "1.0"
+      _version: "1.0",
     };
 
     // Save to storage
@@ -321,7 +321,7 @@ function createMonthlyNotebook(year, month) {
 
 /**
  * Update a specific day entry in a monthly notebook
- * 
+ *
  * @param {number} year - Four-digit year
  * @param {number} month - Month number 1-12
  * @param {number} dayIndex - Day index (0-based, 0 = first day of month)
@@ -348,16 +348,16 @@ function updateDayEntry(year, month, dayIndex, data) {
 
     // Update day entry (merge with existing data)
     const day = notebook.days[dayIndex];
-    
+
     if (data.domainSignals !== undefined) {
       // Merge domain signals (preserve existing, add new)
       day.domainSignals = { ...day.domainSignals, ...data.domainSignals };
     }
-    
+
     if (data.manualOutcome !== undefined) {
       day.manualOutcome = data.manualOutcome;
     }
-    
+
     if (data.reflectionNote !== undefined) {
       day.reflectionNote = data.reflectionNote;
     }
@@ -373,7 +373,7 @@ function updateDayEntry(year, month, dayIndex, data) {
 /**
  * Save a monthly notebook to storage
  * Overwrites existing notebook with same year/month
- * 
+ *
  * @param {Object} notebook - Monthly notebook object
  * @returns {boolean} Success status
  */
@@ -395,10 +395,10 @@ function saveMonthlyNotebook(notebook) {
     }
 
     const storageKey = getNotebookStorageKey(notebook.year, notebook.month);
-    
+
     // Add last modified timestamp
     notebook._lastModified = new Date().toISOString();
-    
+
     localStorage.setItem(storageKey, JSON.stringify(notebook));
     return true;
   } catch (error) {
@@ -410,7 +410,7 @@ function saveMonthlyNotebook(notebook) {
 /**
  * Get all monthly notebooks from storage
  * Useful for export/backup operations
- * 
+ *
  * @returns {Array} Array of notebook objects
  */
 function getAllMonthlyNotebooks() {
@@ -449,7 +449,7 @@ function getAllMonthlyNotebooks() {
 
 /**
  * Delete a monthly notebook from storage
- * 
+ *
  * @param {number} year - Four-digit year
  * @param {number} month - Month number 1-12
  * @returns {boolean} Success status
