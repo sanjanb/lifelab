@@ -82,7 +82,7 @@ function aggregateDomainToNotebook(domainId, year, month) {
       // Mark presence: true if domain has entries on this date, false otherwise
       // This is the ONLY field modified during sync
       day.domainSignals[domainId] = entriesByDate.has(dateKey);
-      
+
       // NEVER touch these fields during sync:
       // - day.manualOutcome (user's manual judgment)
       // - day.reflectionNote (user's personal notes)
@@ -238,6 +238,9 @@ function getMonthlyDomainActivity(year, month) {
  *
  * Convenience function to sync all domains for the current calendar month.
  * Intended to be called when the user views the monthly notebook.
+ * 
+ * NON-DESTRUCTIVE: Only updates domain presence signals.
+ * Preserves all manual outcomes and reflection notes.
  *
  * @returns {boolean} Success status
  */
@@ -249,6 +252,148 @@ function syncCurrentMonth() {
   return aggregateAllDomainsToNotebook(year, month);
 }
 
+/**
+ * Perform non-destructive sync for a specific month
+ * 
+ * This is the main sync entry point that should be called when:
+ * - User opens the monthly notebook view
+ * - User adds/deletes domain entries
+ * - User manually triggers a refresh
+ * 
+ * GUARANTEES:
+ * 1. Reads all domain entries for the specified month
+ * 2. Updates domainSignals to reflect current entry presence
+ * 3. NEVER overwrites manualOutcome (user's win/neutral/loss judgment)
+ * 4. NEVER overwrites reflectionNote (user's personal notes)
+ * 5. Creates notebook if it doesn't exist yet
+ * 
+ * @param {number} year - Four-digit year
+ * @param {number} month - Month number 1-12
+ * @returns {Object} Sync result with status and details
+ */
+function performNonDestructiveSync(year, month) {
+  try {
+    console.log(`Starting non-destructive sync for ${year}-${month}`);
+    
+    // Ensure notebook exists before syncing
+    let notebook = getMonthlyNotebook(year, month);
+    const wasCreated = !notebook;
+    
+    if (!notebook) {
+      notebook = createMonthlyNotebook(year, month);
+      if (!notebook) {
+        return {
+          success: false,
+          error: "Failed to create monthly notebook"
+        };
+      }
+    }
+
+    // Get all configured domains
+    if (typeof getAllDomains !== 'function') {
+      return {
+        success: false,
+        error: "Config not loaded - cannot access domains"
+      };
+    }
+
+    const domains = getAllDomains();
+    const syncResults = [];
+
+    // Sync each domain
+    domains.forEach(domain => {
+      const success = aggregateDomainToNotebook(domain.id, year, month);
+      syncResults.push({
+        domainId: domain.id,
+        success: success
+      });
+    });
+
+    // Count successes and failures
+    const successCount = syncResults.filter(r => r.success).length;
+    const failCount = syncResults.filter(r => !r.success).length;
+
+    console.log(`Sync complete: ${successCount} domains synced, ${failCount} failed`);
+
+    return {
+      success: failCount === 0,
+      wasCreated: wasCreated,
+      domainsProcessed: domains.length,
+      successCount: successCount,
+      failCount: failCount,
+      details: syncResults
+    };
+  } catch (error) {
+    console.error("performNonDestructiveSync error:", error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+
+/**
+ * Verify sync integrity (debugging/validation tool)
+ * 
+ * Checks that manual fields were preserved during sync.
+ * Useful for testing and validation.
+ * 
+ * @param {Object} notebookBefore - Notebook state before sync
+ * @param {Object} notebookAfter - Notebook state after sync
+ * @returns {Object} Validation result
+ */
+function verifySyncIntegrity(notebookBefore, notebookAfter) {
+  const issues = [];
+
+  if (!notebookBefore || !notebookAfter) {
+    return {
+      valid: false,
+      error: "Missing notebook data"
+    };
+  }
+
+  // Check each day for manual field preservation
+  notebookBefore.days.forEach((dayBefore, index) => {
+    const dayAfter = notebookAfter.days[index];
+
+    if (!dayAfter) {
+      issues.push({
+        day: index + 1,
+        issue: "Day missing after sync"
+      });
+      return;
+    }
+
+    // Verify manualOutcome was not changed
+    if (dayBefore.manualOutcome !== dayAfter.manualOutcome) {
+      issues.push({
+        day: index + 1,
+        field: "manualOutcome",
+        before: dayBefore.manualOutcome,
+        after: dayAfter.manualOutcome,
+        issue: "CRITICAL: Manual outcome was overwritten"
+      });
+    }
+
+    // Verify reflectionNote was not changed
+    if (dayBefore.reflectionNote !== dayAfter.reflectionNote) {
+      issues.push({
+        day: index + 1,
+        field: "reflectionNote",
+        before: dayBefore.reflectionNote,
+        after: dayAfter.reflectionNote,
+        issue: "CRITICAL: Reflection note was overwritten"
+      });
+    }
+  });
+
+  return {
+    valid: issues.length === 0,
+    issueCount: issues.length,
+    issues: issues
+  };
+}
+
 // Export for use in other modules
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
@@ -257,5 +402,7 @@ if (typeof module !== "undefined" && module.exports) {
     getDomainPresenceForDay,
     getMonthlyDomainActivity,
     syncCurrentMonth,
+    performNonDestructiveSync,
+    verifySyncIntegrity,
   };
 }
