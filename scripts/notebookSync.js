@@ -1,29 +1,29 @@
 /**
  * Notebook Sync - Domain Entry Aggregation
- * 
+ *
  * DESIGN PRINCIPLES:
- * 
+ *
  * 1. Domains feed signals into notebooks, but don't own them.
  *    The notebook is the source of truth for monthly structure.
- * 
+ *
  * 2. Aggregation is always boolean presence, never counts or scores.
  *    "Did something happen in this domain on this day?" → true/false
- * 
+ *
  * 3. Original domain data is never mutated.
  *    This is a pure read operation from domains, write to notebook.
- * 
+ *
  * 4. Works for any domain without domain-specific logic.
  *    Generic algorithm based on entry timestamps.
- * 
+ *
  * 5. No UI dependencies. Pure data transformation.
  */
 
 /**
  * Aggregate domain entries into a monthly notebook
- * 
+ *
  * Reads all entries from a domain and marks presence for each day.
  * If a domain has one or more entries on a given date, that day is marked true.
- * 
+ *
  * @param {string} domainId - The domain identifier
  * @param {number} year - Four-digit year
  * @param {number} month - Month number 1-12
@@ -38,7 +38,9 @@ function aggregateDomainToNotebook(domainId, year, month) {
     }
 
     if (!Number.isInteger(year) || !Number.isInteger(month)) {
-      console.error("aggregateDomainToNotebook: year and month must be integers");
+      console.error(
+        "aggregateDomainToNotebook: year and month must be integers"
+      );
       return false;
     }
 
@@ -57,7 +59,7 @@ function aggregateDomainToNotebook(domainId, year, month) {
 
     if (!entries || entries.length === 0) {
       // No entries means no presence - clear any existing signals for this domain
-      notebook.days.forEach(day => {
+      notebook.days.forEach((day) => {
         day.domainSignals[domainId] = false;
       });
       return saveMonthlyNotebook(notebook);
@@ -69,7 +71,7 @@ function aggregateDomainToNotebook(domainId, year, month) {
     // Update notebook with presence signals
     notebook.days.forEach((day, index) => {
       const dateKey = day.date; // ISO format YYYY-MM-DD
-      
+
       // Mark presence: true if domain has entries on this date, false otherwise
       day.domainSignals[domainId] = entriesByDate.has(dateKey);
     });
@@ -84,10 +86,10 @@ function aggregateDomainToNotebook(domainId, year, month) {
 
 /**
  * Map domain entries to dates for a specific month
- * 
+ *
  * Returns a Set of ISO date strings (YYYY-MM-DD) that have entries.
  * Only includes dates within the specified year/month.
- * 
+ *
  * @param {Array} entries - Array of domain entries
  * @param {number} year - Four-digit year
  * @param {number} month - Month number 1-12
@@ -100,16 +102,16 @@ function mapEntriesToDates(entries, year, month) {
   const monthStart = new Date(year, month - 1, 1).getTime();
   const monthEnd = new Date(year, month, 0, 23, 59, 59, 999).getTime();
 
-  entries.forEach(entry => {
+  entries.forEach((entry) => {
     // Validate entry has timestamp
-    if (!entry.timestamp || typeof entry.timestamp !== 'number') {
+    if (!entry.timestamp || typeof entry.timestamp !== "number") {
       return;
     }
 
     // Only include entries within this month
     if (entry.timestamp >= monthStart && entry.timestamp <= monthEnd) {
       const date = new Date(entry.timestamp);
-      const isoDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
+      const isoDate = date.toISOString().split("T")[0]; // YYYY-MM-DD
       dateSet.add(isoDate);
     }
   });
@@ -119,10 +121,10 @@ function mapEntriesToDates(entries, year, month) {
 
 /**
  * Aggregate all domains into a monthly notebook
- * 
+ *
  * Convenience function that syncs all configured domains at once.
  * Useful for bulk sync operations.
- * 
+ *
  * @param {number} year - Four-digit year
  * @param {number} month - Month number 1-12
  * @returns {boolean} Success status (true if all domains synced)
@@ -130,7 +132,7 @@ function mapEntriesToDates(entries, year, month) {
 function aggregateAllDomainsToNotebook(year, month) {
   try {
     // Get all domains from config
-    if (typeof getAllDomains !== 'function') {
+    if (typeof getAllDomains !== "function") {
       console.error("aggregateAllDomainsToNotebook: config.js not loaded");
       return false;
     }
@@ -143,7 +145,7 @@ function aggregateAllDomainsToNotebook(year, month) {
 
     // Aggregate each domain
     let allSuccess = true;
-    domains.forEach(domain => {
+    domains.forEach((domain) => {
       const success = aggregateDomainToNotebook(domain.id, year, month);
       if (!success) {
         console.warn(`Failed to aggregate domain: ${domain.id}`);
@@ -160,10 +162,10 @@ function aggregateAllDomainsToNotebook(year, month) {
 
 /**
  * Get domain presence summary for a specific day
- * 
+ *
  * Returns an object showing which domains were active on a given day.
  * Useful for UI display and analysis.
- * 
+ *
  * @param {number} year - Four-digit year
  * @param {number} month - Month number 1-12
  * @param {number} dayNum - Day of month (1-31)
@@ -192,10 +194,10 @@ function getDomainPresenceForDay(year, month, dayNum) {
 
 /**
  * Get active domain count for each day in a month
- * 
+ *
  * Returns an array where each element is the count of active domains for that day.
  * Useful for visualizing consistency across the month.
- * 
+ *
  * @param {number} year - Four-digit year
  * @param {number} month - Month number 1-12
  * @returns {Array|null} Array of domain counts per day, or null on error
@@ -207,9 +209,11 @@ function getMonthlyDomainActivity(year, month) {
       return null;
     }
 
-    return notebook.days.map(day => {
+    return notebook.days.map((day) => {
       // Count domains that are present (true)
-      return Object.values(day.domainSignals).filter(present => present === true).length;
+      return Object.values(day.domainSignals).filter(
+        (present) => present === true
+      ).length;
     });
   } catch (error) {
     console.error("getMonthlyDomainActivity error:", error);
@@ -219,17 +223,17 @@ function getMonthlyDomainActivity(year, month) {
 
 /**
  * Sync current month automatically
- * 
+ *
  * Convenience function to sync all domains for the current calendar month.
  * Intended to be called when the user views the monthly notebook.
- * 
+ *
  * @returns {boolean} Success status
  */
 function syncCurrentMonth() {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth() + 1; // JavaScript months are 0-based
-  
+
   return aggregateAllDomainsToNotebook(year, month);
 }
 
