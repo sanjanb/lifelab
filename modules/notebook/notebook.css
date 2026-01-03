@@ -655,6 +655,61 @@
   color: #aaa;
 }
 
+/* Day Quality Selector */
+.day-quality-selector {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.day-quality-label {
+  font-size: 0.8rem;
+  color: #777;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-weight: 500;
+}
+
+.quality-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.quality-button {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.quality-button:hover {
+  border-color: #bbb;
+  background: #fff;
+}
+
+.quality-button.selected {
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+
+.quality-button[data-quality="low"].selected {
+  background: #ef5350;
+}
+
+.quality-button[data-quality="medium"].selected {
+  background: #ffa726;
+}
+
+.quality-button[data-quality="high"].selected {
+  background: #66bb6a;
+}
+
 .day-active-domains {
   margin-top: 0.5rem;
   font-size: 0.8rem;
