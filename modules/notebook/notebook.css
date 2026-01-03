@@ -1,0 +1,299 @@
+/**
+ * Monthly Notebook Styles
+ * 
+ * Design goal: Feel like a paper notebook, not a spreadsheet
+ * Visual language: Minimal, clean, human-scale
+ */
+
+.notebook-view {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.notebook-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.notebook-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 0.5rem;
+}
+
+.notebook-subtitle {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* Trend Graph */
+.trend-graph {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.trend-graph-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trend-marks {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 60px;
+}
+
+.trend-mark {
+  flex: 1;
+  background: #e0e0e0;
+  border-radius: 2px 2px 0 0;
+  min-width: 8px;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.trend-mark:hover {
+  background: #bbb;
+}
+
+.trend-mark[data-count="0"] {
+  height: 2px;
+  background: #f0f0f0;
+}
+
+.trend-mark[data-count="1"] {
+  height: 25%;
+  background: #d4e4f7;
+}
+
+.trend-mark[data-count="2"] {
+  height: 50%;
+  background: #a8c9ed;
+}
+
+.trend-mark[data-count="3"] {
+  height: 75%;
+  background: #7caee3;
+}
+
+.trend-mark[data-count="4"],
+.trend-mark[data-count="5"],
+.trend-mark[data-count="6"] {
+  height: 100%;
+  background: #5093d9;
+}
+
+/* Daily Entries */
+.daily-entries {
+  margin-bottom: 2rem;
+}
+
+.daily-entry {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.daily-entry:hover {
+  border-color: #ddd;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.entry-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.entry-date {
+  min-width: 100px;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.entry-date-day {
+  font-size: 0.75rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-top: 2px;
+}
+
+.domain-indicators {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  align-items: center;
+}
+
+.domain-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  transition: background 0.2s, transform 0.2s;
+  position: relative;
+}
+
+.domain-indicator.active {
+  background: #5093d9;
+  transform: scale(1.2);
+}
+
+.domain-indicator:hover::after {
+  content: attr(data-domain);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  margin-bottom: 4px;
+  z-index: 10;
+}
+
+.outcome-selector {
+  display: flex;
+  gap: 6px;
+}
+
+.outcome-button {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #ddd;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.outcome-button:hover {
+  border-color: #bbb;
+  transform: translateY(-1px);
+}
+
+.outcome-button.selected {
+  border-color: transparent;
+  transform: translateY(-1px);
+}
+
+.outcome-button[data-outcome="win"] {
+  color: #888;
+}
+
+.outcome-button[data-outcome="win"].selected {
+  background: #4caf50;
+  color: #fff;
+}
+
+.outcome-button[data-outcome="neutral"] {
+  color: #888;
+}
+
+.outcome-button[data-outcome="neutral"].selected {
+  background: #9e9e9e;
+  color: #fff;
+}
+
+.outcome-button[data-outcome="loss"] {
+  color: #888;
+}
+
+.outcome-button[data-outcome="loss"].selected {
+  background: #f44336;
+  color: #fff;
+}
+
+/* Monthly Reflection */
+.monthly-reflection {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1.5rem;
+}
+
+.reflection-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.reflection-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.reflection-textarea:focus {
+  outline: none;
+  border-color: #5093d9;
+}
+
+.reflection-textarea::placeholder {
+  color: #aaa;
+}
+
+/* Sync Status */
+.sync-status {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.sync-status.syncing {
+  color: #5093d9;
+}
+
+.sync-status.error {
+  color: #f44336;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #888;
+}
+
+.empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-message {
+  font-size: 0.95rem;
+}
