@@ -79,11 +79,16 @@ function renderNotebookView(container, notebook) {
     month: "long",
     year: "numeric",
   });
+  
+  const isClosed = notebook._closed === true;
+  const closedIndicator = isClosed 
+    ? '<span class="closed-badge">🔒 Closed</span>' 
+    : '';
 
   container.innerHTML = `
-    <div class="notebook-view">
+    <div class="notebook-view ${isClosed ? 'notebook-closed' : ''}">
       <div class="notebook-header">
-        <h2 class="notebook-title">${monthName}</h2>
+        <h2 class="notebook-title">${monthName} ${closedIndicator}</h2>
         <p class="notebook-subtitle">Monthly Notebook</p>
         <div class="header-actions">
           <button class="action-button" id="import-notebooks-button" title="Import monthly notebooks from JSON">
@@ -92,6 +97,11 @@ function renderNotebookView(container, notebook) {
           <button class="action-button primary" id="export-notebooks-button" title="Export all monthly notebooks to JSON">
             Export Data
           </button>
+          ${!isClosed ? `
+            <button class="action-button warning" id="close-month-button" title="Close this month (makes it read-only)">
+              Close Month
+            </button>
+          ` : ''}
         </div>
       </div>
       
@@ -113,6 +123,7 @@ function renderNotebookView(container, notebook) {
   // Attach button listeners
   attachExportListener();
   attachImportListener();
+  attachCloseMonthListener(notebook);
 }
 
 /**
@@ -230,6 +241,10 @@ function analyzeDomainParticipation(notebook, domainId) {
 
   const totalActiveDays = activeDays.length;
 
+  // Get domain configuration for trait-aware phrasing
+  const domain = getAllDomains().find(d => d.id === domainId);
+  const traits = domain?.analysistraits || {};
+
   if (totalActiveDays === 0) {
     return {
       totalActiveDays: 0,
@@ -269,7 +284,7 @@ function analyzeDomainParticipation(notebook, domainId) {
   const longestStreak = streaks.length > 0 ? Math.max(...streaks) : 1;
   const longestGap = gaps.length > 0 ? Math.max(...gaps) : 0;
 
-  // Detect patterns
+  // Detect patterns with trait-aware language
   let pattern = null;
   let observation = "";
 
@@ -289,20 +304,35 @@ function analyzeDomainParticipation(notebook, domainId) {
     // High density in limited span = clustered
     if (firstDay <= 10) {
       pattern = "clustered-early";
-      observation = "Activity clustered early in month.";
+      observation = traits.naturallyCyclical
+        ? "Activity concentrated early in month (natural cycle)."
+        : "Activity clustered early in month.";
     } else if (lastDay >= notebook.days.length - 10) {
       pattern = "clustered-late";
-      observation = "Activity clustered late in month.";
+      observation = traits.naturallyCyclical
+        ? "Activity concentrated late in month (natural cycle)."
+        : "Activity clustered late in month.";
     } else {
       pattern = "clustered-mid";
-      observation = "Activity clustered mid-month.";
+      observation = traits.naturallyCyclical
+        ? "Activity concentrated mid-month (natural cycle)."
+        : "Activity clustered mid-month.";
     }
   } else if (totalActiveDays <= 3) {
     pattern = "sporadic";
-    observation = `Sporadic activity (${totalActiveDays} days).`;
+    observation = traits.naturallyCyclical
+      ? `Light activity month (${totalActiveDays} days).`
+      : `Sporadic activity (${totalActiveDays} days).`;
   } else if (longestGap >= 7) {
     pattern = "intermittent";
-    observation = `Intermittent activity with ${longestGap}-day gap.`;
+    // For cyclical domains, don't frame gaps negatively
+    if (traits.naturallyCyclical) {
+      observation = `Active across ${totalActiveDays} days with natural pauses.`;
+    } else if (traits.isEnergySensitive) {
+      observation = `Active ${totalActiveDays} days with ${longestGap}-day pause.`;
+    } else {
+      observation = `Intermittent activity with ${longestGap}-day gap.`;
+    }
   } else {
     pattern = "regular";
     observation = `Regular activity across ${totalActiveDays} days.`;
@@ -451,6 +481,7 @@ function renderDailyEntries(notebook) {
   if (!container) return;
 
   const domains = getAllDomains();
+  const isClosed = notebook._closed === true;
 
   const entriesHtml = notebook.days
     .map((day, index) => {
@@ -498,19 +529,22 @@ function renderDailyEntries(notebook) {
             }" 
                     data-intent="active" 
                     data-day-index="${index}"
-                    title="Active day">◉</button>
+                    title="Active day"
+                    ${isClosed ? 'disabled' : ''}>◉</button>
             <button class="intent-button ${
               day.dayIntent === "rest" ? "selected" : ""
             }" 
                     data-intent="rest" 
                     data-day-index="${index}"
-                    title="Rest day">◐</button>
+                    title="Rest day"
+                    ${isClosed ? 'disabled' : ''}>◐</button>
             <button class="intent-button ${
               day.dayIntent === "offline" ? "selected" : ""
             }" 
                     data-intent="offline" 
                     data-day-index="${index}"
-                    title="Offline/unplugged">◯</button>
+                    title="Offline/unplugged"
+                    ${isClosed ? 'disabled' : ''}>◯</button>
           </div>
           
           <div class="outcome-selector" onclick="event.stopPropagation()">
@@ -519,49 +553,56 @@ function renderDailyEntries(notebook) {
             }" 
                     data-outcome="win" 
                     data-day-index="${index}"
-                    title="Win">✓</button>
+                    title="Win"
+                    ${isClosed ? 'disabled' : ''}>✓</button>
             <button class="outcome-button ${
               day.manualOutcome === "neutral" ? "selected" : ""
             }" 
                     data-outcome="neutral" 
                     data-day-index="${index}"
-                    title="Neutral">−</button>
+                    title="Neutral"
+                    ${isClosed ? 'disabled' : ''}>−</button>
             <button class="outcome-button ${
               day.manualOutcome === "loss" ? "selected" : ""
             }" 
                     data-outcome="loss" 
                     data-day-index="${index}"
-                    title="Loss">✗</button>
+                    title="Loss"
+                    ${isClosed ? 'disabled' : ''}>✗</button>
           </div>
         </div>
         
         <div class="day-reflection">
-          <label class="day-reflection-label">Day Note</label>
+          <label class="day-reflection-label">Day Note ${isClosed ? '(Read-only)' : ''}</label>
           <textarea 
             class="day-reflection-input" 
             data-day-index="${index}"
-            placeholder="What happened today?">${
+            placeholder="What happened today?"
+            ${isClosed ? 'readonly' : ''}>${
               day.reflectionNote || ""
             }</textarea>
           
           <div class="day-quality-selector">
-            <label class="day-quality-label">Quality (optional):</label>
+            <label class="day-quality-label">Quality ${isClosed ? '(Read-only)' : ''}:</label>
             <div class="quality-buttons">
               <button class="quality-button ${
                 day.dayQuality === "low" ? "selected" : ""
               }" 
                       data-quality="low" 
-                      data-day-index="${index}">Low</button>
+                      data-day-index="${index}"
+                      ${isClosed ? 'disabled' : ''}>Low</button>
               <button class="quality-button ${
                 day.dayQuality === "medium" ? "selected" : ""
               }" 
                       data-quality="medium" 
-                      data-day-index="${index}">Medium</button>
+                      data-day-index="${index}"
+                      ${isClosed ? 'disabled' : ''}>Medium</button>
               <button class="quality-button ${
                 day.dayQuality === "high" ? "selected" : ""
               }" 
                       data-quality="high" 
-                      data-day-index="${index}">High</button>
+                      data-day-index="${index}"
+                      ${isClosed ? 'disabled' : ''}>High</button>
             </div>
           </div>
           
@@ -576,11 +617,13 @@ function renderDailyEntries(notebook) {
 
   container.innerHTML = `<div class="daily-entries">${entriesHtml}</div>`;
 
-  // Attach event listeners
-  attachOutcomeListeners(notebook);
-  attachIntentListeners(notebook);
-  attachQualityListeners(notebook);
-  attachReflectionListeners(notebook);
+  // Attach event listeners (only if not closed)
+  if (!isClosed) {
+    attachOutcomeListeners(notebook);
+    attachIntentListeners(notebook);
+    attachQualityListeners(notebook);
+    attachReflectionListeners(notebook);
+  }
   attachExpandListeners();
 }
 
@@ -771,7 +814,42 @@ function attachExpandListeners() {
 }
 
 /**
- * Render monthly reflection section
+ * Get monthly sentence starter based on month
+ * Rotates through different prompts to encourage reflection
+ * 
+ * @param {number} month - Month number (1-12)
+ * @returns {string} Sentence starter
+ */
+function getMonthlyReflectionStarter(month) {
+  const starters = [
+    "This month felt like...",                    // Jan
+    "I underestimated...",                        // Feb
+    "What surprised me was...",                   // Mar
+    "The hardest part was...",                    // Apr
+    "I'm noticing a pattern where...",            // May
+    "This month taught me...",                    // Jun
+    "I wasn't expecting...",                      // Jul
+    "The biggest shift was...",                   // Aug
+    "Looking back, I see...",                     // Sep
+    "What became clear this month...",            // Oct
+    "I'm learning that...",                       // Nov
+    "By the end of this month...",                // Dec
+  ];
+  
+  return starters[month - 1] || starters[0];
+}
+
+/**
+ * Check if monthly reflection is complete
+ * @param {Object} notebook - Monthly notebook data
+ * @returns {boolean} True if reflection exists and is not empty
+ */
+function hasMonthlyReflection(notebook) {
+  return notebook.monthlyReflection && notebook.monthlyReflection.trim().length > 0;
+}
+
+/**
+ * Render monthly reflection section with sentence starter
  *
  * @param {Object} notebook - Monthly notebook data
  */
@@ -781,29 +859,50 @@ function renderMonthlyReflection(notebook) {
 
   // Monthly reflection is stored on the notebook object itself, not in days
   const reflection = notebook.monthlyReflection || "";
+  const starter = getMonthlyReflectionStarter(notebook.month);
+  const hasReflection = hasMonthlyReflection(notebook);
+  const isClosed = notebook._closed === true;
+  
+  // Show gentle reminder if reflection is missing (not blocking, just visible)
+  const reminderClass = hasReflection ? '' : 'reflection-reminder-visible';
 
   container.innerHTML = `
-    <div class="monthly-reflection">
-      <div class="reflection-title">Monthly Reflection</div>
+    <div class="monthly-reflection ${reminderClass} ${isClosed ? 'read-only' : ''}">
+      <div class="reflection-title">Monthly Reflection ${isClosed ? '(Read-only)' : ''}</div>
+      <div class="reflection-starter">${starter}</div>
       <textarea 
         class="reflection-textarea" 
         id="monthly-reflection-input"
-        placeholder="What did you learn this month? What patterns do you notice?">${reflection}</textarea>
+        placeholder="Complete the thought above (one sentence encouraged)"
+        maxlength="500"
+        ${isClosed ? 'readonly' : ''}>${reflection}</textarea>
+      <div class="reflection-hint ${!hasReflection ? 'reflection-missing' : ''}">
+        ${!hasReflection && !isClosed
+          ? '⚠ Reflection helps close the month intentionally' 
+          : isClosed
+          ? 'Month closed - reflection preserved'
+          : 'Reflection saved'}
+      </div>
     </div>
   `;
 
-  // Attach save listener (debounced)
-  const textarea = document.getElementById("monthly-reflection-input");
-  let saveTimeout;
+  // Attach save listener only if not closed
+  if (!isClosed) {
+    const textarea = document.getElementById("monthly-reflection-input");
+    let saveTimeout;
 
-  textarea.addEventListener("input", (e) => {
-    clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => {
-      // Save reflection to notebook
-      notebook.monthlyReflection = e.target.value;
-      saveMonthlyNotebook(notebook);
-    }, 1000); // Save 1 second after user stops typing
-  });
+    textarea.addEventListener("input", (e) => {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(() => {
+        // Save reflection to notebook
+        notebook.monthlyReflection = e.target.value;
+        saveMonthlyNotebook(notebook);
+        
+        // Re-render to update reminder visibility
+        renderMonthlyReflection(notebook);
+      }, 1000); // Save 1 second after user stops typing
+    });
+  }
 }
 
 /**
@@ -1211,6 +1310,52 @@ function attachImportListener() {
 
     // Trigger file selection
     fileInput.click();
+  });
+}
+
+/**
+ * Attach event listener for close month button
+ * Closes the month and makes it read-only
+ * 
+ * @param {Object} notebook - Monthly notebook data
+ */
+function attachCloseMonthListener(notebook) {
+  const closeButton = document.getElementById('close-month-button');
+  if (!closeButton) return;
+
+  closeButton.addEventListener('click', () => {
+    // Check if reflection is complete
+    const hasReflection = notebook.monthlyReflection && notebook.monthlyReflection.trim().length > 0;
+    
+    if (!hasReflection) {
+      const proceed = confirm(
+        'No monthly reflection found.\n\n' +
+        'Reflection helps close the month intentionally.\n\n' +
+        'Close anyway?'
+      );
+      
+      if (!proceed) return;
+    }
+    
+    // Final confirmation
+    const confirmed = confirm(
+      `Close ${new Date(notebook.year, notebook.month - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}?\n\n` +
+      'This will make all daily outcomes, quality, intent, and notes read-only.\n\n' +
+      'This action preserves truth and cannot be undone.'
+    );
+    
+    if (!confirmed) return;
+    
+    // Close the month
+    const success = closeMonthlyNotebook(notebook.year, notebook.month);
+    
+    if (success) {
+      // Refresh the view to show closed state
+      initializeMonthlyNotebook(notebook.year, notebook.month);
+      alert('Month closed successfully. All entries are now read-only.');
+    } else {
+      alert('Failed to close month. Please try again.');
+    }
   });
 }
 

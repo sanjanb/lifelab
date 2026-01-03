@@ -68,6 +68,9 @@ function createMonthlyNotebook(year, month) {
     // Metadata for future-proofing
     _created: new Date().toISOString(),
     _version: "1.0",
+    // Month closure state (truth lock)
+    _closed: false,
+    _closedDate: null,
   };
 }
 

@@ -28,7 +28,7 @@
  * - Storage structure
  * - Logging behavior
  * - Calculations or aggregations
- * 
+ *
  * They ONLY affect:
  * - Language used in insights
  * - How patterns are described to the user
@@ -41,9 +41,9 @@ const DOMAINS = [
     description: "Track daily habits and build streaks",
     storageKey: "lifelab_habits",
     analysistraits: {
-      expectsContinuity: true,    // Habits benefit from consistency
-      naturallyCyclical: false,   // Not cyclical by nature
-      isEnergySensitive: false,   // Should persist regardless of energy
+      expectsContinuity: true, // Habits benefit from consistency
+      naturallyCyclical: false, // Not cyclical by nature
+      isEnergySensitive: false, // Should persist regardless of energy
     },
   },
   {
@@ -52,9 +52,9 @@ const DOMAINS = [
     description: "Manage learning goals, courses, and skill development",
     storageKey: "lifelab_learning",
     analysistraits: {
-      expectsContinuity: false,   // Learning can be project-based, not daily
-      naturallyCyclical: false,   // Not cyclical
-      isEnergySensitive: true,    // Requires mental energy and focus
+      expectsContinuity: false, // Learning can be project-based, not daily
+      naturallyCyclical: false, // Not cyclical
+      isEnergySensitive: true, // Requires mental energy and focus
     },
   },
   {
@@ -63,9 +63,9 @@ const DOMAINS = [
     description: "Track career goals, projects, and professional growth",
     storageKey: "lifelab_career",
     analysistraits: {
-      expectsContinuity: false,   // Career work can be sporadic/project-based
-      naturallyCyclical: true,    // May have busy and quiet periods
-      isEnergySensitive: true,    // Requires mental/emotional energy
+      expectsContinuity: false, // Career work can be sporadic/project-based
+      naturallyCyclical: true, // May have busy and quiet periods
+      isEnergySensitive: true, // Requires mental/emotional energy
     },
   },
   {
@@ -74,9 +74,9 @@ const DOMAINS = [
     description: "Monitor fitness, nutrition, and wellness metrics",
     storageKey: "lifelab_health",
     analysistraits: {
-      expectsContinuity: true,    // Health benefits from regular attention
-      naturallyCyclical: false,   // Not naturally cyclical
-      isEnergySensitive: false,   // Should persist even when low energy
+      expectsContinuity: true, // Health benefits from regular attention
+      naturallyCyclical: false, // Not naturally cyclical
+      isEnergySensitive: false, // Should persist even when low energy
     },
   },
 ];

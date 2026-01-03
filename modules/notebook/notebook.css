@@ -65,8 +65,43 @@
   color: #fff;
 }
 
+.action-button.warning {
+  border-color: #ff9800;
+  color: #ff9800;
+}
+
+.action-button.warning:hover:not(:disabled) {
+  background: #ff9800;
+  color: #fff;
+}
+
 .action-button:disabled {
   opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.closed-badge {
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: 500;
+  margin-left: 0.5rem;
+}
+
+.notebook-closed .notebook-header {
+  background: #fafafa;
+  border-color: #ddd;
+}
+
+.notebook-closed .outcome-button:disabled,
+.notebook-closed .intent-button:disabled,
+.notebook-closed .quality-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.notebook-closed .reflection-textarea[readonly],
+.notebook-closed .day-reflection-input[readonly] {
+  background: #f9f9f9;
   cursor: not-allowed;
 }
 
@@ -731,12 +766,24 @@
   font-size: 1rem;
   font-weight: 600;
   color: #333;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.reflection-starter {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #5093d9;
+  font-style: italic;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: #f5f9ff;
+  border-left: 3px solid #5093d9;
+  border-radius: 4px;
 }
 
 .reflection-textarea {
   width: 100%;
-  min-height: 120px;
+  min-height: 100px;
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -754,6 +801,23 @@
 
 .reflection-textarea::placeholder {
   color: #aaa;
+}
+
+.reflection-hint {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #888;
+  font-style: italic;
+}
+
+.reflection-hint.reflection-missing {
+  color: #ff9800;
+  font-weight: 500;
+}
+
+.monthly-reflection.reflection-reminder-visible {
+  border-color: #ff9800;
+  box-shadow: 0 0 0 1px #ff9800;
 }
 
 /* Sync Status */

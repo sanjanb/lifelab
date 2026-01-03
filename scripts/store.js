@@ -465,6 +465,55 @@ function deleteMonthlyNotebook(year, month) {
   }
 }
 
+/**
+ * Close a monthly notebook (truth lock)
+ * Once closed, daily outcomes, quality, intent, and notes become read-only
+ *
+ * @param {number} year - Four-digit year
+ * @param {number} month - Month number 1-12
+ * @returns {boolean} Success status
+ */
+function closeMonthlyNotebook(year, month) {
+  try {
+    const notebook = getMonthlyNotebook(year, month);
+    if (!notebook) {
+      console.error("Cannot close: notebook not found");
+      return false;
+    }
+
+    if (notebook._closed) {
+      console.warn("Notebook already closed");
+      return true;
+    }
+
+    // Mark as closed with timestamp
+    notebook._closed = true;
+    notebook._closedDate = new Date().toISOString();
+
+    return saveMonthlyNotebook(notebook);
+  } catch (error) {
+    console.error("closeMonthlyNotebook error:", error);
+    return false;
+  }
+}
+
+/**
+ * Check if a monthly notebook is closed
+ *
+ * @param {number} year - Four-digit year
+ * @param {number} month - Month number 1-12
+ * @returns {boolean} True if closed
+ */
+function isNotebookClosed(year, month) {
+  try {
+    const notebook = getMonthlyNotebook(year, month);
+    return notebook ? notebook._closed === true : false;
+  } catch (error) {
+    console.error("isNotebookClosed error:", error);
+    return false;
+  }
+}
+
 // Export for use in other modules
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
@@ -478,5 +527,7 @@ if (typeof module !== "undefined" && module.exports) {
     saveMonthlyNotebook,
     getAllMonthlyNotebooks,
     deleteMonthlyNotebook,
+    closeMonthlyNotebook,
+    isNotebookClosed,
   };
 }
