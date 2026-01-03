@@ -130,7 +130,7 @@ function navigateToDomain(domainId) {
 
   // Check if domain view already exists
   let domainView = document.getElementById(`domain-${domainId}`);
-  
+
   if (!domainView) {
     // Create new domain view using template
     domainView = createDomainViewTemplate(domain);
@@ -178,12 +178,12 @@ function navigateToDashboard() {
 /**
  * Create reusable domain view template
  * Returns a DOM element with the standard domain view structure
- * 
+ *
  * Template structure:
  * - Quick entry section (for adding new entries)
  * - Recent history section (displaying recent entries)
  * - Trend placeholder section (for future analytics/charts)
- * 
+ *
  * @param {Object} domain - Domain configuration object
  * @returns {HTMLElement} Domain view container element
  */
@@ -220,7 +220,8 @@ function createDomainViewTemplate(domain) {
   entryContent.className = "quick-entry-container";
   entryContent.id = `quick-entry-${domain.id}`;
   // Placeholder - domain-specific form will go here
-  entryContent.innerHTML = '<p class="text-muted text-small">Entry form will appear here</p>';
+  entryContent.innerHTML =
+    '<p class="text-muted text-small">Entry form will appear here</p>';
 
   entrySection.appendChild(entryTitle);
   entrySection.appendChild(entryContent);
@@ -237,7 +238,8 @@ function createDomainViewTemplate(domain) {
   historyContent.className = "history-container";
   historyContent.id = `history-${domain.id}`;
   // Placeholder - recent entries will be rendered here
-  historyContent.innerHTML = '<p class="text-muted text-small">No entries yet</p>';
+  historyContent.innerHTML =
+    '<p class="text-muted text-small">No entries yet</p>';
 
   historySection.appendChild(historyTitle);
   historySection.appendChild(historyContent);
