@@ -170,9 +170,7 @@ function renderDailyEntries(notebook) {
         .filter((domain) => day.domainSignals[domain.id] === true)
         .map((domain) => domain.displayName);
       const activeDomainsText =
-        activeDomains.length > 0
-          ? activeDomains.join(", ")
-          : "No activity";
+        activeDomains.length > 0 ? activeDomains.join(", ") : "No activity";
 
       return `
       <div class="daily-entry" data-day-index="${index}">
@@ -214,7 +212,9 @@ function renderDailyEntries(notebook) {
           <textarea 
             class="day-reflection-input" 
             data-day-index="${index}"
-            placeholder="What happened today?">${day.reflectionNote || ""}</textarea>
+            placeholder="What happened today?">${
+              day.reflectionNote || ""
+            }</textarea>
           <div class="day-active-domains">
             <strong>Active:</strong> ${activeDomainsText}
           </div>
@@ -276,18 +276,18 @@ function attachOutcomeListeners(notebook) {
 
 /**
  * Attach event listeners for day reflection notes
- * 
+ *
  * @param {Object} notebook - Monthly notebook data
  */
 function attachReflectionListeners(notebook) {
   const textareas = document.querySelectorAll(".day-reflection-input");
-  
+
   textareas.forEach((textarea) => {
     let saveTimeout;
-    
+
     textarea.addEventListener("input", (e) => {
       const dayIndex = parseInt(textarea.dataset.dayIndex);
-      
+
       // Debounce saves (wait 1 second after user stops typing)
       clearTimeout(saveTimeout);
       saveTimeout = setTimeout(() => {
@@ -314,14 +314,14 @@ function attachReflectionListeners(notebook) {
  */
 function attachExpandListeners() {
   const entryRows = document.querySelectorAll(".entry-row");
-  
+
   entryRows.forEach((row) => {
     row.addEventListener("click", (e) => {
       const dayIndex = row.dataset.dayIndex;
       const entry = document.querySelector(
         `.daily-entry[data-day-index="${dayIndex}"]`
       );
-      
+
       if (entry) {
         entry.classList.toggle("expanded");
       }
