@@ -105,6 +105,15 @@ function createDayEntry(year, month, day) {
     // Purpose: Prevent false narratives about unlogged days later
     // This is ALWAYS user-controlled, NEVER auto-assigned
     dayIntent: "unknown",
+
+    // Daily quality: separate from outcome (win/loss)
+    // Allowed values: "low" | "medium" | "high" | null
+    // Default: null
+    // Purpose: Honest evaluation without numeric scoring
+    // Quality is independent of outcomes - you can have a high-quality loss
+    // This field is NEVER aggregated automatically
+    // Why not numeric: Prevents false precision and scorecard mentality
+    dayQuality: null,
   };
 }
 
