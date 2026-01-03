@@ -88,6 +88,7 @@ function renderNotebookView(container, notebook) {
       </div>
       
       <div id="monthly-overview-container"></div>
+      <div id="domain-participation-container"></div>
       <div id="trend-graph-container"></div>
       <div id="daily-entries-container"></div>
       <div id="monthly-reflection-container"></div>
@@ -96,6 +97,7 @@ function renderNotebookView(container, notebook) {
 
   // Render each section
   renderMonthlyOverview(notebook);
+  renderDomainParticipation(notebook);
   renderTrendGraph(notebook);
   renderDailyEntries(notebook);
   renderMonthlyReflection(notebook);
@@ -191,6 +193,164 @@ function renderMonthlyOverview(notebook) {
             <span class="outcome-count">${outcomes.losses}</span>
           </div>
         </div>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Analyze domain participation patterns
+ * Detects streaks, gaps, and clustering
+ * 
+ * @param {Object} notebook - Monthly notebook data
+ * @param {string} domainId - Domain identifier
+ * @returns {Object} Analysis results
+ */
+function analyzeDomainParticipation(notebook, domainId) {
+  const activeDays = [];
+  
+  // Collect active day numbers
+  notebook.days.forEach((day, index) => {
+    if (day.domainSignals[domainId] === true) {
+      activeDays.push(index + 1); // 1-based day number
+    }
+  });
+
+  const totalActiveDays = activeDays.length;
+  
+  if (totalActiveDays === 0) {
+    return {
+      totalActiveDays: 0,
+      longestStreak: 0,
+      longestGap: 0,
+      pattern: null,
+      observation: "No activity this month."
+    };
+  }
+
+  // Find streaks and gaps
+  const streaks = [];
+  const gaps = [];
+  let currentStreak = 1;
+  
+  for (let i = 1; i < activeDays.length; i++) {
+    const dayDiff = activeDays[i] - activeDays[i - 1];
+    
+    if (dayDiff === 1) {
+      // Consecutive days - part of streak
+      currentStreak++;
+    } else {
+      // Gap found
+      if (currentStreak > 0) {
+        streaks.push(currentStreak);
+      }
+      gaps.push(dayDiff - 1);
+      currentStreak = 1;
+    }
+  }
+  
+  // Add final streak
+  if (currentStreak > 0) {
+    streaks.push(currentStreak);
+  }
+
+  const longestStreak = streaks.length > 0 ? Math.max(...streaks) : 1;
+  const longestGap = gaps.length > 0 ? Math.max(...gaps) : 0;
+
+  // Detect patterns
+  let pattern = null;
+  let observation = "";
+
+  // Clustering detection
+  const firstDay = activeDays[0];
+  const lastDay = activeDays[activeDays.length - 1];
+  const span = lastDay - firstDay + 1;
+  const density = totalActiveDays / span;
+
+  if (totalActiveDays === notebook.days.length) {
+    pattern = "consistent";
+    observation = "Active every day.";
+  } else if (longestStreak >= 7) {
+    pattern = "sustained";
+    observation = `Sustained activity with ${longestStreak}-day streak.`;
+  } else if (density > 0.7 && span < notebook.days.length * 0.5) {
+    // High density in limited span = clustered
+    if (firstDay <= 10) {
+      pattern = "clustered-early";
+      observation = "Activity clustered early in month.";
+    } else if (lastDay >= notebook.days.length - 10) {
+      pattern = "clustered-late";
+      observation = "Activity clustered late in month.";
+    } else {
+      pattern = "clustered-mid";
+      observation = "Activity clustered mid-month.";
+    }
+  } else if (totalActiveDays <= 3) {
+    pattern = "sporadic";
+    observation = `Sporadic activity (${totalActiveDays} days).`;
+  } else if (longestGap >= 7) {
+    pattern = "intermittent";
+    observation = `Intermittent activity with ${longestGap}-day gap.`;
+  } else {
+    pattern = "regular";
+    observation = `Regular activity across ${totalActiveDays} days.`;
+  }
+
+  return {
+    totalActiveDays,
+    longestStreak,
+    longestGap,
+    pattern,
+    observation
+  };
+}
+
+/**
+ * Render domain participation trends
+ * Shows participation patterns as observations, not grades
+ * 
+ * @param {Object} notebook - Monthly notebook data
+ */
+function renderDomainParticipation(notebook) {
+  const container = document.getElementById("domain-participation-container");
+  if (!container) return;
+
+  const domains = getAllDomains();
+  
+  // Analyze each domain
+  const analyses = domains.map(domain => {
+    const analysis = analyzeDomainParticipation(notebook, domain.id);
+    return {
+      domain,
+      ...analysis
+    };
+  });
+
+  // Filter out domains with no activity
+  const activeAnalyses = analyses.filter(a => a.totalActiveDays > 0);
+
+  if (activeAnalyses.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const itemsHtml = activeAnalyses.map(analysis => {
+    return `
+      <div class="participation-item">
+        <div class="participation-header">
+          <span class="participation-domain">${analysis.domain.displayName}</span>
+          <span class="participation-count">${analysis.totalActiveDays} ${analysis.totalActiveDays === 1 ? 'day' : 'days'}</span>
+        </div>
+        <div class="participation-observation">${analysis.observation}</div>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="domain-participation">
+      <div class="participation-title">Domain Patterns</div>
+      <div class="participation-items">
+        ${itemsHtml}
       </div>
     </div>
   `;
