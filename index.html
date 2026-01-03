@@ -13,9 +13,27 @@
         Modules will be dynamically loaded and displayed here
     -->
 
-    <div id="app">
-      <!-- Application content will be rendered here -->
-    </div>
+    <!-- Header -->
+    <header class="header">
+      <h1 class="header-title">LifeLab</h1>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+      <!-- Navigation items will be generated dynamically from config.js -->
+    </nav>
+
+    <!-- Main Dashboard Section -->
+    <main class="main" id="main">
+      <div class="dashboard">
+        <h2 class="dashboard-title">Dashboard</h2>
+        
+        <!-- Domain overview cards - placeholders only -->
+        <div class="dashboard-grid" id="dashboard-grid">
+          <!-- Domain cards will be rendered here dynamically -->
+        </div>
+      </div>
+    </main>
 
     <!-- Core scripts -->
     <script src="scripts/config.js"></script>
