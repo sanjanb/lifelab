@@ -98,7 +98,11 @@ function initializeDashboard() {
 
     card.appendChild(title);
     card.appendChild(description);
-    card.appendChild(placeholder);
+    
+    // Get monthly summary for this domain
+    const summary = generateMonthlySummary(domain.id);
+    const summaryElement = createDashboardSummaryElement(summary);
+    card.appendChild(summaryElement);
 
     // Add click handler to navigate to domain
     card.addEventListener("click", () => {
@@ -107,6 +111,92 @@ function initializeDashboard() {
 
     dashboardGrid.appendChild(card);
   });
+}
+
+/**
+ * Generate monthly summary for a domain
+ * Calculates statistics for the current month
+ * 
+ * @param {string} domainId - The domain identifier
+ * @returns {Object} Summary statistics
+ */
+function generateMonthlySummary(domainId) {
+  const entries = getEntries(domainId);
+  
+  if (!entries || entries.length === 0) {
+    return {
+      hasData: false,
+      totalEntries: 0,
+      currentMonth: 0,
+      uniqueDays: 0
+    };
+  }
+
+  // Get current month boundaries
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  monthEnd.setHours(23, 59, 59, 999);
+
+  // Filter entries for current month
+  const monthEntries = entries.filter(
+    (e) => e.timestamp >= monthStart.getTime() && e.timestamp <= monthEnd.getTime()
+  );
+
+  // Calculate unique days in current month
+  const uniqueDays = new Set();
+  monthEntries.forEach((entry) => {
+    const date = new Date(entry.timestamp);
+    const dateString = date.toISOString().split("T")[0];
+    uniqueDays.add(dateString);
+  });
+
+  return {
+    hasData: true,
+    totalEntries: entries.length,
+    currentMonth: monthEntries.length,
+    uniqueDays: uniqueDays.size,
+    monthName: monthStart.toLocaleDateString("en-US", { month: "long" })
+  };
+}
+
+/**
+ * Create dashboard summary element
+ * 
+ * @param {Object} summary - Summary statistics
+ * @returns {HTMLElement} Summary element
+ */
+function createDashboardSummaryElement(summary) {
+  const container = document.createElement("div");
+  container.className = "dashboard-summary";
+
+  if (!summary.hasData) {
+    container.innerHTML = '<p class="text-muted text-small">No data yet</p>';
+    return container;
+  }
+
+  const monthStat = document.createElement("div");
+  monthStat.className = "summary-stat";
+  
+  const monthValue = document.createElement("span");
+  monthValue.className = "summary-value";
+  monthValue.textContent = summary.currentMonth;
+  
+  const monthLabel = document.createElement("span");
+  monthLabel.className = "summary-label text-muted";
+  monthLabel.textContent = ` ${summary.currentMonth === 1 ? "entry" : "entries"} this month`;
+  
+  monthStat.appendChild(monthValue);
+  monthStat.appendChild(monthLabel);
+
+  const dayStat = document.createElement("div");
+  dayStat.className = "summary-stat text-small text-muted";
+  dayStat.textContent = `${summary.uniqueDays} ${summary.uniqueDays === 1 ? "day" : "days"} active`;
+
+  container.appendChild(monthStat);
+  container.appendChild(dayStat);
+
+  return container;
 }
 
 /**
