@@ -201,14 +201,14 @@ function renderMonthlyOverview(notebook) {
 /**
  * Analyze domain participation patterns
  * Detects streaks, gaps, and clustering
- * 
+ *
  * @param {Object} notebook - Monthly notebook data
  * @param {string} domainId - Domain identifier
  * @returns {Object} Analysis results
  */
 function analyzeDomainParticipation(notebook, domainId) {
   const activeDays = [];
-  
+
   // Collect active day numbers
   notebook.days.forEach((day, index) => {
     if (day.domainSignals[domainId] === true) {
@@ -217,14 +217,14 @@ function analyzeDomainParticipation(notebook, domainId) {
   });
 
   const totalActiveDays = activeDays.length;
-  
+
   if (totalActiveDays === 0) {
     return {
       totalActiveDays: 0,
       longestStreak: 0,
       longestGap: 0,
       pattern: null,
-      observation: "No activity this month."
+      observation: "No activity this month.",
     };
   }
 
@@ -232,10 +232,10 @@ function analyzeDomainParticipation(notebook, domainId) {
   const streaks = [];
   const gaps = [];
   let currentStreak = 1;
-  
+
   for (let i = 1; i < activeDays.length; i++) {
     const dayDiff = activeDays[i] - activeDays[i - 1];
-    
+
     if (dayDiff === 1) {
       // Consecutive days - part of streak
       currentStreak++;
@@ -248,7 +248,7 @@ function analyzeDomainParticipation(notebook, domainId) {
       currentStreak = 1;
     }
   }
-  
+
   // Add final streak
   if (currentStreak > 0) {
     streaks.push(currentStreak);
@@ -301,14 +301,14 @@ function analyzeDomainParticipation(notebook, domainId) {
     longestStreak,
     longestGap,
     pattern,
-    observation
+    observation,
   };
 }
 
 /**
  * Render domain participation trends
  * Shows participation patterns as observations, not grades
- * 
+ *
  * @param {Object} notebook - Monthly notebook data
  */
 function renderDomainParticipation(notebook) {
@@ -316,35 +316,41 @@ function renderDomainParticipation(notebook) {
   if (!container) return;
 
   const domains = getAllDomains();
-  
+
   // Analyze each domain
-  const analyses = domains.map(domain => {
+  const analyses = domains.map((domain) => {
     const analysis = analyzeDomainParticipation(notebook, domain.id);
     return {
       domain,
-      ...analysis
+      ...analysis,
     };
   });
 
   // Filter out domains with no activity
-  const activeAnalyses = analyses.filter(a => a.totalActiveDays > 0);
+  const activeAnalyses = analyses.filter((a) => a.totalActiveDays > 0);
 
   if (activeAnalyses.length === 0) {
-    container.innerHTML = '';
+    container.innerHTML = "";
     return;
   }
 
-  const itemsHtml = activeAnalyses.map(analysis => {
-    return `
+  const itemsHtml = activeAnalyses
+    .map((analysis) => {
+      return `
       <div class="participation-item">
         <div class="participation-header">
-          <span class="participation-domain">${analysis.domain.displayName}</span>
-          <span class="participation-count">${analysis.totalActiveDays} ${analysis.totalActiveDays === 1 ? 'day' : 'days'}</span>
+          <span class="participation-domain">${
+            analysis.domain.displayName
+          }</span>
+          <span class="participation-count">${analysis.totalActiveDays} ${
+        analysis.totalActiveDays === 1 ? "day" : "days"
+      }</span>
         </div>
         <div class="participation-observation">${analysis.observation}</div>
       </div>
     `;
-  }).join('');
+    })
+    .join("");
 
   container.innerHTML = `
     <div class="domain-participation">
