@@ -134,6 +134,50 @@ p {
   font-size: 0.875rem;
 }
 
+/* Domain View Styles */
+.domain-view {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.domain-header {
+  margin-bottom: 2rem;
+}
+
+.domain-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 0.5rem;
+}
+
+.domain-description {
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.domain-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.quick-entry-container,
+.history-container,
+.trend-container {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1.5rem;
+}
+
 /* Utility Classes */
 .text-muted {
   color: var(--color-text-light);
