@@ -130,6 +130,63 @@
   min-width: 30px;
 }
 
+/* Domain Participation */
+.domain-participation {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.participation-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.participation-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.participation-item {
+  padding: 0.75rem;
+  background: #fafafa;
+  border-radius: 4px;
+  border-left: 3px solid #5093d9;
+}
+
+.participation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.participation-domain {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.participation-count {
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.participation-observation {
+  font-size: 0.875rem;
+  color: #666;
+  font-style: italic;
+  line-height: 1.5;
+}
+
 /* Trend Graph */
 .trend-graph {
   background: #fff;
