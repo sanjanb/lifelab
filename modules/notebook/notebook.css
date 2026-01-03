@@ -504,6 +504,59 @@
   z-index: 10;
 }
 
+/* Intent Selector */
+.intent-selector {
+  display: flex;
+  gap: 4px;
+  margin-right: 12px;
+}
+
+.intent-button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  color: #bbb;
+}
+
+.intent-button:hover {
+  border-color: #bbb;
+  background: #fff;
+  color: #888;
+}
+
+.intent-button.selected {
+  border-color: #5093d9;
+  background: #e3f2fd;
+  color: #5093d9;
+}
+
+.intent-button[data-intent="active"].selected {
+  background: #e8f5e9;
+  border-color: #66bb6a;
+  color: #66bb6a;
+}
+
+.intent-button[data-intent="rest"].selected {
+  background: #fff3e0;
+  border-color: #ffa726;
+  color: #ffa726;
+}
+
+.intent-button[data-intent="offline"].selected {
+  background: #f3e5f5;
+  border-color: #ab47bc;
+  color: #ab47bc;
+}
+
+/* Outcome Selector */
 .outcome-selector {
   display: flex;
   gap: 6px;

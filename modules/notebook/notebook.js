@@ -492,6 +492,27 @@ function renderDailyEntries(notebook) {
             ${indicatorsHtml}
           </div>
           
+          <div class="intent-selector" onclick="event.stopPropagation()" title="Day type">
+            <button class="intent-button ${
+              day.dayIntent === "active" ? "selected" : ""
+            }" 
+                    data-intent="active" 
+                    data-day-index="${index}"
+                    title="Active day">◉</button>
+            <button class="intent-button ${
+              day.dayIntent === "rest" ? "selected" : ""
+            }" 
+                    data-intent="rest" 
+                    data-day-index="${index}"
+                    title="Rest day">◐</button>
+            <button class="intent-button ${
+              day.dayIntent === "offline" ? "selected" : ""
+            }" 
+                    data-intent="offline" 
+                    data-day-index="${index}"
+                    title="Offline/unplugged">◯</button>
+          </div>
+          
           <div class="outcome-selector" onclick="event.stopPropagation()">
             <button class="outcome-button ${
               day.manualOutcome === "win" ? "selected" : ""
@@ -535,6 +556,7 @@ function renderDailyEntries(notebook) {
 
   // Attach event listeners
   attachOutcomeListeners(notebook);
+  attachIntentListeners(notebook);
   attachReflectionListeners(notebook);
   attachExpandListeners();
 }
@@ -576,6 +598,50 @@ function attachOutcomeListeners(notebook) {
 
         // Update notebook object in memory
         notebook.days[dayIndex].manualOutcome = newOutcome;
+      }
+    });
+  });
+}
+
+/**
+ * Attach event listeners to day intent buttons
+ * Intent: active, rest, offline, or unknown (default)
+ *
+ * @param {Object} notebook - Monthly notebook data
+ */
+function attachIntentListeners(notebook) {
+  const buttons = document.querySelectorAll(".intent-button");
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const dayIndex = parseInt(button.dataset.dayIndex);
+      const intent = button.dataset.intent;
+
+      // Get current intent for this day
+      const currentIntent = notebook.days[dayIndex].dayIntent;
+
+      // Toggle: if clicking the same intent, reset to "unknown"; otherwise set new intent
+      const newIntent = currentIntent === intent ? "unknown" : intent;
+
+      // Update notebook
+      const success = updateDayEntry(notebook.year, notebook.month, dayIndex, {
+        dayIntent: newIntent,
+      });
+
+      if (success) {
+        // Update UI
+        const dayButtons = document.querySelectorAll(
+          `.intent-button[data-day-index="${dayIndex}"]`
+        );
+        dayButtons.forEach((btn) => btn.classList.remove("selected"));
+
+        if (newIntent !== "unknown") {
+          button.classList.add("selected");
+        }
+
+        // Update notebook object in memory
+        notebook.days[dayIndex].dayIntent = newIntent;
       }
     });
   });

@@ -20,13 +20,19 @@
  * 5. reflectionNote is free-form text, also optional.
  *    This is for human sense-making, not machine analysis.
  *
- * 6. NO COMPUTED FIELDS are stored in the structure.
+ * 6. dayIntent distinguishes between different types of absence/presence.
+ *    Values: "active" | "rest" | "offline" | "unknown" (default)
+ *    Purpose: Prevent false narratives about unlogged days.
+ *    This field is ALWAYS optional and user-controlled.
+ *    The system NEVER auto-assigns intent.
+ *
+ * 7. NO COMPUTED FIELDS are stored in the structure.
  *    Analytics are derived on-demand, never persisted.
  *
- * 7. ISO date strings ensure timezone-independent storage.
+ * 8. ISO date strings ensure timezone-independent storage.
  *    Format: "YYYY-MM-DD"
  *
- * 8. Structure is flat and JSON-serializable for GitHub backup.
+ * 9. Structure is flat and JSON-serializable for GitHub backup.
  */
 
 /**
@@ -92,6 +98,13 @@ function createDayEntry(year, month, day) {
 
     // Free-form reflection text
     reflectionNote: "",
+
+    // Day intent: distinguishes rest vs absence vs choice
+    // Allowed values: "active" | "rest" | "offline" | "unknown"
+    // Default: "unknown"
+    // Purpose: Prevent false narratives about unlogged days later
+    // This is ALWAYS user-controlled, NEVER auto-assigned
+    dayIntent: "unknown",
   };
 }
 
