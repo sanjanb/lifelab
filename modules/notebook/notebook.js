@@ -671,6 +671,51 @@ function attachIntentListeners(notebook) {
 }
 
 /**
+ * Attach event listeners to day quality buttons
+ * Quality: low, medium, high, or null (default)
+ * Quality is independent of outcome - not aggregated
+ *
+ * @param {Object} notebook - Monthly notebook data
+ */
+function attachQualityListeners(notebook) {
+  const buttons = document.querySelectorAll(".quality-button");
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const dayIndex = parseInt(button.dataset.dayIndex);
+      const quality = button.dataset.quality;
+
+      // Get current quality for this day
+      const currentQuality = notebook.days[dayIndex].dayQuality;
+
+      // Toggle: if clicking the same quality, reset to null; otherwise set new quality
+      const newQuality = currentQuality === quality ? null : quality;
+
+      // Update notebook
+      const success = updateDayEntry(notebook.year, notebook.month, dayIndex, {
+        dayQuality: newQuality,
+      });
+
+      if (success) {
+        // Update UI
+        const dayButtons = document.querySelectorAll(
+          `.quality-button[data-day-index="${dayIndex}"]`
+        );
+        dayButtons.forEach((btn) => btn.classList.remove("selected"));
+
+        if (newQuality) {
+          button.classList.add("selected");
+        }
+
+        // Update notebook object in memory
+        notebook.days[dayIndex].dayQuality = newQuality;
+      }
+    });
+  });
+}
+
+/**
  * Attach event listeners for day reflection notes
  *
  * @param {Object} notebook - Monthly notebook data
