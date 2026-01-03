@@ -85,6 +85,9 @@ function renderNotebookView(container, notebook) {
       <div class="notebook-header">
         <h2 class="notebook-title">${monthName}</h2>
         <p class="notebook-subtitle">Monthly Notebook</p>
+        <button class="export-button" id="export-notebooks-button" title="Export all monthly notebooks to JSON">
+          Export Data
+        </button>
       </div>
       
       <div id="monthly-overview-container"></div>
@@ -101,6 +104,9 @@ function renderNotebookView(container, notebook) {
   renderTrendGraph(notebook);
   renderDailyEntries(notebook);
   renderMonthlyReflection(notebook);
+  
+  // Attach export button listener
+  attachExportListener();
 }
 
 /**
