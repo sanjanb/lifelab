@@ -45,7 +45,8 @@ function renderCareerEntryForm(containerId) {
   valueInput.id = "career-value";
   valueInput.name = "value";
   valueInput.className = "form-input";
-  valueInput.placeholder = "e.g., Sent job application, Networking coffee, Completed project milestone";
+  valueInput.placeholder =
+    "e.g., Sent job application, Networking coffee, Completed project milestone";
   valueInput.required = true;
 
   valueGroup.appendChild(valueLabel);
@@ -203,7 +204,9 @@ function createCareerEntryItem(entry) {
   deleteButton.className = "btn-delete";
   deleteButton.textContent = "Delete";
   deleteButton.title = "Delete this entry";
-  deleteButton.addEventListener("click", () => handleDeleteCareerEntry(entry.id));
+  deleteButton.addEventListener("click", () =>
+    handleDeleteCareerEntry(entry.id)
+  );
 
   item.appendChild(content);
   item.appendChild(deleteButton);
@@ -261,9 +264,21 @@ function refreshCareerTrends() {
   const statsGrid = document.createElement("div");
   statsGrid.className = "stats-grid";
 
-  const totalStat = createCareerStatCard("Total Activities", totalEntries, totalEntries === 1 ? "activity" : "activities");
-  const monthStat = createCareerStatCard("This Month", monthEntries, monthEntries === 1 ? "activity" : "activities");
-  const weekStat = createCareerStatCard("This Week", weekEntries, weekEntries === 1 ? "activity" : "activities");
+  const totalStat = createCareerStatCard(
+    "Total Activities",
+    totalEntries,
+    totalEntries === 1 ? "activity" : "activities"
+  );
+  const monthStat = createCareerStatCard(
+    "This Month",
+    monthEntries,
+    monthEntries === 1 ? "activity" : "activities"
+  );
+  const weekStat = createCareerStatCard(
+    "This Week",
+    weekEntries,
+    weekEntries === 1 ? "activity" : "activities"
+  );
 
   statsGrid.appendChild(totalStat);
   statsGrid.appendChild(monthStat);

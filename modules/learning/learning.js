@@ -45,7 +45,8 @@ function renderLearningEntryForm(containerId) {
   valueInput.id = "learning-value";
   valueInput.name = "value";
   valueInput.className = "form-input";
-  valueInput.placeholder = "e.g., Completed Python course module, Read 2 chapters, Practiced guitar";
+  valueInput.placeholder =
+    "e.g., Completed Python course module, Read 2 chapters, Practiced guitar";
   valueInput.required = true;
 
   valueGroup.appendChild(valueLabel);
@@ -203,7 +204,9 @@ function createLearningEntryItem(entry) {
   deleteButton.className = "btn-delete";
   deleteButton.textContent = "Delete";
   deleteButton.title = "Delete this entry";
-  deleteButton.addEventListener("click", () => handleDeleteLearningEntry(entry.id));
+  deleteButton.addEventListener("click", () =>
+    handleDeleteLearningEntry(entry.id)
+  );
 
   item.appendChild(content);
   item.appendChild(deleteButton);
@@ -262,9 +265,21 @@ function refreshLearningTrends() {
   const statsGrid = document.createElement("div");
   statsGrid.className = "stats-grid";
 
-  const totalStat = createLearningStatCard("Total Sessions", totalEntries, totalEntries === 1 ? "session" : "sessions");
-  const daysStat = createLearningStatCard("Days Active", learningDays.size, learningDays.size === 1 ? "day" : "days");
-  const recentStat = createLearningStatCard("Last 30 Days", recentEntries, recentEntries === 1 ? "session" : "sessions");
+  const totalStat = createLearningStatCard(
+    "Total Sessions",
+    totalEntries,
+    totalEntries === 1 ? "session" : "sessions"
+  );
+  const daysStat = createLearningStatCard(
+    "Days Active",
+    learningDays.size,
+    learningDays.size === 1 ? "day" : "days"
+  );
+  const recentStat = createLearningStatCard(
+    "Last 30 Days",
+    recentEntries,
+    recentEntries === 1 ? "session" : "sessions"
+  );
 
   statsGrid.appendChild(totalStat);
   statsGrid.appendChild(daysStat);

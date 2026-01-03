@@ -45,7 +45,8 @@ function renderHealthEntryForm(containerId) {
   valueInput.id = "health-value";
   valueInput.name = "value";
   valueInput.className = "form-input";
-  valueInput.placeholder = "e.g., 30-minute run, Yoga session, Healthy meal prep";
+  valueInput.placeholder =
+    "e.g., 30-minute run, Yoga session, Healthy meal prep";
   valueInput.required = true;
 
   valueGroup.appendChild(valueLabel);
@@ -203,7 +204,9 @@ function createHealthEntryItem(entry) {
   deleteButton.className = "btn-delete";
   deleteButton.textContent = "Delete";
   deleteButton.title = "Delete this entry";
-  deleteButton.addEventListener("click", () => handleDeleteHealthEntry(entry.id));
+  deleteButton.addEventListener("click", () =>
+    handleDeleteHealthEntry(entry.id)
+  );
 
   item.appendChild(content);
   item.appendChild(deleteButton);
@@ -265,9 +268,21 @@ function refreshHealthTrends() {
   const statsGrid = document.createElement("div");
   statsGrid.className = "stats-grid";
 
-  const totalStat = createHealthStatCard("Total Activities", totalEntries, totalEntries === 1 ? "activity" : "activities");
-  const daysStat = createHealthStatCard("Active Days", activeDays.size, activeDays.size === 1 ? "day" : "days");
-  const weekStat = createHealthStatCard("This Week", weekEntries, weekEntries === 1 ? "activity" : "activities");
+  const totalStat = createHealthStatCard(
+    "Total Activities",
+    totalEntries,
+    totalEntries === 1 ? "activity" : "activities"
+  );
+  const daysStat = createHealthStatCard(
+    "Active Days",
+    activeDays.size,
+    activeDays.size === 1 ? "day" : "days"
+  );
+  const weekStat = createHealthStatCard(
+    "This Week",
+    weekEntries,
+    weekEntries === 1 ? "activity" : "activities"
+  );
 
   statsGrid.appendChild(totalStat);
   statsGrid.appendChild(daysStat);
