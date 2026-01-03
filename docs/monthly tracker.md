@@ -1,415 +1,311 @@
 
-# LifeLab – Build Plan
+# LifeLab – Monthly Notebook System Build Plan
 
-This document defines the phased construction of **LifeLab**, a personal life instrumentation system.
-This is NOT a productivity app.
-This is a reflection-first, monthly notebook system.
+This document covers ONLY:
+- Data storage
+- Monthly notebook (30–31 day page)
+- Cross-domain aggregation
+- Monthly analysis & trends
 
-All development must follow these rules:
-- No backend
-- No frameworks beyond Alpine.js
-- No auto-scoring of life
-- Manual > automatic
-- Views are derived, data is raw
-- Monthly closure is mandatory
+Assumptions:
+- Repo already exists
+- Base UI already exists
+- Domains already exist
+- This system sits ON TOP of existing domain logs
 
 ---
 
-## PHASE 0 – Repository & Constraints
+## PHASE 1: Storage model for monthly notebook (FOUNDATION)
 
 ### Goal
-Create a stable, boring foundation that will survive years.
+Store raw daily signals in a way that:
+- survives years
+- is GitHub-exportable
+- is not tied to UI decisions
 
 ---
 
-### TODO 0.1 – Initialize repository
+### TODO 1.1 – Monthly notebook data structure
 
 **Copilot Prompt**
 ```
 
-Initialize a static GitHub Pages project called "LifeLab".
-Use only HTML, CSS, and JavaScript.
-Create index.html, styles/main.css, scripts/app.js.
-Do not implement any features.
-Add comments describing intent only.
+Design a data structure for a monthly notebook.
+Each notebook represents one calendar month.
+
+It must include:
+
+* year
+* month (1–12)
+* days (array, one entry per calendar day)
+
+Each day must include:
+
+* date (ISO string)
+* domainSignals (object keyed by domainId, boolean presence only)
+* manualOutcome (enum: "win", "neutral", "loss", optional)
+* reflectionNote (optional string)
+
+Do NOT compute scores.
+Do NOT auto-judge days.
+Document design decisions in comments.
 
 ```
 
 ---
 
-### TODO 0.2 – Folder structure for extensibility
-
-Target structure:
-```
-
-lifelab/
-├── index.html
-├── styles/
-│   └── main.css
-├── scripts/
-│   ├── app.js
-│   ├── config.js
-│   ├── store.js
-│   ├── utils.js
-│   └── analysis.js
-├── modules/
-│   ├── notebook/
-│   ├── habits/
-│   ├── learning/
-│   ├── career/
-│   ├── health/
-│   └── reflections/
-└── docs/
-└── BUILD_PLAN.md
-
-```
+### TODO 1.2 – Monthly notebook storage API
 
 **Copilot Prompt**
 ```
 
-Create the folder structure for LifeLab.
-Each life domain must be isolated as a module.
-Shared logic must live in scripts/.
-Create empty files with comments explaining responsibility.
-Do not write logic yet.
+Extend store.js with monthly notebook support.
 
-```
+Expose functions:
 
----
+* getMonthlyNotebook(year, month)
+* createMonthlyNotebook(year, month)
+* updateDayEntry(year, month, dayIndex, data)
+* saveMonthlyNotebook(notebook)
 
-## PHASE 1 – Core Data & Configuration Layer
-
-### Goal
-Make data stable before UI exists.
-
----
-
-### TODO 1.1 – Global domain configuration
-
-**Copilot Prompt**
-```
-
-Create config.js defining LifeLab domains.
-Each domain must have:
-
-* id
-* displayName
-* shortCode (single letter)
-* description
-* storageKey
-
-Domains must be configurable without touching UI code.
-
-```
-
----
-
-### TODO 1.2 – Universal entry model
-
-**Copilot Prompt**
-```
-
-Define a universal LifeLab entry model.
-Each entry must include:
-
-* id
-* domainId
-* timestamp
-* value
-* notes (optional)
-
-Document why this structure is intentionally minimal.
+Storage format must be JSON-serializable.
+Design for future GitHub backup.
 Do not include UI logic.
 
 ```
 
 ---
 
-### TODO 1.3 – Storage abstraction
-
-**Copilot Prompt**
-```
-
-Create store.js to abstract browser storage.
-Expose:
-
-* addEntry(domainId, entry)
-* getEntries(domainId)
-* deleteEntry(domainId, entryId)
-* exportAllData()
-* importData(json)
-
-Do not assume localStorage is permanent.
-Do not couple this to UI.
-
-```
-
----
-
-## PHASE 2 – Base UI Skeleton
+## PHASE 2: Aggregating domain data into the notebook
 
 ### Goal
-Create navigation and layout without meaning.
+Let domains feed signals into the monthly page without owning it.
 
 ---
 
-### TODO 2.1 – App shell & navigation
+### TODO 2.1 – Domain-to-day signal aggregation
 
 **Copilot Prompt**
 ```
 
-Build index.html with:
+Create a function that aggregates domain entries into a monthly notebook.
 
-* Header: "LifeLab"
-* Navigation listing all domains dynamically
-* Main content area
+Rules:
 
-Navigation must be generated from config.js.
-No domain logic yet.
+* If a domain has at least one entry on a given date, mark that domain as present for that day.
+* Presence is boolean only.
+* No weighting, no scoring.
+
+This logic must:
+
+* work for any domain
+* not depend on UI
+* not mutate original domain data
 
 ```
 
 ---
 
-### TODO 2.2 – Minimalist styling
+### TODO 2.2 – Sync logic (non-destructive)
 
 **Copilot Prompt**
 ```
 
-Create minimal CSS focused on:
+Implement a sync process that:
 
-* typography
-* spacing
-* readability
+* reads existing domain entries
+* updates monthly notebook day signals
+* does NOT overwrite manual outcomes or reflections
 
-Avoid bright colors, gradients, animations, or gamification.
-This is a notebook, not a dashboard.
+Manual edits must always win over automation.
+Document this rule clearly.
 
 ```
 
 ---
 
-## PHASE 3 – Monthly Notebook System (CORE)
+## PHASE 3: Monthly notebook UI (30–31 line page)
 
 ### Goal
-Implement the monthly 30–31 line notebook page.
+Recreate the “paper notebook” feeling digitally.
 
 ---
 
-### TODO 3.1 – Monthly notebook model
+### TODO 3.1 – Monthly notebook layout
 
 **Copilot Prompt**
 ```
 
-Design a monthly notebook data model.
-Each month must:
+Build a monthly notebook view.
 
-* know year and month
-* contain one row per calendar day
-* aggregate entries from all domains per day
-
-Do not compute scores.
-Store raw daily signals only.
-
-```
-
----
-
-### TODO 3.2 – Daily row schema
-
-**Copilot Prompt**
-```
-
-Define a daily row structure.
-Each row must include:
-
-* date
-* domainSignals (presence only)
-* optional reflection note
-* optional manual tag (strong / neutral / weak)
-
-Do not auto-evaluate the day.
-
-```
-
----
-
-### TODO 3.3 – Notebook UI layout
-
-**Copilot Prompt**
-```
-
-Build the monthly notebook UI.
 Layout:
 
-* Top: simple consistency graph (one mark per day)
-* Middle: 30–31 rows (one per day)
-* Bottom: monthly reflection section
+* Top: simple trend graph (one mark per day)
+* Middle: list of 30–31 rows, one per day
+* Each row shows:
 
-Rows must be compact and readable.
-Avoid checkboxes.
-Avoid percentages.
+  * date
+  * domain presence indicators (minimal symbols)
+  * manual outcome selector (win / neutral / loss)
+* Bottom: monthly reflection text area
+
+Avoid tables that feel spreadsheet-like.
+This should feel like a notebook page.
 
 ```
 
 ---
 
-## PHASE 4 – Domain Signal Logging
+### TODO 3.2 – Daily row interaction
+
+**Copilot Prompt**
+```
+
+Implement interactions for each daily row:
+
+* Toggle manual outcome (win / neutral / loss)
+* Add or edit reflection note
+* Display which domains were active that day
+
+Do NOT auto-fill outcomes.
+Do NOT hide empty days.
+
+```
+
+---
+
+## PHASE 4: Monthly analysis & trends (READ-ONLY)
 
 ### Goal
-Allow domains to contribute signals to days.
+Surface patterns without turning life into a scorecard.
 
 ---
 
-### TODO 4.1 – Generic domain entry UI
+### TODO 4.1 – Win / loss overview
 
 **Copilot Prompt**
 ```
 
-Create a generic domain entry interface.
-Allow adding a simple event with:
+Generate a monthly overview from the notebook:
 
-* value
-* optional notes
-* timestamp auto-generated
+* count of wins
+* count of neutral days
+* count of losses
 
-This must work for any domain.
-Reuse shared storage logic.
+Display visually but without percentages.
+No productivity labels.
+No comparisons to past months by default.
 
 ```
 
 ---
 
-### TODO 4.2 – Domain signal aggregation
+### TODO 4.2 – Domain participation trends
 
 **Copilot Prompt**
 ```
 
-Aggregate domain entries into daily notebook rows.
-Each entry contributes a presence signal only.
-No weighting.
-No scoring.
+Analyze domain participation over the month.
+
+For each domain:
+
+* number of active days
+* clusters (streaks and gaps)
+
+Present insights as observations, not grades.
+Example: "Health activity clustered mid-month."
 
 ```
 
 ---
 
-## PHASE 5 – Reflections Module
+### TODO 4.3 – Consistency graph
+
+**Copilot Prompt**
+```
+
+Create a simple consistency graph:
+
+* X-axis: days of month
+* Y-axis: number of domains active (raw count)
+
+No smoothing.
+No goal lines.
+This graph is descriptive only.
+
+```
+
+---
+
+## PHASE 5: GitHub-based backup (MANUAL, OPTIONAL)
 
 ### Goal
-Add narrative context to metrics.
+Free, durable storage without turning GitHub into a backend.
 
 ---
 
-### TODO 5.1 – Daily reflection notes
+### TODO 5.1 – Export monthly data
 
 **Copilot Prompt**
 ```
 
-Implement a reflections module.
-Allow at most one reflection note per day.
-Notes are optional.
-No prompts, no structure.
+Implement manual export of all monthly notebooks.
+Export format must be a single JSON file.
+Include metadata (export date, version).
+Do not auto-sync.
 
 ```
 
 ---
 
-### TODO 5.2 – Monthly reflection summary
+### TODO 5.2 – Import & restore
 
 **Copilot Prompt**
 ```
 
-Add a monthly reflection section.
-Allow free-text writing.
-This must not be mandatory.
+Implement import functionality for monthly notebook data.
+Validate structure before importing.
+Never overwrite existing data without confirmation.
 
 ```
 
 ---
 
-## PHASE 6 – Analysis & Trends (Read-only)
+## PHASE 6: Year-level view (COMPOSED, NOT STORED)
 
 ### Goal
-Turn raw data into insight without judgment.
+Let a year emerge from months, not be tracked separately.
 
 ---
 
-### TODO 6.1 – Consistency graph logic
+### TODO 6.1 – Year aggregation
 
 **Copilot Prompt**
 ```
 
-Create a simple consistency visualization.
-One mark per day.
-Mark intensity based on number of domain signals.
-Do not label days as good or bad.
+Create a derived year view composed from monthly notebooks.
+Show:
+
+* win / neutral / loss distribution across months
+* dominant domains per quarter
+* visible seasonal patterns
+
+Do not store year data separately.
+Always derive from months.
 
 ```
 
 ---
 
-### TODO 6.2 – Trend detection
+## NON-GOALS (DO NOT IMPLEMENT)
 
-**Copilot Prompt**
-```
+- No daily goals
+- No streak pressure
+- No reminders
+- No auto-evaluation
+- No “productivity score”
 
-Analyze monthly data to detect trends.
-Examples:
-
-* domain presence over time
-* gaps and clusters
-* correlations between domains
-
-Output observations as text, not scores.
-
-```
-
----
-
-## PHASE 7 – GitHub Backup (Optional, Manual)
-
-### Goal
-Preserve data without making GitHub a dependency.
-
----
-
-### TODO 7.1 – Manual export/import
-
-**Copilot Prompt**
-```
-
-Implement manual JSON export and import.
-Export must include all domains and months.
-Import must validate structure before loading.
-
-```
-
----
-
-### TODO 7.2 – Optional GitHub sync (future)
-
-**Copilot Prompt**
-```
-
-Design (do not implement) a GitHub sync interface.
-Sync must be manual.
-GitHub is a backup, not live storage.
-Document security considerations.
-
-```
-
----
-
-## DESIGN NON-GOALS (Do Not Build)
-
-- No productivity scores
-- No streak obsession
-- No daily targets
-- No notifications
-- No automation pressure
-
-LifeLab is a mirror, not a judge.
+LifeLab is a mirror, not a manager.
 
 ---
 
@@ -418,15 +314,22 @@ LifeLab is a mirror, not a judge.
 
 ---
 
-### Final thought (important)
+### Reality check (important)
 
-This plan is intentionally **boring, strict, and slow**.
-That’s why it will last.
+You’re building something **closer to a personal research instrument than a habit tracker**.
 
-If you want, next I can:
+Most people fail at this because they:
 
-* review this plan as if it were a real open-source PR
-* compress it further for Copilot efficiency
-* or help you decide **which phase to intentionally stop at** (also important)
+* over-automate meaning
+* chase streaks
+* optimize too early
 
-Just say the word.
+Your instinct to anchor everything in a **monthly notebook metaphor** is correct.
+
+If you want next:
+
+* I can **stress-test this design for long-term failure modes**
+* or write **Copilot prompts for just the notebook UI**
+* or help you decide **what *not* to analyze on purpose**
+
+Say what you want to pressure-test next.
