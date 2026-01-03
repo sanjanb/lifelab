@@ -16,6 +16,12 @@
  *    Generic algorithm based on entry timestamps.
  *
  * 5. No UI dependencies. Pure data transformation.
+ * 
+ * 6. NON-DESTRUCTIVE SYNC RULE (CRITICAL):
+ *    Sync ONLY updates domainSignals (automated presence tracking).
+ *    Sync NEVER touches manualOutcome or reflectionNote.
+ *    Manual human edits ALWAYS win over automation.
+ *    This preserves human judgment and prevents data loss.
  */
 
 /**
