@@ -1,6 +1,6 @@
 /**
  * Month Resolution Logic
- * 
+ *
  * HOME PAGE CONTRACT:
  * - Home page always represents a SINGLE MONTH
  * - Default to current system month
@@ -9,7 +9,7 @@
  * - No global dashboards
  * - No year-level summaries on home page
  * - All content scoped to the active month
- * 
+ *
  * This contract prevents scope creep and maintains focus.
  */
 
@@ -47,25 +47,37 @@ export function getMonthMetadata(
   closedMonths: Set<string> = new Set()
 ): MonthMetadata {
   const current = getCurrentMonth();
-  const monthKey = `${identifier.year}-${String(identifier.month).padStart(2, '0')}`;
-  
-  const isCurrentMonth = 
-    identifier.year === current.year && 
-    identifier.month === current.month;
-  
-  const isFutureMonth = 
+  const monthKey = `${identifier.year}-${String(identifier.month).padStart(
+    2,
+    "0"
+  )}`;
+
+  const isCurrentMonth =
+    identifier.year === current.year && identifier.month === current.month;
+
+  const isFutureMonth =
     identifier.year > current.year ||
     (identifier.year === current.year && identifier.month > current.month);
-  
+
   const isPastMonth = !isCurrentMonth && !isFutureMonth;
-  
+
   const daysInMonth = new Date(identifier.year, identifier.month, 0).getDate();
-  
+
   const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
-  
+
   return {
     identifier,
     displayName: `${monthNames[identifier.month - 1]} ${identifier.year}`,
@@ -79,7 +91,7 @@ export function getMonthMetadata(
 
 /**
  * Get the active month for the home page
- * 
+ *
  * Rules:
  * - If no month specified, use current month
  * - User can navigate to past months
@@ -91,7 +103,7 @@ export function resolveActiveMonth(
   if (!requestedMonth) {
     return getCurrentMonth();
   }
-  
+
   return requestedMonth;
 }
 
@@ -119,7 +131,7 @@ export function getNextMonth(current: MonthIdentifier): MonthIdentifier {
  * Get month key for storage
  */
 export function getMonthKey(identifier: MonthIdentifier): string {
-  return `${identifier.year}-${String(identifier.month).padStart(2, '0')}`;
+  return `${identifier.year}-${String(identifier.month).padStart(2, "0")}`;
 }
 
 /**
@@ -128,7 +140,7 @@ export function getMonthKey(identifier: MonthIdentifier): string {
 export function parseMonthKey(key: string): MonthIdentifier | null {
   const match = key.match(/^(\d{4})-(\d{2})$/);
   if (!match) return null;
-  
+
   return {
     year: parseInt(match[1], 10),
     month: parseInt(match[2], 10),

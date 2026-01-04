@@ -11,10 +11,12 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 ## Architecture Changes
 
 ### Before (Current State)
+
 - Home page (`/`) = Domain dashboard with cards
 - Notebook page (`/notebook`) = Monthly notebook grid
 
 ### After (New Design)
+
 - Home page (`/`) = Monthly notebook for current month (January 2026)
 - Dashboard removed or moved to `/dashboard`
 - Navigation focuses on temporal flow
@@ -24,10 +26,13 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 ## Implementation Phases
 
 ### ✅ Phase H1: Home Page Contract
+
 **Status**: Planning
 
 **Tasks**:
+
 - [H1.1] Document home page responsibility
+
   - Home always shows current month (January 2026)
   - No global dashboards
   - No year-level summaries
@@ -41,11 +46,13 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 ---
 
 ### 🔄 Phase H2: Monthly Context + Line Graph
+
 **Status**: Not Started
 
 **Components to Create**:
 
 1. **MonthlyHeader.svelte**
+
    - Month name (January)
    - Year (2026)
    - Previous/Next navigation
@@ -59,6 +66,7 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
    - Descriptive only, not evaluative
 
 **Design Principles**:
+
 - No goal lines
 - No performance metrics
 - Visual stability (static container in Astro)
@@ -66,14 +74,17 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 ---
 
 ### 🔄 Phase H3: Monthly Notebook (Primary Surface)
+
 **Status**: Partially Complete
 
 **Existing Components to Adapt**:
+
 - ✅ DailyRowControls.svelte
 - ✅ DomainPresenceBadges.svelte
 - ✅ NotebookMonthNavigation.svelte (may need modification)
 
 **Required Changes**:
+
 1. Move notebook grid from `/notebook` to `/` (home)
 2. One row per calendar day (31 rows for January)
 3. Highlight today (January 4, 2026)
@@ -87,6 +98,7 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
    - Reflection note (optional)
 
 **Svelte Island Strategy**:
+
 - Each daily row = isolated Svelte island
 - Local state only
 - Storage writes on explicit user actions
@@ -95,11 +107,13 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 ---
 
 ### 🔄 Phase H4: Inline Analytics
+
 **Status**: Not Started
 
 **Components to Create**:
 
 1. **MonthlyOutcomeSummary.svelte**
+
    - Count: Win days
    - Count: Neutral days
    - Count: Loss days
@@ -107,6 +121,7 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
    - Neutral visual tone
 
 2. **DomainParticipationSummary.svelte**
+
    - Per domain: Number of active days
    - Visual: gaps or clusters
    - No ranking, no comparisons to other months
@@ -124,11 +139,13 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 ---
 
 ### 🔄 Phase H5: Monthly Reflection & Closure
+
 **Status**: Partially Complete (MonthlyReflectionEditor exists)
 
 **Required Changes**:
 
 1. **MonthlyReflectionEditor.svelte** (adapt existing)
+
    - Single sentence only
    - Starter prompt provided
    - Anchors memory
@@ -144,11 +161,13 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 ---
 
 ### 🔄 Phase H6: Visual & Cognitive Guardrails
+
 **Status**: Not Started
 
 **Tasks**:
 
 1. **Visual Hierarchy Enforcement**
+
    - Priority order:
      1. Month context (header)
      2. Line graph
@@ -179,6 +198,7 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 ## File Changes Required
 
 ### New Files
+
 - `src/components/MonthlyHeader.svelte`
 - `src/components/DailyActivityGraph.svelte`
 - `src/components/MonthlyOutcomeSummary.svelte`
@@ -189,6 +209,7 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 - `src/lib/analytics.ts` (analytics calculations)
 
 ### Modified Files
+
 - `src/pages/index.astro` (complete redesign)
 - `src/pages/notebook.astro` (may become redirect or archive view)
 - `src/components/NavigationMenu.svelte` (remove dashboard link)
@@ -196,6 +217,7 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 - `src/components/MonthlyReflectionEditor.svelte` (single sentence constraint)
 
 ### Potentially Removed
+
 - `src/pages/index.astro` (current dashboard)
 - Or moved to `src/pages/dashboard.astro`
 
@@ -204,14 +226,17 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 ## Design Principles
 
 ### Temporal Navigation, Not Feature Navigation
+
 - Home page answers: "What did this month look like?"
 - Not: "How am I doing overall?"
 
 ### Observational, Not Evaluative
+
 - Describe patterns, don't judge them
 - Show data, don't score performance
 
 ### Focus on Truth, Not Control
+
 - Not a control panel
 - A place to look at time honestly
 
@@ -220,15 +245,18 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 ## Implementation Strategy
 
 1. **Phase H1 First** (Documentation & Logic)
+
    - Lock mental model
    - Prevent future drift
    - Document contracts
 
 2. **Phase H2 Next** (Visual Orientation)
+
    - Month context clarity
    - Line graph for momentum
 
 3. **Phase H3 Core** (Primary Interaction)
+
    - Move notebook to home
    - Main user surface
 
@@ -242,6 +270,7 @@ Transform the home page from a domain dashboard to a **monthly notebook view** r
 ## Current Month Context
 
 **January 2026**
+
 - Days in month: 31
 - Today: January 4, 2026 (Day 4)
 - Days completed: 3

@@ -1,17 +1,17 @@
 /**
  * Analytics Calculation Utilities
- * 
+ *
  * PRINCIPLES:
  * - Observational, not evaluative
  * - Descriptive language only
  * - No scoring, no judgment
  * - No advice or recommendations
- * 
+ *
  * These analytics support understanding patterns,
  * not measuring performance.
  */
 
-import type { DailyRow } from './storage';
+import type { DailyRow } from "./storage";
 
 export interface MonthlyOutcome {
   winDays: number;
@@ -33,7 +33,7 @@ export interface DomainParticipation {
 
 export interface TrendObservation {
   text: string;
-  type: 'pattern' | 'gap' | 'cluster' | 'shift';
+  type: "pattern" | "gap" | "cluster" | "shift";
 }
 
 /**
@@ -49,13 +49,13 @@ export function calculateMonthlyOutcome(dailyRows: DailyRow[]): MonthlyOutcome {
 
   dailyRows.forEach((row) => {
     switch (row.outcome) {
-      case 'win':
+      case "win":
         outcome.winDays++;
         break;
-      case 'neutral':
+      case "neutral":
         outcome.neutralDays++;
         break;
-      case 'loss':
+      case "loss":
         outcome.lossDays++;
         break;
       default:
@@ -75,7 +75,7 @@ export function calculateDomainParticipation(
   domainName: string
 ): DomainParticipation {
   const activeDays: number[] = [];
-  
+
   dailyRows.forEach((row, index) => {
     if (row.domains && row.domains[domainId]) {
       activeDays.push(index + 1); // 1-based day number
@@ -84,7 +84,8 @@ export function calculateDomainParticipation(
 
   const totalDays = dailyRows.length;
   const firstActiveDay = activeDays.length > 0 ? activeDays[0] : null;
-  const lastActiveDay = activeDays.length > 0 ? activeDays[activeDays.length - 1] : null;
+  const lastActiveDay =
+    activeDays.length > 0 ? activeDays[activeDays.length - 1] : null;
 
   // Detect gaps (3+ consecutive inactive days between active days)
   let hasGaps = false;
@@ -136,7 +137,7 @@ export function generateTrendObservations(
     if (p.hasGaps) {
       observations.push({
         text: `${p.domainName} activity had noticeable gaps.`,
-        type: 'gap',
+        type: "gap",
       });
     }
 
@@ -144,23 +145,23 @@ export function generateTrendObservations(
     if (p.hasClusters) {
       observations.push({
         text: `${p.domainName} showed clustered activity.`,
-        type: 'cluster',
+        type: "cluster",
       });
     }
 
     // Early/late month patterns
     if (p.firstActiveDay && p.lastActiveDay) {
       const midMonth = dailyRows.length / 2;
-      
+
       if (p.lastActiveDay < midMonth) {
         observations.push({
           text: `${p.domainName} activity concentrated in first half of month.`,
-          type: 'pattern',
+          type: "pattern",
         });
       } else if (p.firstActiveDay > midMonth) {
         observations.push({
           text: `${p.domainName} activity started after mid-month.`,
-          type: 'pattern',
+          type: "pattern",
         });
       }
     }
