@@ -25,64 +25,15 @@
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
-import InsightLineGraph from '../components/InsightLineGraph.svelte';
-import InsightHeatmap from '../components/InsightHeatmap.svelte';
-import InsightObservations from '../components/InsightObservations.svelte';
+import InsightContainer from '../components/InsightContainer.svelte';
 import { getCurrentMonth, getTodayInfo } from '../lib/monthResolution';
-import { getMonthlyNotebook } from '../lib/storage';
-import { buildMonthlyInsight, getSignalArray, getHeatmapMatrix } from '../lib/monthlyInsight';
-import { generateInsightObservations, getMonthSummary } from '../lib/insightText';
 
 // Home page always shows current month
 const activeMonth = getCurrentMonth();
 const today = getTodayInfo();
 
-// Build monthly insight data from storage
-let monthlyNotebook;
-let insight;
-let observations = [];
-let monthSummary = '';
-
-// Browser-safe data loading
-if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-  // This will be hydrated on client
-  monthlyNotebook = null;
-  insight = null;
-} else {
-  // Server-side: create empty structure
-  monthlyNotebook = {
-    year: activeMonth.year,
-    month: activeMonth.month,
-    days: {}
-  };
-  
-  // Transform notebook data to daily rows
-  const daysInMonth = new Date(activeMonth.year, activeMonth.month, 0).getDate();
-  const dailyRows = Array.from({ length: daysInMonth }, (_, i) => {
-    const dayNumber = i + 1;
-    const date = new Date(activeMonth.year, activeMonth.month - 1, dayNumber).toISOString().split('T')[0];
-    const dayData = monthlyNotebook.days[dayNumber] || {};
-    
-    return {
-      date,
-      domains: dayData.domains || []
-    };
-  });
-  
-  // Build insight structure
-  insight = buildMonthlyInsight(activeMonth.year, activeMonth.month, dailyRows);
-  observations = generateInsightObservations(insight);
-  monthSummary = getMonthSummary(insight);
-}
-
-// Data for components
-const days = insight?.days || [];
-const domains = insight?.domains || [];
-const signalArray = insight ? getSignalArray(insight) : [];
-const heatmapMatrix = insight ? getHeatmapMatrix(insight) : [];
-const currentDay = today.day;
-
 // Month display
+const monthName = new Date(activeMonth.year, activeMonth.month - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 const monthName = new Date(activeMonth.year, activeMonth.month - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 ---
 
@@ -97,37 +48,13 @@ const monthName = new Date(activeMonth.year, activeMonth.month - 1).toLocaleDate
       </p>
     </header>
 
-    <!-- Section 1: Temporal Flow (Line Graph) -->
-    <section class="insight-section">
-      <h2 class="insight-title">Monthly Activity Flow</h2>
-      <InsightLineGraph 
-        client:visible
-        {days}
-        dailySignals={signalArray}
-        {currentDay}
-      />
-    </section>
-
-    <!-- Section 2: Distribution View (Heatmap Matrix) -->
-    <section class="insight-section">
-      <h2 class="insight-title">Domain Distribution</h2>
-      <InsightHeatmap 
-        client:visible
-        {days}
-        {domains}
-        {heatmapMatrix}
-        {currentDay}
-      />
-    </section>
-
-    <!-- Section 3: Pattern Observations (Text Analytics) -->
-    <section class="insight-section">
-      <InsightObservations 
-        client:visible
-        {observations}
-        {monthSummary}
-      />
-    </section>
+    <!-- Insight visualizations loaded client-side -->
+    <InsightContainer 
+      client:load
+      year={activeMonth.year}
+      month={activeMonth.month}
+      currentDay={today.day}
+    />
 
     <!-- Navigation Hint -->
     <div class="nav-hint">
