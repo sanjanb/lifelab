@@ -38,7 +38,7 @@
 
 <nav class="nav" id="nav">
   <a href="/lifelab/" class="nav-item" class:active={isActive('/')}>
-    Dashboard
+    Home
   </a>
   
   {#each navItems as item}
