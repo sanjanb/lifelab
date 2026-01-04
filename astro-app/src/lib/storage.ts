@@ -152,6 +152,11 @@ export function deleteEntry(domainId: string, entryId: string): boolean {
  */
 export function clearDomain(domainId: string): boolean {
   try {
+    // Browser check - localStorage only available in browser
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return false;
+    }
+
     if (!domainId) {
       console.error("clearDomain: domainId is required");
       return false;
@@ -225,6 +230,11 @@ export function getMonthlyNotebook(
  */
 export function saveMonthlyNotebook(notebook: MonthlyNotebook): boolean {
   try {
+    // Browser check - localStorage only available in browser
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return false;
+    }
+
     if (!notebook || typeof notebook !== "object") {
       console.error("saveMonthlyNotebook: notebook must be an object");
       return false;
@@ -251,6 +261,11 @@ export function saveMonthlyNotebook(notebook: MonthlyNotebook): boolean {
  */
 export function getAllMonthlyNotebooks(): MonthlyNotebook[] {
   try {
+    // Browser check - localStorage only available in browser
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return [];
+    }
+
     const notebooks: MonthlyNotebook[] = [];
     const prefix = "lifelab_notebook_";
 
@@ -286,6 +301,11 @@ export function getAllMonthlyNotebooks(): MonthlyNotebook[] {
  */
 export function deleteMonthlyNotebook(year: number, month: number): boolean {
   try {
+    // Browser check - localStorage only available in browser
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return false;
+    }
+
     const storageKey = getNotebookStorageKey(year, month);
     localStorage.removeItem(storageKey);
     return true;
