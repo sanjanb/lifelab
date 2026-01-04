@@ -1,12 +1,12 @@
 /**
  * LifeLab Storage Layer
  * Framework-agnostic localStorage abstraction
- * 
+ *
  * MIGRATION NOTE: Direct port from original store.js
  * No behavior changes - conversion only
  */
 
-import { getStorageKey } from './config';
+import { getStorageKey } from "./config";
 
 export interface Entry {
   id: string;
@@ -45,7 +45,7 @@ export interface MonthlyNotebook {
 export function saveEntry(domainId: string, entry: Entry): boolean {
   try {
     if (!domainId || !entry) {
-      console.error('saveEntry: domainId and entry are required');
+      console.error("saveEntry: domainId and entry are required");
       return false;
     }
 
@@ -67,7 +67,7 @@ export function saveEntry(domainId: string, entry: Entry): boolean {
     localStorage.setItem(storageKey, JSON.stringify(entries));
     return true;
   } catch (error) {
-    console.error('saveEntry error:', error);
+    console.error("saveEntry error:", error);
     return false;
   }
 }
@@ -78,7 +78,7 @@ export function saveEntry(domainId: string, entry: Entry): boolean {
 export function getEntries(domainId: string): Entry[] {
   try {
     if (!domainId) {
-      console.error('getEntries: domainId is required');
+      console.error("getEntries: domainId is required");
       return [];
     }
 
@@ -95,7 +95,7 @@ export function getEntries(domainId: string): Entry[] {
 
     return JSON.parse(data);
   } catch (error) {
-    console.error('getEntries error:', error);
+    console.error("getEntries error:", error);
     return [];
   }
 }
@@ -106,7 +106,7 @@ export function getEntries(domainId: string): Entry[] {
 export function deleteEntry(domainId: string, entryId: string): boolean {
   try {
     if (!domainId || !entryId) {
-      console.error('deleteEntry: domainId and entryId are required');
+      console.error("deleteEntry: domainId and entryId are required");
       return false;
     }
 
@@ -127,7 +127,7 @@ export function deleteEntry(domainId: string, entryId: string): boolean {
     localStorage.setItem(storageKey, JSON.stringify(filteredEntries));
     return true;
   } catch (error) {
-    console.error('deleteEntry error:', error);
+    console.error("deleteEntry error:", error);
     return false;
   }
 }
@@ -138,7 +138,7 @@ export function deleteEntry(domainId: string, entryId: string): boolean {
 export function clearDomain(domainId: string): boolean {
   try {
     if (!domainId) {
-      console.error('clearDomain: domainId is required');
+      console.error("clearDomain: domainId is required");
       return false;
     }
 
@@ -151,7 +151,7 @@ export function clearDomain(domainId: string): boolean {
     localStorage.removeItem(storageKey);
     return true;
   } catch (error) {
-    console.error('clearDomain error:', error);
+    console.error("clearDomain error:", error);
     return false;
   }
 }
@@ -164,22 +164,25 @@ export function clearDomain(domainId: string): boolean {
  * Generate storage key for a monthly notebook
  */
 function getNotebookStorageKey(year: number, month: number): string {
-  const monthStr = String(month).padStart(2, '0');
+  const monthStr = String(month).padStart(2, "0");
   return `lifelab_notebook_${year}_${monthStr}`;
 }
 
 /**
  * Get a monthly notebook from storage
  */
-export function getMonthlyNotebook(year: number, month: number): MonthlyNotebook | null {
+export function getMonthlyNotebook(
+  year: number,
+  month: number
+): MonthlyNotebook | null {
   try {
     if (!Number.isInteger(year) || !Number.isInteger(month)) {
-      console.error('getMonthlyNotebook: year and month must be integers');
+      console.error("getMonthlyNotebook: year and month must be integers");
       return null;
     }
 
     if (month < 1 || month > 12) {
-      console.error('getMonthlyNotebook: month must be between 1 and 12');
+      console.error("getMonthlyNotebook: month must be between 1 and 12");
       return null;
     }
 
@@ -192,7 +195,7 @@ export function getMonthlyNotebook(year: number, month: number): MonthlyNotebook
 
     return JSON.parse(data);
   } catch (error) {
-    console.error('getMonthlyNotebook error:', error);
+    console.error("getMonthlyNotebook error:", error);
     return null;
   }
 }
@@ -202,13 +205,13 @@ export function getMonthlyNotebook(year: number, month: number): MonthlyNotebook
  */
 export function saveMonthlyNotebook(notebook: MonthlyNotebook): boolean {
   try {
-    if (!notebook || typeof notebook !== 'object') {
-      console.error('saveMonthlyNotebook: notebook must be an object');
+    if (!notebook || typeof notebook !== "object") {
+      console.error("saveMonthlyNotebook: notebook must be an object");
       return false;
     }
 
     if (!notebook.year || !notebook.month) {
-      console.error('saveMonthlyNotebook: notebook missing year or month');
+      console.error("saveMonthlyNotebook: notebook missing year or month");
       return false;
     }
 
@@ -218,7 +221,7 @@ export function saveMonthlyNotebook(notebook: MonthlyNotebook): boolean {
     localStorage.setItem(storageKey, JSON.stringify(notebook));
     return true;
   } catch (error) {
-    console.error('saveMonthlyNotebook error:', error);
+    console.error("saveMonthlyNotebook error:", error);
     return false;
   }
 }
@@ -229,7 +232,7 @@ export function saveMonthlyNotebook(notebook: MonthlyNotebook): boolean {
 export function getAllMonthlyNotebooks(): MonthlyNotebook[] {
   try {
     const notebooks: MonthlyNotebook[] = [];
-    const prefix = 'lifelab_notebook_';
+    const prefix = "lifelab_notebook_";
 
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -253,7 +256,7 @@ export function getAllMonthlyNotebooks(): MonthlyNotebook[] {
 
     return notebooks;
   } catch (error) {
-    console.error('getAllMonthlyNotebooks error:', error);
+    console.error("getAllMonthlyNotebooks error:", error);
     return [];
   }
 }
@@ -267,7 +270,7 @@ export function deleteMonthlyNotebook(year: number, month: number): boolean {
     localStorage.removeItem(storageKey);
     return true;
   } catch (error) {
-    console.error('deleteMonthlyNotebook error:', error);
+    console.error("deleteMonthlyNotebook error:", error);
     return false;
   }
 }
@@ -279,12 +282,12 @@ export function closeMonthlyNotebook(year: number, month: number): boolean {
   try {
     const notebook = getMonthlyNotebook(year, month);
     if (!notebook) {
-      console.error('Cannot close: notebook not found');
+      console.error("Cannot close: notebook not found");
       return false;
     }
 
     if (notebook._closed) {
-      console.warn('Notebook already closed');
+      console.warn("Notebook already closed");
       return true;
     }
 
@@ -293,7 +296,7 @@ export function closeMonthlyNotebook(year: number, month: number): boolean {
 
     return saveMonthlyNotebook(notebook);
   } catch (error) {
-    console.error('closeMonthlyNotebook error:', error);
+    console.error("closeMonthlyNotebook error:", error);
     return false;
   }
 }
@@ -306,7 +309,7 @@ export function isNotebookClosed(year: number, month: number): boolean {
     const notebook = getMonthlyNotebook(year, month);
     return notebook ? notebook._closed === true : false;
   } catch (error) {
-    console.error('isNotebookClosed error:', error);
+    console.error("isNotebookClosed error:", error);
     return false;
   }
 }

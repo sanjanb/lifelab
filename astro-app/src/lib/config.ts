@@ -1,7 +1,7 @@
 /**
  * LifeLab Domain Configuration
  * Framework-agnostic configuration for all life domains
- * 
+ *
  * MIGRATION NOTE: This is a direct port from the original config.js
  * No changes to structure or behavior - conversion only
  */
