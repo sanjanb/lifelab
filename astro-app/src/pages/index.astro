@@ -81,71 +81,61 @@ const domains = insight?.domains || [];
 const signalArray = insight ? getSignalArray(insight) : [];
 const heatmapMatrix = insight ? getHeatmapMatrix(insight) : [];
 const currentDay = today.day;
+
+// Month display
+const monthName = new Date(activeMonth.year, activeMonth.month - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 ---
 
 <BaseLayout title="LifeLab - Home">
-  <div class="home-view">
-    <!-- Phase H2: Monthly Context + Line Graph -->
-    <MonthlyHeader 
-      client:load
-      currentMonth={activeMonth}
-      displayName={metadata.displayName}
-      isCurrentMonth={metadata.isCurrentMonth}
-      isFutureMonth={metadata.isFutureMonth}
-    />
+  <div class="insight-home">
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1 class="page-title">LifeLab</h1>
+      <p class="page-subtitle">
+        {monthName} • 
+        <a href="/notebook" class="edit-link">Edit in Notebook →</a>
+      </p>
+    </header>
 
-    <DailyActivityGraph 
-      client:visible
-      dailyCounts={dailyCounts}
-      daysInMonth={daysInMonth}
-      currentDay={todayDay}
-    />
+    <!-- Section 1: Temporal Flow (Line Graph) -->
+    <section class="insight-section">
+      <h2 class="insight-title">Monthly Activity Flow</h2>
+      <InsightLineGraph 
+        client:visible
+        {days}
+        dailySignals={signalArray}
+        {currentDay}
+      />
+    </section>
 
-    <!-- Phase H3: Monthly Notebook (Primary Surface) -->
-    <div class="notebook-section">
-      <h2 class="section-title">Daily Rows</h2>
-      
-      <div class="daily-rows">
-        <div class="grid-header">
-          <div class="col-day">Day</div>
-          <div class="col-controls">Intent / Quality / Outcome</div>
-          <div class="col-domains">Active Domains</div>
-        </div>
+    <!-- Section 2: Distribution View (Heatmap Matrix) -->
+    <section class="insight-section">
+      <h2 class="insight-title">Domain Distribution</h2>
+      <InsightHeatmap 
+        client:visible
+        {days}
+        {domains}
+        {heatmapMatrix}
+        {currentDay}
+      />
+    </section>
 
-        {days.map((day) => (
-          <div 
-            class:list={['day-row', { 'day-row-today': day.isToday }]} 
-            data-day={day.dayNumber}
-          >
-            <div class="col-day">
-              <div class="day-number">{day.dayNumber}</div>
-              <div class="day-name">{day.dayName}</div>
-              {day.isToday && <div class="today-badge">Today</div>}
-            </div>
+    <!-- Section 3: Pattern Observations (Text Analytics) -->
+    <section class="insight-section">
+      <InsightObservations 
+        client:visible
+        {observations}
+        {monthSummary}
+      />
+    </section>
 
-            <div class="col-controls">
-              <DailyRowControls 
-                client:visible
-                year={activeMonth.year}
-                month={activeMonth.month}
-                dayNumber={day.dayNumber}
-                initialData={{}}
-              />
-            </div>
-
-            <div class="col-domains">
-              <DomainPresenceBadges 
-                client:visible
-                dayNumber={day.dayNumber}
-                activeDomains={[]}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+    <!-- Navigation Hint -->
+    <div class="nav-hint">
+      <p>
+        This page shows insights only. 
+        To add or edit entries, visit <a href="/notebook">Notebook</a>.
+      </p>
     </div>
-
-    <!-- Phase H4: Inline Analytics (Post-Notebook) -->
     <div class="analytics-section">
       <h2 class="section-title">Monthly Insights</h2>
       
