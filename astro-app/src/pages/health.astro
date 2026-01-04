@@ -38,4 +38,10 @@ const domainConfig = getDomainById(domainId)!;
   .domain-description { color: #666; margin-bottom: 2rem; }
   .quick-entry-section, .history-section { margin-bottom: 1.5rem; }
   .quick-entry-section h3, .history-section h3 { margin-bottom: 1rem; font-size: 1.25rem; }
+
+  @media (max-width: 640px) {
+    .domain-title { font-size: 1.375rem; }
+    .domain-description { font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .quick-entry-section h3, .history-section h3 { font-size: 1.125rem; }
+  }
 </style>
