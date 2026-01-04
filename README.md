@@ -1,13 +1,49 @@
 # LifeLab
 
-A lightweight personal metrics dashboard for tracking and visualizing your life across multiple domains. Built with vanilla HTML, CSS, and JavaScript—no frameworks, no build tools, just simple and effective tracking.
+A lightweight personal metrics dashboard for tracking and visualizing your life across multiple domains.
+
+## Project Structure
+
+This repository contains two versions of LifeLab:
+
+### Original Version (Root Directory)
+The original vanilla JavaScript version - simple HTML, CSS, and JavaScript with no build tools.
+
+### Astro + Svelte Version (`astro-app/`)
+**[Active Development]** Modern migration using Astro for static site generation and Svelte for interactive components. This version is being deployed to GitHub Pages.
+
+- 📁 **Source**: `astro-app/src/`
+- 📚 **Documentation**: `astro-app/docs/`
+- 🚀 **Deployment**: Automated via GitHub Actions to GitHub Pages
+
+## Quick Start
+
+### Run Astro Version (Recommended)
+
+```bash
+cd astro-app
+npm install
+npm run dev
+```
+
+Visit `http://localhost:4321`
+
+### Run Original Version
+
+Simply open `index.html` in your browser.
+
+## Deployment
+
+The Astro version automatically deploys to GitHub Pages when you push to the `main` branch.
+
+**Live Site**: https://[your-username].github.io/lifelab
 
 ## What is LifeLab?
 
 LifeLab helps you monitor and improve different areas of your life by providing a unified dashboard where you can:
 
 - Track daily habits
-- Log learning activities
+- Log learning activities  
 - Record career milestones
 - Monitor health metrics
 
@@ -15,14 +51,14 @@ All data is stored locally in your browser, giving you complete privacy and cont
 
 ## Features
 
-### 🎯 Multi-Domain Tracking
+### Multi-Domain Tracking
 
 - **Habits**: Track daily habits with streak calculation
 - **Learning**: Log what you're learning with notes
 - **Career**: Record professional achievements and goals
 - **Health**: Monitor health-related activities and metrics
 
-### 📊 Dashboard Overview
+### Dashboard Overview
 
 - Monthly summaries for each domain
 - At-a-glance statistics showing entries this month
