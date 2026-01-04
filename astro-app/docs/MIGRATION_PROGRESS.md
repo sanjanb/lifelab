@@ -108,30 +108,6 @@
 
 ## ⏳ Remaining Work
 
-### Phase M4.2: Notebook Daily Controls (TODO)
-
-Components needed:
-
-- `DailyRowControls.svelte` - Intent/Quality/Outcome dropdowns
-- `DomainPresenceBadges.svelte` - Domain activity indicators
-
-Pages needed:
-
-- `notebook.astro` - Monthly notebook view with daily rows
-
-### Phase M4.3: Notebook Management (TODO)
-
-Components needed:
-
-- `NotebookMonthNavigation.svelte` - Previous/Next month buttons
-- `MonthlyReflectionEditor.svelte` - Reflection textarea with auto-save
-- `MonthActionButtons.svelte` - Export/Import/Close month actions
-
-Additional work:
-
-- Implement `notebookSync.ts` - Non-destructive sync logic
-- Port `monthlyNotebook.js` logic to TypeScript
-
 ### Phase M5: Storage & State Integration (TODO)
 
 Tasks:
@@ -140,6 +116,9 @@ Tasks:
 - Prevent reactive over-fetching
 - Document data flow between islands
 - Test cross-island communication via events
+- Validate notebook sync behavior
+- Test month closure and reopening
+- Verify export/import functionality
 
 ### Phase M6: Performance Hardening (TODO)
 
