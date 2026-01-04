@@ -94,10 +94,11 @@
     }
   }
 
-  // Auto-save on change
-  $: if (intent !== initialData.intent || 
-         quality !== initialData.quality || 
-         outcome !== initialData.outcome) {
+  // Auto-save on change (only in browser)
+  $: if (typeof window !== 'undefined' && 
+         (intent !== initialData.intent || 
+          quality !== initialData.quality || 
+          outcome !== initialData.outcome)) {
     saveChanges();
   }
 </script>

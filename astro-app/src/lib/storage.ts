@@ -153,7 +153,7 @@ export function deleteEntry(domainId: string, entryId: string): boolean {
 export function clearDomain(domainId: string): boolean {
   try {
     // Browser check - localStorage only available in browser
-    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    if (typeof window === "undefined" || typeof localStorage === "undefined") {
       return false;
     }
 
@@ -231,7 +231,7 @@ export function getMonthlyNotebook(
 export function saveMonthlyNotebook(notebook: MonthlyNotebook): boolean {
   try {
     // Browser check - localStorage only available in browser
-    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    if (typeof window === "undefined" || typeof localStorage === "undefined") {
       return false;
     }
 
@@ -262,7 +262,7 @@ export function saveMonthlyNotebook(notebook: MonthlyNotebook): boolean {
 export function getAllMonthlyNotebooks(): MonthlyNotebook[] {
   try {
     // Browser check - localStorage only available in browser
-    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    if (typeof window === "undefined" || typeof localStorage === "undefined") {
       return [];
     }
 
@@ -302,7 +302,7 @@ export function getAllMonthlyNotebooks(): MonthlyNotebook[] {
 export function deleteMonthlyNotebook(year: number, month: number): boolean {
   try {
     // Browser check - localStorage only available in browser
-    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    if (typeof window === "undefined" || typeof localStorage === "undefined") {
       return false;
     }
 
