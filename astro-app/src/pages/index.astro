@@ -21,6 +21,7 @@ import MonthlyOutcomeSummary from '../components/MonthlyOutcomeSummary.svelte';
 import DomainParticipationSummary from '../components/DomainParticipationSummary.svelte';
 import TrendObservations from '../components/TrendObservations.svelte';
 import MonthlyReflectionEditor from '../components/MonthlyReflectionEditor.svelte';
+import MonthClosureButton from '../components/MonthClosureButton.svelte';
 import { getCurrentMonth, getMonthMetadata, parseMonthKey, getTodayInfo } from '../lib/monthResolution';
 import { getDaysInMonth } from '../lib/utils';
 
@@ -141,6 +142,13 @@ const dailyCounts = Array(daysInMonth).fill(0);
         year={activeMonth.year}
         month={activeMonth.month}
         initialReflection=""
+      />
+
+      <MonthClosureButton 
+        client:visible
+        year={activeMonth.year}
+        month={activeMonth.month}
+        isClosed={metadata.isClosed}
       />
     </div>
   </div>
