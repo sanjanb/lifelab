@@ -224,10 +224,6 @@
     transform: translateY(1px);
   }
 
-  .action-btn .icon {
-    font-size: 1.2rem;
-  }
-
   .export-btn:hover {
     border-color: #4CAF50;
     color: #4CAF50;
