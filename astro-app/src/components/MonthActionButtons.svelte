@@ -9,6 +9,7 @@
 
   import { getMonthlyNotebook, saveMonthlyNotebook } from '../lib/storage';
   import type { MonthlyNotebook } from '../lib/storage';
+  import Icon from './Icon.svelte';
 
   export let year: number;
   export let month: number;
@@ -123,23 +124,23 @@
 
 <div class="month-actions">
   <button class="action-btn export-btn" on:click={exportMonth}>
-    <span class="icon">📥</span>
+    <Icon name="download" size={18} />
     Export Month
   </button>
 
   <button class="action-btn import-btn" on:click={triggerImport}>
-    <span class="icon">📤</span>
+    <Icon name="upload" size={18} />
     Import Month
   </button>
 
   {#if !isClosed}
     <button class="action-btn close-btn" on:click={showCloseDialog}>
-      <span class="icon">🔒</span>
+      <Icon name="lock" size={18} />
       Close Month
     </button>
   {:else}
     <div class="closed-badge">
-      <span class="icon">🔒</span>
+      <Icon name="lock" size={18} />
       Month Closed (Read-Only)
     </div>
   {/if}
