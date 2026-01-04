@@ -130,7 +130,6 @@
       {charactersRemaining} characters remaining
     </span>
   </div>
-  </div>
 </div>
 
 <style>
