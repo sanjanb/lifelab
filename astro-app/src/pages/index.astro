@@ -1,26 +1,48 @@
 ---
 /**
- * Dashboard Page
- * Main entry point showing domain overview cards
+ * Home Page - Monthly Notebook View
  * 
- * MIGRATION NOTE: Converted from index.html dashboard section
- * Static rendering only - no interactivity yet
+ * HOME PAGE CONTRACT:
+ * - Home page always represents the CURRENT MONTH
+ * - No global dashboards
+ * - No year-level summaries
+ * - All content scoped to active month
+ * 
+ * PHASE H3: Monthly Notebook as Primary Surface
+ * The notebook is the main interaction area.
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getAllDomains } from '../lib/config';
+import MonthlyHeader from '../components/MonthlyHeader.svelte';
+import DailyActivityGraph from '../components/DailyActivityGraph.svelte';
+import DailyRowControls from '../components/DailyRowControls.svelte';
+import DomainPresenceBadges from '../components/DomainPresenceBadges.svelte';
+import MonthlyReflectionEditor from '../components/MonthlyReflectionEditor.svelte';
+import { getCurrentMonth, getMonthMetadata, parseMonthKey, getTodayInfo } from '../lib/monthResolution';
+import { getDaysInMonth } from '../lib/utils';
 
-const domains = getAllDomains();
+// Resolve active month from URL or default to current
+const url = new URL(Astro.request.url);
+const monthParam = url.searchParams.get('month');
 
-// Compute domain stats (server-side / build-time)
-// Note: localStorage access will be added in Phase M3 with Svelte islands
-const domainStats = domains.map((domain) => {
-  return {
-    ...domain,
-    totalEntries: 0,
-    lastActivity: null,
-  };
-});
+const activeMonth = monthParam ? parseMonthKey(monthParam) || getCurrentMonth() : getCurrentMonth();
+const metadata = getMonthMetadata(activeMonth);
+const daysInMonth = getDaysInMonth(activeMonth.year, activeMonth.month);
+
+// Get today info for highlighting
+const today = getTodayInfo();
+const todayDay = metadata.isCurrentMonth ? today.day : null;
+
+// Create array of days for rendering
+const days = Array.from({ length: daysInMonth }, (_, i) => ({
+  dayNumber: i + 1,
+  dayName: new Date(activeMonth.year, activeMonth.month - 1, i + 1).toLocaleDateString('en-US', { weekday: 'short' }),
+  date: new Date(activeMonth.year, activeMonth.month - 1, i + 1).toISOString().split('T')[0],
+  isToday: metadata.isCurrentMonth && (i + 1) === today.day
+}));
+
+// Placeholder data for graph (will be populated by Svelte component)
+const dailyCounts = Array(daysInMonth).fill(0);
 ---
 
 <BaseLayout title="LifeLab - Dashboard">
