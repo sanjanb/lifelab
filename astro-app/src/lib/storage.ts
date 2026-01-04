@@ -44,6 +44,11 @@ export interface MonthlyNotebook {
  */
 export function saveEntry(domainId: string, entry: Entry): boolean {
   try {
+    // Browser check - localStorage only available in browser
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return false;
+    }
+
     if (!domainId || !entry) {
       console.error("saveEntry: domainId and entry are required");
       return false;
@@ -78,7 +83,7 @@ export function saveEntry(domainId: string, entry: Entry): boolean {
 export function getEntries(domainId: string): Entry[] {
   try {
     // Browser check - localStorage only available in browser
-    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    if (typeof window === "undefined" || typeof localStorage === "undefined") {
       return [];
     }
 
@@ -110,6 +115,11 @@ export function getEntries(domainId: string): Entry[] {
  */
 export function deleteEntry(domainId: string, entryId: string): boolean {
   try {
+    // Browser check - localStorage only available in browser
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return false;
+    }
+
     if (!domainId || !entryId) {
       console.error("deleteEntry: domainId and entryId are required");
       return false;
@@ -182,7 +192,7 @@ export function getMonthlyNotebook(
 ): MonthlyNotebook | null {
   try {
     // Browser check - localStorage only available in browser
-    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    if (typeof window === "undefined" || typeof localStorage === "undefined") {
       return null;
     }
 
