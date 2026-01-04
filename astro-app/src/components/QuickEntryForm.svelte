@@ -257,4 +257,35 @@
     border-left: 3px solid #dc3545;
     margin-top: 0.5rem;
   }
+
+  /* Responsive design */
+  @media (max-width: 640px) {
+    .quick-entry-form-container {
+      padding: 0;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      font-size: 0.9rem;
+    }
+
+    .form-input,
+    .form-textarea {
+      font-size: 0.95rem;
+      padding: 0.625rem;
+    }
+
+    .form-actions {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 </style>

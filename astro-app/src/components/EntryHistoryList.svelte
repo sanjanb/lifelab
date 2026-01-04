@@ -291,4 +291,42 @@
   .btn-secondary:hover {
     background-color: #e0e0e0;
   }
+
+  /* Responsive design */
+  @media (max-width: 640px) {
+    .entry-item {
+      padding: 1rem;
+    }
+
+    .entry-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .entry-value {
+      font-size: 0.95rem;
+    }
+
+    .entry-meta {
+      font-size: 0.75rem;
+    }
+
+    .entry-notes {
+      font-size: 0.875rem;
+      padding-left: 0.75rem;
+    }
+
+    .entry-actions {
+      margin-top: 0.75rem;
+    }
+
+    .confirm-actions {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+    }
+  }
 </style>
