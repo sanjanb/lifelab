@@ -120,53 +120,150 @@ const dailyCounts = Array(daysInMonth).fill(0);
 </BaseLayout>
 
 <style>
-  .dashboard {
-    padding: 0;
+  .home-view {
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
-  .domain-card {
+  /* Phase H3: Notebook Section */
+  .notebook-section {
+    margin: 3rem 0;
+  }
+
+  .section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 1.5rem;
+  }
+
+  .daily-rows {
     background: white;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 1.5rem;
-    transition: box-shadow 0.2s;
+    overflow: hidden;
   }
 
-  .domain-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .domain-card-title {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-    color: #222;
-  }
-
-  .domain-card-description {
+  .grid-header {
+    display: grid;
+    grid-template-columns: 100px 1fr 200px;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-bottom: 2px solid #eee;
+    font-weight: 600;
+    font-size: 0.875rem;
     color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
   }
 
-  .domain-card-stats {
-    margin: 1rem 0;
-    padding: 1rem 0;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+  .day-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 200px;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
   }
 
-  .stat {
+  .day-row:last-child {
+    border-bottom: none;
+  }
+
+  .day-row:hover {
+    background-color: #fafafa;
+  }
+
+  .day-row-today {
+    background-color: #fffbf0;
+    border-left: 3px solid #ffd700;
+  }
+
+  .day-row-today:hover {
+    background-color: #fff9e6;
+  }
+
+  .col-day {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
+    flex-direction: column;
+    gap: 0.25rem;
+    position: relative;
   }
 
-  .stat-label {
+  .day-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+    line-height: 1;
+  }
+
+  .day-name {
+    font-size: 0.875rem;
     color: #666;
-    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  .stat-value {
+  .today-badge {
+    background: #ffd700;
+    color: #222;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    width: fit-content;
+    margin-top: 0.25rem;
+  }
+
+  .col-controls {
+    display: flex;
+    align-items: center;
+  }
+
+  .col-domains {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Phase H5: Reflection Section */
+  .reflection-section {
+    margin: 3rem 0 2rem;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .section-title { font-size: 1.0625rem; }
+    .grid-header, .day-row { gap: 0.875rem; padding: 0.875rem; }
+  }
+
+  @media (max-width: 768px) {
+    .grid-header, .day-row { 
+      grid-template-columns: 80px 1fr; 
+      gap: 0.75rem; 
+      padding: 0.75rem; 
+    }
+    
+    .col-domains { 
+      grid-column: 1 / -1; 
+      margin-top: 0.5rem; 
+      padding-top: 0.5rem; 
+      border-top: 1px solid #f0f0f0; 
+    }
+    
+    .grid-header .col-domains {
+      display: none;
+    }
+
+    .day-number { font-size: 1.25rem; }
+    .day-name { font-size: 0.8125rem; }
+    .today-badge { font-size: 0.6875rem; }
+  }
+
+  @media (max-width: 640px) {
+    .section-title { font-size: 1rem; }
+    .grid-header, .day-row { gap: 0.5rem; padding: 0.625rem; }
+    .day-number { font-size: 1.125rem; }
+  }
+</style>
     font-weight: 600;
     color: #222;
   }
