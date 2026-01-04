@@ -114,6 +114,7 @@
 **Documentation**: [PHASE_M5_VALIDATION.md](PHASE_M5_VALIDATION.md)
 
 Tasks:
+
 - ⏳ Run manual browser tests (`npm run dev`)
 - ⏳ Verify storage isolation works correctly
 - ⏳ Test notebook sync non-destructive behavior
