@@ -15,42 +15,49 @@
 ### 🟢 STATIC (Pure Astro, No Hydration)
 
 #### 1. Page Layouts
+
 - **Header Structure**: Logo, title, static branding
 - **Navigation Container**: Nav structure (items are interactive, but container is static)
 - **Footer**: Copyright, links
 
 #### 2. Content Wrappers
+
 - **Main Container**: `<main>` wrapper
 - **Dashboard Grid Container**: Layout grid
 - **Module Containers**: Section wrappers
 
 #### 3. Typography & Labels
+
 - **Headings**: H1, H2, H3 titles
 - **Descriptive Text**: Instructions, help text
 - **Labels**: Form labels (static text)
 
 ---
 
-## 🔵 INTERACTIVE (Svelte Islands with client:* directives)
+## 🔵 INTERACTIVE (Svelte Islands with client:\* directives)
 
 ### Priority 1: Core Interaction Islands
 
 #### Island 1: NavigationMenu
+
 **Location**: Header navigation bar  
 **Interactions**:
+
 - Click navigation items
 - Highlight active route
 - Navigate between views
 
 **Hydration**: `client:load` (immediately visible)  
 **Props**: `domains` array, `currentView`  
-**State**: `activeRoute`  
+**State**: `activeRoute`
 
 ---
 
 #### Island 2: QuickEntryForm
+
 **Location**: Each domain view  
 **Interactions**:
+
 - Form input (text, textarea, date)
 - Form validation
 - Submit entry
@@ -58,13 +65,15 @@
 
 **Hydration**: `client:visible` (below fold)  
 **Props**: `domainId`, `domainConfig`  
-**State**: `formData`, `errors`, `isSubmitting`  
+**State**: `formData`, `errors`, `isSubmitting`
 
 ---
 
 #### Island 3: NotebookMonthNavigation
+
 **Location**: Notebook header  
 **Interactions**:
+
 - Previous/Next month buttons
 - Month/Year display
 - Navigate to different months
@@ -72,13 +81,15 @@
 **Hydration**: `client:load`  
 **Props**: `currentYear`, `currentMonth`  
 **State**: `year`, `month`  
-**Events**: `onMonthChange(year, month)`  
+**Events**: `onMonthChange(year, month)`
 
 ---
 
 #### Island 4: DailyRowControls
+
 **Location**: Each day row in notebook  
 **Interactions**:
+
 - Intent dropdown (✨, 🎯, 🌊)
 - Quality dropdown (⭐⭐⭐, ⭐⭐, ⭐, -)
 - Outcome dropdown (✓, ÷, ✗, -)
@@ -86,26 +97,30 @@
 
 **Hydration**: `client:visible`  
 **Props**: `dayNumber`, `year`, `month`, `initialData`  
-**State**: `intent`, `quality`, `outcome`  
+**State**: `intent`, `quality`, `outcome`
 
 ---
 
 #### Island 5: DomainPresenceBadges
+
 **Location**: Each day row in notebook  
 **Interactions**:
+
 - Display domain badges
 - Click badge to view entries
 - Visual indication of activity
 
 **Hydration**: `client:visible`  
 **Props**: `dayNumber`, `activeDomains`, `allDomains`  
-**State**: None (or minimal hover state)  
+**State**: None (or minimal hover state)
 
 ---
 
 #### Island 6: MonthlyReflectionEditor
+
 **Location**: Notebook bottom  
 **Interactions**:
+
 - Textarea input
 - Auto-save (debounced)
 - Character count (optional)
@@ -113,13 +128,15 @@
 
 **Hydration**: `client:visible`  
 **Props**: `year`, `month`, `initialReflection`  
-**State**: `reflection`, `isSaving`, `lastSaved`  
+**State**: `reflection`, `isSaving`, `lastSaved`
 
 ---
 
 #### Island 7: MonthActionButtons
+
 **Location**: Notebook header  
 **Interactions**:
+
 - Close/Lock month button
 - Export notebooks button
 - Import notebooks button
@@ -127,13 +144,15 @@
 
 **Hydration**: `client:visible`  
 **Props**: `year`, `month`, `isClosed`  
-**State**: `confirmDialog`, `isExporting`, `isImporting`  
+**State**: `confirmDialog`, `isExporting`, `isImporting`
 
 ---
 
 #### Island 8: EntryHistoryList
+
 **Location**: Domain views (below quick entry)  
 **Interactions**:
+
 - Display entry cards
 - Edit entry (inline or modal)
 - Delete entry (with confirmation)
@@ -141,41 +160,46 @@
 
 **Hydration**: `client:visible`  
 **Props**: `domainId`, `entries`  
-**State**: `editingId`, `deleteConfirm`, `currentPage`  
+**State**: `editingId`, `deleteConfirm`, `currentPage`
 
 ---
 
 ### Priority 2: Secondary Islands
 
 #### Island 9: YearViewGrid
+
 **Location**: Year view page  
 **Interactions**:
+
 - Week cell clicks
 - Domain filter toggles
 - Year selector dropdown
 
 **Hydration**: `client:idle`  
 **Props**: `year`, `domains`, `activityData`  
-**State**: `selectedYear`, `activeDomains`, `hoveredWeek`  
+**State**: `selectedYear`, `activeDomains`, `hoveredWeek`
 
 ---
 
 #### Island 10: TimelineFilters
+
 **Location**: Timeline view  
 **Interactions**:
+
 - Domain filter checkboxes
 - Date range picker
 - Search input
 
 **Hydration**: `client:idle`  
 **Props**: `domains`  
-**State**: `filters`, `searchQuery`, `dateRange`  
+**State**: `filters`, `searchQuery`, `dateRange`
 
 ---
 
 ## 🟡 COMPUTED (Hybrid: Astro Renders, Optional Svelte for Interactivity)
 
 ### Computed 1: DashboardDomainCards
+
 **Computation**: Aggregate stats (total entries, streaks, last activity)  
 **Rendering**: Astro can compute at build/request time  
 **Interactivity**: Click to navigate (NavigationMenu handles this)  
@@ -196,6 +220,7 @@ const stats = computeDomainStats(domainId);
 ---
 
 ### Computed 2: NotebookTrendIndicator
+
 **Computation**: Calculate trend from month data (📈↗️➡️↘️📉)  
 **Rendering**: Astro computes trend, renders static icon  
 **Interactivity**: None (display only)  
@@ -214,6 +239,7 @@ const trend = calculateMonthTrend(notebook);
 ---
 
 ### Computed 3: EntryStatistics
+
 **Computation**: Count entries, calculate percentages, streaks  
 **Rendering**: Astro computes at render  
 **Interactivity**: None  
@@ -223,18 +249,18 @@ const trend = calculateMonthTrend(notebook);
 
 ## Island Hydration Strategy
 
-| Island | Directive | Reason |
-|--------|-----------|--------|
-| NavigationMenu | `client:load` | Immediately visible, core UX |
-| QuickEntryForm | `client:visible` | Below fold, can lazy load |
-| NotebookMonthNavigation | `client:load` | Core interaction, above fold |
-| DailyRowControls | `client:visible` | Many instances, lazy load |
-| DomainPresenceBadges | `client:visible` | Many instances, lazy load |
-| MonthlyReflectionEditor | `client:visible` | Below fold |
-| MonthActionButtons | `client:visible` | Secondary actions |
-| EntryHistoryList | `client:visible` | Below quick entry |
-| YearViewGrid | `client:idle` | Separate view, can defer |
-| TimelineFilters | `client:idle` | Secondary controls |
+| Island                  | Directive        | Reason                       |
+| ----------------------- | ---------------- | ---------------------------- |
+| NavigationMenu          | `client:load`    | Immediately visible, core UX |
+| QuickEntryForm          | `client:visible` | Below fold, can lazy load    |
+| NotebookMonthNavigation | `client:load`    | Core interaction, above fold |
+| DailyRowControls        | `client:visible` | Many instances, lazy load    |
+| DomainPresenceBadges    | `client:visible` | Many instances, lazy load    |
+| MonthlyReflectionEditor | `client:visible` | Below fold                   |
+| MonthActionButtons      | `client:visible` | Secondary actions            |
+| EntryHistoryList        | `client:visible` | Below quick entry            |
+| YearViewGrid            | `client:idle`    | Separate view, can defer     |
+| TimelineFilters         | `client:idle`    | Secondary controls           |
 
 ---
 
@@ -277,7 +303,7 @@ export function saveEntry(domainId, entry) {
 // Svelte component calls utility
 <script>
   import { saveEntry } from '$lib/storage';
-  
+
   function handleSubmit() {
     saveEntry('habits', formData);
   }
@@ -291,10 +317,11 @@ const entries = getEntries('habits');
 ```
 
 **❌ Avoid**: Svelte stores tied to storage
+
 ```javascript
 // Don't do this - creates tight coupling
-import { writable } from 'svelte/store';
-export const habitsStore = writable(getEntries('habits'));
+import { writable } from "svelte/store";
+export const habitsStore = writable(getEntries("habits"));
 ```
 
 ---
@@ -302,6 +329,7 @@ export const habitsStore = writable(getEntries('habits'));
 ## Anti-Patterns to Avoid
 
 ### ❌ Don't Hydrate Entire Pages
+
 ```astro
 <!-- BAD: Entire notebook as one island -->
 <NotebookPage client:load {data} />
@@ -311,14 +339,14 @@ export const habitsStore = writable(getEntries('habits'));
 <!-- GOOD: Targeted islands -->
 <div class="notebook-view">
   <NotebookMonthNav client:load {year} {month} />
-  
+
   {#each days as day}
     <div class="day-row">
       <DailyRowControls client:visible {day} />
       <DomainBadges client:visible {day.domains} />
     </div>
   {/each}
-  
+
   <ReflectionEditor client:visible {reflection} />
 </div>
 ```
@@ -326,9 +354,10 @@ export const habitsStore = writable(getEntries('habits'));
 ---
 
 ### ❌ Don't Create Global Stores
+
 ```javascript
 // BAD: Global reactive store
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 export const globalNotebook = writable(null);
 ```
 
@@ -336,7 +365,7 @@ export const globalNotebook = writable(null);
 // GOOD: Each island manages its own state
 <script>
   let intent = props.initialIntent;
-  
+
   function updateIntent(newIntent) {
     intent = newIntent;
     saveToStorage(dayId, { intent });
@@ -347,6 +376,7 @@ export const globalNotebook = writable(null);
 ---
 
 ### ❌ Don't Re-fetch on Every State Change
+
 ```javascript
 // BAD: Reactive over-fetching
 $: entries = getEntries(domainId); // Re-reads localStorage constantly
@@ -373,7 +403,7 @@ After migration, verify:
 ✅ **Bundle**: JS payload <100KB (excluding storage data)  
 ✅ **Hydration**: <10 islands per page  
 ✅ **Behavior**: All user flows unchanged  
-✅ **Data**: No storage format changes  
+✅ **Data**: No storage format changes
 
 ---
 
