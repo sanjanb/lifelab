@@ -8,6 +8,7 @@
 ## ✅ Completed Phases
 
 ### Phase M1: Baseline & Constraints ✅
+
 - **M1.1**: Documented current system behavior
   - Created `docs/CURRENT_SYSTEM_BEHAVIOR.md`
   - Catalogued all interactive elements
@@ -20,6 +21,7 @@
   - Established anti-patterns to avoid
 
 ### Phase M2: Introduce Astro (Structure Only) ✅
+
 - **M2.1**: Created Astro project shell
   - Initialized Astro project in `astro-app/`
   - Configured for static site generation
@@ -32,6 +34,7 @@
   - Verified visual parity
 
 ### Phase M3: Add Svelte (Interaction Layer) ✅
+
 - **M3.1**: Installed Svelte integration
   - Added `@astrojs/svelte` package
   - Configured `astro.config.mjs`
@@ -43,12 +46,13 @@
   - Established data flow patterns
 
 ### Phase M4.1: Domain Interactions (Partial) ✅
+
 - **Components Created**:
   - ✅ `NavigationMenu.svelte` - Interactive navigation with active states
   - ✅ `QuickEntryForm.svelte` - Domain entry form with validation
   - ✅ `EntryHistoryList.svelte` - Entry display with delete functionality
-  
 - **Pages Migrated**:
+
   - ✅ `index.astro` - Dashboard with domain cards
   - ✅ `habits.astro` - Habits page with interactive islands
   - ✅ `learning.astro` - Learning page with interactive islands
@@ -65,32 +69,42 @@
 ## ⏳ Remaining Work
 
 ### Phase M4.2: Notebook Daily Controls (TODO)
+
 Components needed:
+
 - `DailyRowControls.svelte` - Intent/Quality/Outcome dropdowns
 - `DomainPresenceBadges.svelte` - Domain activity indicators
 
 Pages needed:
+
 - `notebook.astro` - Monthly notebook view with daily rows
 
 ### Phase M4.3: Notebook Management (TODO)
+
 Components needed:
+
 - `NotebookMonthNavigation.svelte` - Previous/Next month buttons
 - `MonthlyReflectionEditor.svelte` - Reflection textarea with auto-save
 - `MonthActionButtons.svelte` - Export/Import/Close month actions
 
 Additional work:
+
 - Implement `notebookSync.ts` - Non-destructive sync logic
 - Port `monthlyNotebook.js` logic to TypeScript
 
 ### Phase M5: Storage & State Integration (TODO)
+
 Tasks:
+
 - Verify storage isolation (framework-agnostic)
 - Prevent reactive over-fetching
 - Document data flow between islands
 - Test cross-island communication via events
 
 ### Phase M6: Performance Hardening (TODO)
+
 Tasks:
+
 - Audit hydration strategy for all islands
 - Remove unused JavaScript from original system
 - Measure interaction latency (<50ms target)
@@ -98,7 +112,9 @@ Tasks:
 - Optimize bundle size (<100KB target)
 
 ### Phase M7: GitHub Pages Deployment (TODO)
+
 Tasks:
+
 - Configure `site` and `base` in `astro.config.mjs`
 - Set up GitHub Actions workflow
 - Test deployment to GitHub Pages
@@ -110,12 +126,12 @@ Tasks:
 ## Migration Metrics
 
 ### Code Organization
-- **Original Structure**: 
+
+- **Original Structure**:
   - Vanilla JavaScript (ES6+)
   - 1 HTML entry point
   - 12+ separate JS files
   - Manual DOM manipulation
-  
 - **New Structure**:
   - Astro pages (static rendering)
   - Svelte islands (targeted interactivity)
@@ -123,29 +139,32 @@ Tasks:
   - Component-based architecture
 
 ### Performance Goals
-| Metric | Target | Status |
-|--------|--------|--------|
-| Dropdown Response | <50ms | ⏳ Not tested |
-| Lighthouse Score | >90 | ⏳ Not tested |
-| JS Bundle Size | <100KB | ⏳ Not measured |
-| Islands per Page | <10 | ✅ Currently 3 |
+
+| Metric            | Target | Status          |
+| ----------------- | ------ | --------------- |
+| Dropdown Response | <50ms  | ⏳ Not tested   |
+| Lighthouse Score  | >90    | ⏳ Not tested   |
+| JS Bundle Size    | <100KB | ⏳ Not measured |
+| Islands per Page  | <10    | ✅ Currently 3  |
 
 ### Behavior Parity
-| Feature | Original | Migrated | Status |
-|---------|----------|----------|--------|
-| Navigation | ✅ Working | ✅ Working | ✅ Parity |
-| Quick Entry | ✅ Working | ✅ Working | ✅ Parity |
-| Entry History | ✅ Working | ✅ Working | ✅ Parity |
-| Daily Controls | ✅ Working | ⏳ Not migrated | 🔲 Pending |
-| Notebook Sync | ✅ Working | ⏳ Not migrated | 🔲 Pending |
+
+| Feature          | Original   | Migrated        | Status     |
+| ---------------- | ---------- | --------------- | ---------- |
+| Navigation       | ✅ Working | ✅ Working      | ✅ Parity  |
+| Quick Entry      | ✅ Working | ✅ Working      | ✅ Parity  |
+| Entry History    | ✅ Working | ✅ Working      | ✅ Parity  |
+| Daily Controls   | ✅ Working | ⏳ Not migrated | 🔲 Pending |
+| Notebook Sync    | ✅ Working | ⏳ Not migrated | 🔲 Pending |
 | Month Navigation | ✅ Working | ⏳ Not migrated | 🔲 Pending |
-| Export/Import | ✅ Working | ⏳ Not migrated | 🔲 Pending |
+| Export/Import    | ✅ Working | ⏳ Not migrated | 🔲 Pending |
 
 ---
 
 ## Key Architectural Decisions
 
 ### ✅ What's Working Well
+
 1. **Island Architecture**: Clean separation between static (Astro) and interactive (Svelte)
 2. **Framework-Agnostic Storage**: Utility functions work in both Astro and Svelte
 3. **TypeScript Migration**: Type safety improves developer experience
@@ -153,11 +172,13 @@ Tasks:
 5. **Hydration Strategy**: `client:visible` for below-fold components reduces initial load
 
 ### ⚠️ Challenges Encountered
+
 1. **localStorage at Build Time**: Can't access in Astro SSG, must hydrate client-side
 2. **Base Path**: GitHub Pages subpath requires careful asset path management
 3. **Module Context**: Svelte `<script context="module">` for shared utilities
 
 ### 🎯 Best Practices Established
+
 1. **No Global Stores**: Each island manages local state only
 2. **Explicit Updates**: No reactive re-fetching from localStorage
 3. **Props Down, Events Up**: Unidirectional data flow
@@ -168,20 +189,24 @@ Tasks:
 ## Next Immediate Steps
 
 1. **Create Year View Page** (stub):
+
    - `year.astro` - Placeholder for Phase M4.3
 
 2. **Create Notebook Page** (Phase M4.2):
+
    - Port notebook sync logic to TypeScript
    - Create `DailyRowControls.svelte`
    - Create `DomainPresenceBadges.svelte`
    - Build `notebook.astro` with daily rows
 
 3. **Complete Notebook Features** (Phase M4.3):
+
    - Month navigation component
    - Reflection editor with auto-save
    - Export/Import functionality
 
 4. **Test & Optimize** (Phases M5-M6):
+
    - Behavior parity testing
    - Performance benchmarking
    - Bundle size optimization
@@ -245,7 +270,7 @@ Before considering migration complete:
 ✅ **Data Compatibility**: Existing localStorage data works unchanged  
 ✅ **Visual Parity**: UI looks identical to original  
 ✅ **No Regressions**: No bugs introduced  
-✅ **Documentation**: All decisions and patterns documented  
+✅ **Documentation**: All decisions and patterns documented
 
 ---
 
