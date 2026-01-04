@@ -145,8 +145,8 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
     border-bottom: 2px solid #e5e7eb;
   }
 
-  .day-header {
-    min-width: 60px;
+  .domain-header-label {
+    min-width: 120px;
     text-align: left;
     padding-left: 1rem;
     position: sticky;
@@ -155,14 +155,28 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
     z-index: 11;
   }
 
-  .domain-header {
-    min-width: 80px;
+  .day-header {
+    min-width: 40px;
+    max-width: 40px;
     text-align: center;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.875rem;
   }
 
-  .domain-label {
+  .day-header.today {
+    background-color: #fef2f2;
+    font-weight: 700;
+  }
+
+  .day-label {
     writing-mode: horizontal-tb;
-    white-space: nowrap;
+  }
+
+  .today-marker {
+    color: #ef4444;
+    font-size: 1.25rem;
+    line-height: 0.5;
+    margin-top: 2px;
   }
 
   /* Body cells */
@@ -174,16 +188,8 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
     background-color: #fafafa;
   }
 
-  tbody tr.today {
-    background-color: #fef2f2;
-  }
-
-  tbody tr.today:hover {
-    background-color: #fee2e2;
-  }
-
-  .day-cell {
-    padding: 0.5rem 1rem;
+  .domain-cell {
+    padding: 0.75rem 1rem;
     font-weight: 500;
     color: #1f2937;
     position: sticky;
@@ -191,35 +197,20 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
     background: white;
     border-right: 1px solid #e5e7eb;
     z-index: 5;
+    min-width: 120px;
   }
 
-  tbody tr:hover .day-cell {
+  tbody tr:hover .domain-cell {
     background-color: #fafafa;
   }
 
-  tbody tr.today .day-cell {
-    background-color: #fef2f2;
-  }
-
-  tbody tr.today:hover .day-cell {
-    background-color: #fee2e2;
-  }
-
-  .day-number {
-    font-size: 1rem;
-  }
-
-  .today-badge {
-    font-size: 0.6875rem;
-    color: #ef4444;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin-top: 2px;
+  .domain-name {
+    font-size: 0.9375rem;
   }
 
   .heat-cell {
-    width: 80px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     text-align: center;
     border-right: 1px solid #f3f4f6;
     transition: opacity 0.15s ease;
@@ -227,6 +218,11 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
 
   .heat-cell:hover {
     opacity: 0.8;
+  }
+
+  .heat-cell.today-col {
+    border-left: 2px solid #ef4444;
+    border-right: 2px solid #ef4444;
   }
 
   /* Legend */
@@ -281,17 +277,25 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
       font-size: 0.8125rem;
     }
 
-    .domain-header {
-      min-width: 60px;
+    .day-header {
+      min-width: 32px;
+      max-width: 32px;
+      font-size: 0.75rem;
+      padding: 0.375rem 0.125rem;
     }
 
     .heat-cell {
-      width: 60px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
     }
 
-    .day-cell {
-      padding: 0.375rem 0.75rem;
+    .domain-cell {
+      padding: 0.5rem 0.75rem;
+      min-width: 100px;
+    }
+
+    .domain-name {
+      font-size: 0.8125rem;
     }
 
     .legend-items {
