@@ -1,11 +1,117 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+/**
+ * Dashboard Page
+ * Main entry point showing domain overview cards
+ * 
+ * MIGRATION NOTE: Converted from index.html dashboard section
+ * Static rendering only - no interactivity yet
+ */
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getAllDomains } from '../lib/config';
+
+const domains = getAllDomains();
+
+// Compute domain stats (server-side / build-time)
+// Note: localStorage access will be added in Phase M3 with Svelte islands
+const domainStats = domains.map((domain) => {
+  return {
+    ...domain,
+    totalEntries: 0,
+    lastActivity: null,
+  };
+});
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout title="LifeLab - Dashboard">
+  <div class="dashboard">
+    <h2 class="dashboard-title">Dashboard</h2>
+
+    <!-- Domain overview cards -->
+    <div class="dashboard-grid" id="dashboard-grid">
+      {domainStats.map((domain) => (
+        <div class="domain-card" data-domain-id={domain.id}>
+          <h3 class="domain-card-title">{domain.displayName}</h3>
+          <p class="domain-card-description">{domain.description}</p>
+          
+          <div class="domain-card-stats">
+            <div class="stat">
+              <span class="stat-label">Total Entries:</span>
+              <span class="stat-value">{domain.totalEntries}</span>
+            </div>
+          </div>
+
+          <a href={`/${domain.id}`} class="domain-card-link">
+            View {domain.displayName} →
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .dashboard {
+    padding: 0;
+  }
+
+  .domain-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: box-shadow 0.2s;
+  }
+
+  .domain-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .domain-card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #222;
+  }
+
+  .domain-card-description {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .domain-card-stats {
+    margin: 1rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+  }
+
+  .stat {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .stat-value {
+    font-weight: 600;
+    color: #222;
+  }
+
+  .domain-card-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .domain-card-link:hover {
+    color: #0052a3;
+  }
+</style>
