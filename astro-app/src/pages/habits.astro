@@ -2,26 +2,42 @@
 /**
  * Habits Domain Page
  * 
- * MIGRATION NOTE: Phase M2 - Static structure only
- * Interactive components will be added in Phase M4
+ * MIGRATION NOTE: Phase M4.1 - Now includes interactive Svelte islands
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
+import QuickEntryForm from '../components/QuickEntryForm.svelte';
+import EntryHistoryList from '../components/EntryHistoryList.svelte';
+import { getDomainById } from '../lib/config';
+
+const domainId = 'habits';
+const domainConfig = getDomainById(domainId);
+
+if (!domainConfig) {
+  throw new Error(`Domain ${domainId} not found`);
+}
 ---
 
 <BaseLayout title="LifeLab - Habits">
   <div class="domain-view">
-    <h2 class="domain-title">Habits</h2>
-    <p class="domain-description">Track daily habits and build streaks</p>
+    <h2 class="domain-title">{domainConfig.displayName}</h2>
+    <p class="domain-description">{domainConfig.description}</p>
     
     <div class="quick-entry-section">
       <h3>Quick Entry</h3>
-      <p>Interactive quick entry form will be added in Phase M4</p>
+      <QuickEntryForm 
+        client:visible 
+        domainId={domainId}
+        domainConfig={domainConfig}
+      />
     </div>
     
     <div class="history-section">
-      <h3>History</h3>
-      <p>Entry history will be displayed here</p>
+      <EntryHistoryList 
+        client:visible 
+        domainId={domainId}
+        initialEntries={[]}
+      />
     </div>
   </div>
 </BaseLayout>
