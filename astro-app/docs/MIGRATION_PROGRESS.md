@@ -109,15 +109,18 @@
 
 ## ⏳ Remaining Work
 
-### Phase M5: Storage & State Integration (TODO)
+### Phase M5: Storage & State Integration (IN PROGRESS)
+
+**Documentation**: [PHASE_M5_VALIDATION.md](PHASE_M5_VALIDATION.md)
 
 Tasks:
-
-- Verify storage isolation (framework-agnostic)
-- Prevent reactive over-fetching
-- Document data flow between islands
-- Test cross-island communication via events
-- Validate notebook sync behavior
+- ⏳ Run manual browser tests (`npm run dev`)
+- ⏳ Verify storage isolation works correctly
+- ⏳ Test notebook sync non-destructive behavior
+- ⏳ Validate month navigation and URL state
+- ⏳ Test export/import/close month features
+- ⏳ Measure interaction latency (<50ms target)
+- ⏳ Run Lighthouse audit (>90 target score)
 - Test month closure and reopening
 - Verify export/import functionality
 
