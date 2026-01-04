@@ -17,6 +17,9 @@ import MonthlyHeader from '../components/MonthlyHeader.svelte';
 import DailyActivityGraph from '../components/DailyActivityGraph.svelte';
 import DailyRowControls from '../components/DailyRowControls.svelte';
 import DomainPresenceBadges from '../components/DomainPresenceBadges.svelte';
+import MonthlyOutcomeSummary from '../components/MonthlyOutcomeSummary.svelte';
+import DomainParticipationSummary from '../components/DomainParticipationSummary.svelte';
+import TrendObservations from '../components/TrendObservations.svelte';
 import MonthlyReflectionEditor from '../components/MonthlyReflectionEditor.svelte';
 import { getCurrentMonth, getMonthMetadata, parseMonthKey, getTodayInfo } from '../lib/monthResolution';
 import { getDaysInMonth } from '../lib/utils';
@@ -105,6 +108,30 @@ const dailyCounts = Array(daysInMonth).fill(0);
           </div>
         ))}
       </div>
+    </div>
+
+    <!-- Phase H4: Inline Analytics (Post-Notebook) -->
+    <div class="analytics-section">
+      <h2 class="section-title">Monthly Insights</h2>
+      
+      <MonthlyOutcomeSummary 
+        client:visible
+        year={activeMonth.year}
+        month={activeMonth.month}
+      />
+
+      <DomainParticipationSummary 
+        client:visible
+        year={activeMonth.year}
+        month={activeMonth.month}
+        daysInMonth={daysInMonth}
+      />
+
+      <TrendObservations 
+        client:visible
+        year={activeMonth.year}
+        month={activeMonth.month}
+      />
     </div>
 
     <!-- Phase H5: Monthly Reflection -->
