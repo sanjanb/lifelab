@@ -7,9 +7,11 @@ A lightweight personal metrics dashboard for tracking and visualizing your life 
 This repository contains two versions of LifeLab:
 
 ### Original Version (Root Directory)
+
 The original vanilla JavaScript version - simple HTML, CSS, and JavaScript with no build tools.
 
 ### Astro + Svelte Version (`astro-app/`)
+
 **[Active Development]** Modern migration using Astro for static site generation and Svelte for interactive components. This version is being deployed to GitHub Pages.
 
 - 📁 **Source**: `astro-app/src/`
@@ -43,7 +45,7 @@ The Astro version automatically deploys to GitHub Pages when you push to the `ma
 LifeLab helps you monitor and improve different areas of your life by providing a unified dashboard where you can:
 
 - Track daily habits
-- Log learning activities  
+- Log learning activities
 - Record career milestones
 - Monitor health metrics
 
