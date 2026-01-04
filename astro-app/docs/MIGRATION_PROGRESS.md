@@ -88,9 +88,10 @@
 ---
 
 ## ⏳ Remaining Work
-  - ✅ `NavigationMenu.svelte` - Interactive navigation with active states
-  - ✅ `QuickEntryForm.svelte` - Domain entry form with validation
-  - ✅ `EntryHistoryList.svelte` - Entry display with delete functionality
+
+- ✅ `NavigationMenu.svelte` - Interactive navigation with active states
+- ✅ `QuickEntryForm.svelte` - Domain entry form with validation
+- ✅ `EntryHistoryList.svelte` - Entry display with delete functionality
 - **Pages Migrated**:
 
   - ✅ `index.astro` - Dashboard with domain cards
