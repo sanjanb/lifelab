@@ -45,7 +45,7 @@ export interface MonthlyNotebook {
 export function saveEntry(domainId: string, entry: Entry): boolean {
   try {
     // Browser check - localStorage only available in browser
-    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    if (typeof window === "undefined" || typeof localStorage === "undefined") {
       return false;
     }
 
@@ -116,7 +116,7 @@ export function getEntries(domainId: string): Entry[] {
 export function deleteEntry(domainId: string, entryId: string): boolean {
   try {
     // Browser check - localStorage only available in browser
-    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    if (typeof window === "undefined" || typeof localStorage === "undefined") {
       return false;
     }
 
