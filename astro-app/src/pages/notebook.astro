@@ -254,29 +254,16 @@ const days = Array.from({ length: daysInMonth }, (_, i) => ({
   }
 
   /* Responsive Design */
+  @media (max-width: 1024px) {
+    .notebook-title { font-size: 1.75rem; }
+    .grid-header, .day-row { gap: 0.75rem; padding: 0.875rem; }
+  }
+
   @media (max-width: 768px) {
-    .header-top {
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .notebook-title {
-      font-size: 1.5rem;
-    }
-    .grid-header,
-    .day-row {
-      grid-template-columns: 60px 1fr;
-      gap: 0.5rem;
-      padding: 0.75rem;
-    }
-
-    .col-domains {
-      grid-column: 1 / -1;
-      margin-top: 0.5rem;
-      padding-top: 0.5rem;
-      border-top: 1px solid #f0f0f0;
-    }
-
+    .header-top { flex-direction: column; gap: 1rem; }
+    .notebook-title { font-size: 1.5rem; }
+    .grid-header, .day-row { grid-template-columns: 60px 1fr; gap: 0.5rem; padding: 0.75rem; }
+    .col-domains { grid-column: 1 / -1; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #f0f0f0; }
     .grid-header .col-domains {
       display: none;
     }
