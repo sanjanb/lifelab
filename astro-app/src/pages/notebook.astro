@@ -1,123 +1,149 @@
 ---
 /**
- * Monthly Notebook Page
- * Full month view with daily rows
+ * Notebook Page - Monthly Notebook View
  * 
- * MIGRATION NOTE: Phase M4.3 - Notebook with month navigation and reflection
+ * Same structure as home page but allows navigation to any month
+ * - Supports URL month parameter for viewing past/future months
+ * - Shows monthly header, graph, daily rows, analytics, and reflection
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
+import MonthlyHeader from '../components/MonthlyHeader.svelte';
+import DailyActivityGraph from '../components/DailyActivityGraph.svelte';
 import DailyRowControls from '../components/DailyRowControls.svelte';
 import DomainPresenceBadges from '../components/DomainPresenceBadges.svelte';
-import NotebookMonthNavigation from '../components/NotebookMonthNavigation.svelte';
+import MonthlyOutcomeSummary from '../components/MonthlyOutcomeSummary.svelte';
+import DomainParticipationSummary from '../components/DomainParticipationSummary.svelte';
+import TrendObservations from '../components/TrendObservations.svelte';
 import MonthlyReflectionEditor from '../components/MonthlyReflectionEditor.svelte';
-import MonthActionButtons from '../components/MonthActionButtons.svelte';
-import { performNonDestructiveSync } from '../lib/notebookSync';
-import { getMonthlyNotebook } from '../lib/storage';
-import { formatMonthYear, getDaysInMonth } from '../lib/utils';
+import MonthClosureButton from '../components/MonthClosureButton.svelte';
+import { getCurrentMonth, getMonthMetadata, parseMonthKey, getTodayInfo } from '../lib/monthResolution';
+import { getDaysInMonth } from '../lib/utils';
 
-// Get month from URL query params or default to current month
+// Resolve active month from URL or default to current
 const url = new URL(Astro.request.url);
-const queryYear = url.searchParams.get('year');
-const queryMonth = url.searchParams.get('month');
+const monthParam = url.searchParams.get('month');
 
-const now = new Date();
-const year = queryYear ? parseInt(queryYear) : now.getFullYear();
-const month = queryMonth ? parseInt(queryMonth) : now.getMonth() + 1;
+const activeMonth = monthParam ? parseMonthKey(monthParam) || getCurrentMonth() : getCurrentMonth();
+const metadata = getMonthMetadata(activeMonth);
+const daysInMonth = getDaysInMonth(activeMonth.year, activeMonth.month);
 
-// Note: This runs at build time, so we can't access localStorage
-// The sync will happen client-side in components
-const monthTitle = formatMonthYear(year, month);
-const daysInMonth = getDaysInMonth(year, month);
+// Get today info for highlighting
+const today = getTodayInfo();
+const todayDay = metadata.isCurrentMonth ? today.day : null;
 
 // Create array of days for rendering
 const days = Array.from({ length: daysInMonth }, (_, i) => ({
   dayNumber: i + 1,
-  dayName: new Date(year, month - 1, i + 1).toLocaleDateString('en-US', { weekday: 'short' }),
-  date: new Date(year, month - 1, i + 1).toISOString().split('T')[0]
+  dayName: new Date(activeMonth.year, activeMonth.month - 1, i + 1).toLocaleDateString('en-US', { weekday: 'short' }),
+  date: new Date(activeMonth.year, activeMonth.month - 1, i + 1).toISOString().split('T')[0],
+  isToday: metadata.isCurrentMonth && (i + 1) === today.day
 }));
+
+// Placeholder data for graph (will be populated by Svelte component)
+const dailyCounts = Array(daysInMonth).fill(0);
 ---
 
 <BaseLayout title="LifeLab - Notebook">
   <div class="notebook-view">
-    <!-- Notebook Header -->
-    <div class="notebook-header">
-      <div class="header-top">
-        <div class="title-section">
-          <h2 class="notebook-title">{monthTitle}</h2>
-          <p class="notebook-subtitle">Monthly Notebook</p>
-        </div>
-        
-        <NotebookMonthNavigation 
-          client:load
-          year={year}
-          month={month}
-        />
-      </div>
+    <!-- Monthly Context + Line Graph -->
+    <MonthlyHeader 
+      client:load
+      currentMonth={activeMonth}
+      displayName={metadata.displayName}
+      isCurrentMonth={metadata.isCurrentMonth}
+      isFutureMonth={metadata.isFutureMonth}
+    />
+
+    <DailyActivityGraph 
+      client:visible
+      dailyCounts={dailyCounts}
+      daysInMonth={daysInMonth}
+      currentDay={todayDay}
+    />
+
+    <!-- Monthly Notebook (Primary Surface) -->
+    <div class="notebook-section">
+      <h2 class="section-title">Daily Rows</h2>
       
-      <div class="header-actions">
-        <MonthActionButtons 
-          client:load
-          year={year}
-          month={month}
-          isClosed={false}
-        />
-      </div>
-
-      <div class="header-info">
-        <span class="sync-note">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 16v-4M12 8h.01"/>
-          </svg>
-          Data syncs automatically from your domain entries
-        </span>
-      </div>
-    </div>
-
-    <!-- Daily Rows Grid -->
-    <div class="daily-rows">
-      <div class="grid-header">
-        <div class="col-day">Day</div>
-        <div class="col-controls">Intent / Quality / Outcome</div>
-        <div class="col-domains">Active Domains</div>
-      </div>
-
-      {days.map((day) => (
-        <div class="day-row" data-day={day.dayNumber}>
-          <div class="col-day">
-            <div class="day-number">{day.dayNumber}</div>
-            <div class="day-name">{day.dayName}</div>
-          </div>
-
-          <div class="col-controls">
-            <DailyRowControls 
-              client:visible
-              year={year}
-              month={month}
-              dayNumber={day.dayNumber}
-              initialData={{}}
-            />
-          </div>
-
-          <div class="col-domains">
-            <DomainPresenceBadges 
-              client:visible
-              dayNumber={day.dayNumber}
-              activeDomains={[]}
-            />
-          </div>
+      <div class="daily-rows">
+        <div class="grid-header">
+          <div class="col-day">Day</div>
+          <div class="col-controls">Intent / Quality / Outcome</div>
+          <div class="col-domains">Active Domains</div>
         </div>
-      ))}
+
+        {days.map((day) => (
+          <div 
+            class:list={['day-row', { 'day-row-today': day.isToday }]} 
+            data-day={day.dayNumber}
+          >
+            <div class="col-day">
+              <div class="day-number">{day.dayNumber}</div>
+              <div class="day-name">{day.dayName}</div>
+              {day.isToday && <div class="today-badge">Today</div>}
+            </div>
+
+            <div class="col-controls">
+              <DailyRowControls 
+                client:visible
+                year={activeMonth.year}
+                month={activeMonth.month}
+                dayNumber={day.dayNumber}
+                initialData={{}}
+              />
+            </div>
+
+            <div class="col-domains">
+              <DomainPresenceBadges 
+                client:visible
+                dayNumber={day.dayNumber}
+                activeDomains={[]}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
 
-    <!-- Monthly Reflection -->
-    <div class="monthly-reflection">
+    <!-- Inline Analytics (Post-Notebook) -->
+    <div class="analytics-section">
+      <h2 class="section-title">Monthly Insights</h2>
+      
+      <MonthlyOutcomeSummary 
+        client:visible
+        year={activeMonth.year}
+        month={activeMonth.month}
+      />
+
+      <DomainParticipationSummary 
+        client:visible
+        year={activeMonth.year}
+        month={activeMonth.month}
+        daysInMonth={daysInMonth}
+      />
+
+      <TrendObservations 
+        client:visible
+        year={activeMonth.year}
+        month={activeMonth.month}
+      />
+    </div>
+
+    <!-- Monthly Reflection & Closure -->
+    <div class="reflection-section">
       <MonthlyReflectionEditor 
         client:visible
-        year={year}
-        month={month}
+        year={activeMonth.year}
+        month={activeMonth.month}
         initialReflection=""
+      />
+
+      <MonthClosureButton 
+        client:visible
+        year={activeMonth.year}
+        month={activeMonth.month}
+        isClosed={false}
       />
     </div>
   </div>
@@ -129,65 +155,23 @@ const days = Array.from({ length: daysInMonth }, (_, i) => ({
     margin: 0 auto;
   }
 
-  .notebook-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 2px solid #eee;
+  /* Notebook Section */
+  .notebook-section {
+    margin: 3rem 0;
   }
 
-  .header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-    gap: 2rem;
-  }
-
-  .title-section {
-    flex: 1;
-  }
-
-  .notebook-title {
-    font-size: 2rem;
-    margin: 0 0 0.5rem 0;
+  .section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
     color: #222;
-  }
-
-  .notebook-subtitle {
-    color: #666;
-    font-size: 1rem;
-    margin: 0;
-  }
-
-  .header-actions {
-    margin-bottom: 1rem;
-  }
-
-  .header-info {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .sync-note {
-    background: #e3f2fd;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    color: #1976d2;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .sync-note svg {
-    flex-shrink: 0;
+    margin-bottom: 1.5rem;
   }
 
   .daily-rows {
     background: white;
+    border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .grid-header {
@@ -195,11 +179,11 @@ const days = Array.from({ length: daysInMonth }, (_, i) => ({
     grid-template-columns: 100px 1fr 200px;
     gap: 1rem;
     padding: 1rem;
-    background: #f5f5f5;
+    background-color: #f9f9f9;
+    border-bottom: 2px solid #eee;
     font-weight: 600;
-    color: #555;
-    font-size: 0.9rem;
-    border-bottom: 2px solid #ddd;
+    font-size: 0.875rem;
+    color: #666;
   }
 
   .day-row {
@@ -207,35 +191,56 @@ const days = Array.from({ length: daysInMonth }, (_, i) => ({
     grid-template-columns: 100px 1fr 200px;
     gap: 1rem;
     padding: 1rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f0f0f0;
     transition: background-color 0.2s;
-  }
-
-  .day-row:hover {
-    background-color: #fafafa;
   }
 
   .day-row:last-child {
     border-bottom: none;
   }
 
+  .day-row:hover {
+    background-color: #fafafa;
+  }
+
+  .day-row-today {
+    background-color: #fffbf0;
+    border-left: 3px solid #ffd700;
+  }
+
+  .day-row-today:hover {
+    background-color: #fff9e6;
+  }
+
   .col-day {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 0.25rem;
+    position: relative;
   }
 
   .day-number {
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 700;
     color: #222;
     line-height: 1;
   }
 
   .day-name {
-    font-size: 0.85rem;
-    color: #999;
+    font-size: 0.875rem;
+    color: #666;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .today-badge {
+    background: #ffd700;
+    color: #222;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    width: fit-content;
     margin-top: 0.25rem;
   }
 
@@ -249,30 +254,52 @@ const days = Array.from({ length: daysInMonth }, (_, i) => ({
     align-items: center;
   }
 
-  .monthly-reflection {
-    margin-top: 2rem;
+  /* Analytics Section */
+  .analytics-section {
+    margin: 3rem 0;
+  }
+
+  /* Reflection Section */
+  .reflection-section {
+    margin: 3rem 0 2rem;
   }
 
   /* Responsive Design */
   @media (max-width: 1024px) {
-    .notebook-title { font-size: 1.75rem; }
-    .grid-header, .day-row { gap: 0.75rem; padding: 0.875rem; }
+    .section-title { font-size: 1.0625rem; }
+    .grid-header, .day-row { gap: 0.875rem; padding: 0.875rem; }
   }
 
   @media (max-width: 768px) {
-    .header-top { flex-direction: column; gap: 1rem; }
-    .notebook-title { font-size: 1.5rem; }
-    .grid-header, .day-row { grid-template-columns: 60px 1fr; gap: 0.5rem; padding: 0.75rem; }
-    .col-domains { grid-column: 1 / -1; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #f0f0f0; }
+    .grid-header, .day-row { 
+      grid-template-columns: 80px 1fr; 
+      gap: 0.75rem; 
+      padding: 0.75rem; 
+    }
+    
+    .col-domains { 
+      grid-column: 1 / -1; 
+      margin-top: 0.5rem; 
+      padding-top: 0.5rem; 
+      border-top: 1px solid #f0f0f0; 
+    }
+    
     .grid-header .col-domains {
       display: none;
     }
 
-    .day-number {
-      font-size: 1.25rem;
-    }
+    .day-number { font-size: 1.25rem; }
+    .day-name { font-size: 0.8125rem; }
+    .today-badge { font-size: 0.6875rem; }
+  }
 
-    .day-name { font-size: 0.75rem; }
+  @media (max-width: 640px) {
+    .section-title { font-size: 1rem; }
+    .grid-header, .day-row { gap: 0.5rem; padding: 0.625rem; }
+    .day-number { font-size: 1.125rem; }
+  }
+</style>
+
   }
 
   @media (max-width: 480px) {
