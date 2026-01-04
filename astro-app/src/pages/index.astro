@@ -1,52 +1,86 @@
 ---
 /**
- * Home Page - Monthly Notebook View
+ * Home Page - Insight-First Redesign
  * 
- * HOME PAGE CONTRACT:
- * - Home page always represents the CURRENT MONTH
- * - No global dashboards
- * - No year-level summaries
- * - All content scoped to active month
+ * DESIGN PHILOSOPHY:
+ * - Home page is an INSIGHT LAYER, not a control panel
+ * - Shows understanding before action
+ * - Visualizations over tables
+ * - Observational not evaluative
  * 
- * PHASE H3: Monthly Notebook as Primary Surface
- * The notebook is the main interaction area.
+ * WHAT HOME PAGE DOES:
+ * - Explain the month in under 5 seconds
+ * - Show temporal flow (line graph)
+ * - Show distribution (heatmap)
+ * - Surface notable patterns (text observations)
+ * 
+ * WHAT HOME PAGE DOES NOT DO:
+ * - No data entry (that's in /notebook)
+ * - No editing (read-only view)
+ * - No scoring or grading
+ * - No streak tracking
+ * - No goal setting
+ * 
+ * Navigation: Click "Notebook" to add/edit entries
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
-import MonthlyHeader from '../components/MonthlyHeader.svelte';
-import DailyActivityGraph from '../components/DailyActivityGraph.svelte';
-import DailyRowControls from '../components/DailyRowControls.svelte';
-import DomainPresenceBadges from '../components/DomainPresenceBadges.svelte';
-import MonthlyOutcomeSummary from '../components/MonthlyOutcomeSummary.svelte';
-import DomainParticipationSummary from '../components/DomainParticipationSummary.svelte';
-import TrendObservations from '../components/TrendObservations.svelte';
-import MonthlyReflectionEditor from '../components/MonthlyReflectionEditor.svelte';
-import MonthClosureButton from '../components/MonthClosureButton.svelte';
-import { getCurrentMonth, getMonthMetadata, parseMonthKey, getTodayInfo } from '../lib/monthResolution';
-import { getDaysInMonth } from '../lib/utils';
+import InsightLineGraph from '../components/InsightLineGraph.svelte';
+import InsightHeatmap from '../components/InsightHeatmap.svelte';
+import InsightObservations from '../components/InsightObservations.svelte';
+import { getCurrentMonth, getTodayInfo } from '../lib/monthResolution';
+import { getMonthlyNotebook } from '../lib/storage';
+import { buildMonthlyInsight, getSignalArray, getHeatmapMatrix } from '../lib/monthlyInsight';
+import { generateInsightObservations, getMonthSummary } from '../lib/insightText';
 
-// Resolve active month from URL or default to current
-const url = new URL(Astro.request.url);
-const monthParam = url.searchParams.get('month');
-
-const activeMonth = monthParam ? parseMonthKey(monthParam) || getCurrentMonth() : getCurrentMonth();
-const metadata = getMonthMetadata(activeMonth);
-const daysInMonth = getDaysInMonth(activeMonth.year, activeMonth.month);
-
-// Get today info for highlighting
+// Home page always shows current month
+const activeMonth = getCurrentMonth();
 const today = getTodayInfo();
-const todayDay = metadata.isCurrentMonth ? today.day : null;
 
-// Create array of days for rendering
-const days = Array.from({ length: daysInMonth }, (_, i) => ({
-  dayNumber: i + 1,
-  dayName: new Date(activeMonth.year, activeMonth.month - 1, i + 1).toLocaleDateString('en-US', { weekday: 'short' }),
-  date: new Date(activeMonth.year, activeMonth.month - 1, i + 1).toISOString().split('T')[0],
-  isToday: metadata.isCurrentMonth && (i + 1) === today.day
-}));
+// Build monthly insight data from storage
+let monthlyNotebook;
+let insight;
+let observations = [];
+let monthSummary = '';
 
-// Placeholder data for graph (will be populated by Svelte component)
-const dailyCounts = Array(daysInMonth).fill(0);
+// Browser-safe data loading
+if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+  // This will be hydrated on client
+  monthlyNotebook = null;
+  insight = null;
+} else {
+  // Server-side: create empty structure
+  monthlyNotebook = {
+    year: activeMonth.year,
+    month: activeMonth.month,
+    days: {}
+  };
+  
+  // Transform notebook data to daily rows
+  const daysInMonth = new Date(activeMonth.year, activeMonth.month, 0).getDate();
+  const dailyRows = Array.from({ length: daysInMonth }, (_, i) => {
+    const dayNumber = i + 1;
+    const date = new Date(activeMonth.year, activeMonth.month - 1, dayNumber).toISOString().split('T')[0];
+    const dayData = monthlyNotebook.days[dayNumber] || {};
+    
+    return {
+      date,
+      domains: dayData.domains || []
+    };
+  });
+  
+  // Build insight structure
+  insight = buildMonthlyInsight(activeMonth.year, activeMonth.month, dailyRows);
+  observations = generateInsightObservations(insight);
+  monthSummary = getMonthSummary(insight);
+}
+
+// Data for components
+const days = insight?.days || [];
+const domains = insight?.domains || [];
+const signalArray = insight ? getSignalArray(insight) : [];
+const heatmapMatrix = insight ? getHeatmapMatrix(insight) : [];
+const currentDay = today.day;
 ---
 
 <BaseLayout title="LifeLab - Home">
