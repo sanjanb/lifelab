@@ -8,12 +8,12 @@
  * Not success. Not failure. Just presence.
  * 
  * DESIGN PRINCIPLES:
- * - Rows = days (Y-axis)
- * - Columns = domains (X-axis)
+ * - Rows = domains (Y-axis)
+ * - Columns = days (X-axis)
  * - Cell shading = presence/intensity (subtle visual encoding)
  * - No checkboxes, no clicks, no tooltips
  * - For reading, not interaction
- * - Scrollable horizontally if many domains
+ * - Scrollable horizontally if many days
  * 
  * VALUE INTERPRETATION:
  * - 0 = no activity (empty/light background)
@@ -47,12 +47,9 @@ function isToday(day: number): boolean {
   return day === currentDay;
 }
 
-// Get day name for a given day number
-function getDayName(dayNumber: number): string {
-  // This is a simplified version - actual implementation would need year/month context
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  // For display purposes, just show day number
-  return '';
+// Get intensity for specific domain and day
+function getIntensity(domainIndex: number, dayIndex: number): number {
+  return heatmapMatrix[dayIndex]?.[domainIndex] || 0;
 }
 </script>
 
@@ -61,28 +58,29 @@ function getDayName(dayNumber: number): string {
     <table class="heatmap">
       <thead>
         <tr>
-          <th class="day-header">Day</th>
-          {#each domains as domain}
-            <th class="domain-header">
-              <div class="domain-label">{getDomainName(domain)}</div>
+          <th class="domain-header-label">Domain</th>
+          {#each days as day}
+            <th class="day-header" class:today={isToday(day)}>
+              <div class="day-label">{day}</div>
+              {#if isToday(day)}
+                <div class="today-marker">•</div>
+              {/if}
             </th>
           {/each}
         </tr>
       </thead>
       <tbody>
-        {#each days as day, dayIndex}
-          <tr class:today={isToday(day)}>
-            <td class="day-cell">
-              <div class="day-number">{day}</div>
-              {#if isToday(day)}
-                <div class="today-badge">today</div>
-              {/if}
+        {#each domains as domain, domainIndex}
+          <tr>
+            <td class="domain-cell">
+              <div class="domain-name">{getDomainName(domain)}</div>
             </td>
-            {#each domains as domain, domainIndex}
+            {#each days as day, dayIndex}
               <td
                 class="heat-cell"
-                style="background-color: {getCellColor(heatmapMatrix[dayIndex]?.[domainIndex] || 0)}"
-                title="{getDomainName(domain)} on day {day}: {heatmapMatrix[dayIndex]?.[domainIndex] > 0 ? 'active' : 'inactive'}"
+                class:today-col={isToday(day)}
+                style="background-color: {getCellColor(getIntensity(domainIndex, dayIndex))}"
+                title="{getDomainName(domain)} on day {day}: {getIntensity(domainIndex, dayIndex) > 0 ? 'active' : 'inactive'}"
               >
                 <!-- Empty cell, color represents presence -->
               </td>
