@@ -33,16 +33,7 @@ const { title = 'LifeLab - Personal Dashboard' } = Astro.props;
     </header>
 
     <!-- Navigation -->
-    <nav class="nav" id="nav">
-      <!-- Navigation items will be added as Svelte island in Phase M3 -->
-      <a href="/" class="nav-item">Dashboard</a>
-      <a href="/habits" class="nav-item">Habits</a>
-      <a href="/learning" class="nav-item">Learning</a>
-      <a href="/career" class="nav-item">Career</a>
-      <a href="/health" class="nav-item">Health</a>
-      <a href="/notebook" class="nav-item nav-item-special">Notebook</a>
-      <a href="/year" class="nav-item nav-item-special">Year</a>
-    </nav>
+    <NavigationMenu client:load currentPath={Astro.url.pathname} />
 
     <!-- Main Content Area -->
     <main class="main" id="main">
