@@ -28,26 +28,26 @@
 
   // Intent options
   const intentOptions = [
-    { value: '', label: '-' },
-    { value: '✨', label: '✨ Flow' },
-    { value: '🎯', label: '🎯 Focus' },
-    { value: '🌊', label: '🌊 Ease' }
+    { value: '', label: 'None' },
+    { value: 'flow', label: 'Flow' },
+    { value: 'focus', label: 'Focus' },
+    { value: 'ease', label: 'Ease' }
   ];
 
   // Quality options
   const qualityOptions = [
-    { value: '', label: '-' },
-    { value: '⭐⭐⭐', label: '⭐⭐⭐' },
-    { value: '⭐⭐', label: '⭐⭐' },
-    { value: '⭐', label: '⭐' }
+    { value: '', label: 'None' },
+    { value: '3', label: '3 - Excellent' },
+    { value: '2', label: '2 - Good' },
+    { value: '1', label: '1 - Fair' }
   ];
 
   // Outcome options
   const outcomeOptions = [
-    { value: '', label: '-' },
-    { value: '✓', label: '✓ Win' },
-    { value: '÷', label: '÷ Neutral' },
-    { value: '✗', label: '✗ Loss' }
+    { value: '', label: 'None' },
+    { value: 'win', label: 'Win' },
+    { value: 'neutral', label: 'Neutral' },
+    { value: 'loss', label: 'Loss' }
   ];
 
   onMount(() => {
