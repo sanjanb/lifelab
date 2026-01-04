@@ -1,0 +1,50 @@
+---
+/**
+ * Base Layout Component
+ * Main layout structure for all pages
+ * 
+ * MIGRATION NOTE: Converted from index.html
+ * Static structure only - no interactivity yet
+ */
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'LifeLab - Personal Dashboard' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="stylesheet" href="/styles/main.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <h1 class="header-title" id="header-title" style="cursor: pointer">
+        LifeLab
+      </h1>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+      <!-- Navigation items will be added as Svelte island in Phase M3 -->
+      <a href="/" class="nav-item">Dashboard</a>
+      <a href="/habits" class="nav-item">Habits</a>
+      <a href="/learning" class="nav-item">Learning</a>
+      <a href="/career" class="nav-item">Career</a>
+      <a href="/health" class="nav-item">Health</a>
+      <a href="/notebook" class="nav-item nav-item-special">Notebook</a>
+      <a href="/year" class="nav-item nav-item-special">Year</a>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main" id="main">
+      <slot />
+    </main>
+  </body>
+</html>
