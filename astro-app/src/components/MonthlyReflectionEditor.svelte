@@ -251,34 +251,3 @@
     }
   }
 </style>
-  }
-
-  .editor-footer {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 0.5rem;
-  }
-
-  .char-count {
-    font-size: 0.85rem;
-    color: #999;
-  }
-
-  /* Mobile responsive */
-  @media (max-width: 768px) {
-    .reflection-editor {
-      padding: 1rem;
-    }
-
-    .editor-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-
-    .reflection-textarea {
-      min-height: 150px;
-      font-size: 0.95rem;
-    }
-  }
-</style>
