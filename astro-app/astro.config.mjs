@@ -1,6 +1,8 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 
+import svelte from "@astrojs/svelte";
+
 // https://astro.build/config
 export default defineConfig({
   // Static site generation for GitHub Pages
@@ -10,6 +12,7 @@ export default defineConfig({
   // Format: https://<username>.github.io/<repo-name>/
   // For now, using root path for local development
   site: "https://yourusername.github.io",
+
   base: "/lifelab",
 
   // Build configuration
@@ -25,4 +28,6 @@ export default defineConfig({
     port: 3000,
     host: true,
   },
+
+  integrations: [svelte()],
 });
