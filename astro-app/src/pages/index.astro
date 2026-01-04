@@ -45,29 +45,76 @@ const days = Array.from({ length: daysInMonth }, (_, i) => ({
 const dailyCounts = Array(daysInMonth).fill(0);
 ---
 
-<BaseLayout title="LifeLab - Dashboard">
-  <div class="dashboard">
-    <h2 class="dashboard-title">Dashboard</h2>
+<BaseLayout title="LifeLab - Home">
+  <div class="home-view">
+    <!-- Phase H2: Monthly Context + Line Graph -->
+    <MonthlyHeader 
+      client:load
+      currentMonth={activeMonth}
+      displayName={metadata.displayName}
+      isCurrentMonth={metadata.isCurrentMonth}
+      isFutureMonth={metadata.isFutureMonth}
+    />
 
-    <!-- Domain overview cards -->
-    <div class="dashboard-grid" id="dashboard-grid">
-      {domainStats.map((domain) => (
-        <div class="domain-card" data-domain-id={domain.id}>
-          <h3 class="domain-card-title">{domain.displayName}</h3>
-          <p class="domain-card-description">{domain.description}</p>
-          
-          <div class="domain-card-stats">
-            <div class="stat">
-              <span class="stat-label">Total Entries:</span>
-              <span class="stat-value">{domain.totalEntries}</span>
+    <DailyActivityGraph 
+      client:visible
+      dailyCounts={dailyCounts}
+      daysInMonth={daysInMonth}
+      currentDay={todayDay}
+    />
+
+    <!-- Phase H3: Monthly Notebook (Primary Surface) -->
+    <div class="notebook-section">
+      <h2 class="section-title">Daily Rows</h2>
+      
+      <div class="daily-rows">
+        <div class="grid-header">
+          <div class="col-day">Day</div>
+          <div class="col-controls">Intent / Quality / Outcome</div>
+          <div class="col-domains">Active Domains</div>
+        </div>
+
+        {days.map((day) => (
+          <div 
+            class:list={['day-row', { 'day-row-today': day.isToday }]} 
+            data-day={day.dayNumber}
+          >
+            <div class="col-day">
+              <div class="day-number">{day.dayNumber}</div>
+              <div class="day-name">{day.dayName}</div>
+              {day.isToday && <div class="today-badge">Today</div>}
+            </div>
+
+            <div class="col-controls">
+              <DailyRowControls 
+                client:visible
+                year={activeMonth.year}
+                month={activeMonth.month}
+                dayNumber={day.dayNumber}
+                initialData={{}}
+              />
+            </div>
+
+            <div class="col-domains">
+              <DomainPresenceBadges 
+                client:visible
+                dayNumber={day.dayNumber}
+                activeDomains={[]}
+              />
             </div>
           </div>
+        ))}
+      </div>
+    </div>
 
-          <a href={`/${domain.id}`} class="domain-card-link">
-            View {domain.displayName} →
-          </a>
-        </div>
-      ))}
+    <!-- Phase H5: Monthly Reflection -->
+    <div class="reflection-section">
+      <MonthlyReflectionEditor 
+        client:visible
+        year={activeMonth.year}
+        month={activeMonth.month}
+        initialReflection=""
+      />
     </div>
   </div>
 </BaseLayout>
