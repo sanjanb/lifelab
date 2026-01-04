@@ -4,8 +4,10 @@
  * Main layout structure for all pages
  * 
  * MIGRATION NOTE: Converted from index.html
- * Static structure only - no interactivity yet
+ * Now includes Svelte islands for interactivity
  */
+
+import NavigationMenu from '../components/NavigationMenu.svelte';
 
 interface Props {
   title?: string;
