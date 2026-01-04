@@ -1,0 +1,58 @@
+---
+/**
+ * Habits Domain Page
+ * 
+ * MIGRATION NOTE: Phase M2 - Static structure only
+ * Interactive components will be added in Phase M4
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="LifeLab - Habits">
+  <div class="domain-view">
+    <h2 class="domain-title">Habits</h2>
+    <p class="domain-description">Track daily habits and build streaks</p>
+    
+    <div class="quick-entry-section">
+      <h3>Quick Entry</h3>
+      <p>Interactive quick entry form will be added in Phase M4</p>
+    </div>
+    
+    <div class="history-section">
+      <h3>History</h3>
+      <p>Entry history will be displayed here</p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .domain-view {
+    padding: 0;
+  }
+  
+  .domain-title {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .domain-description {
+    color: #666;
+    margin-bottom: 2rem;
+  }
+  
+  .quick-entry-section,
+  .history-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+  }
+  
+  .quick-entry-section h3,
+  .history-section h3 {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+  }
+</style>
