@@ -56,6 +56,7 @@ src/
 **Overall Progress**: ~50%
 
 ### ✅ What Works
+
 - Dashboard with domain cards
 - All domain pages (Habits, Learning, Career, Health)
 - Quick entry forms with validation
@@ -64,6 +65,7 @@ src/
 - localStorage persistence
 
 ### 🔲 Still TODO
+
 - Notebook monthly view
 - Daily row controls
 - Year view
