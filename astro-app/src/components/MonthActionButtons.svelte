@@ -258,10 +258,6 @@
     font-weight: 500;
   }
 
-  .closed-badge .icon {
-    font-size: 1.2rem;
-  }
-
   /* Modal Styles */
   .modal-overlay {
     position: fixed;
