@@ -2,7 +2,7 @@
 
 Modern rebuild of LifeLab using Astro for structure and Svelte for interactivity.
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Install dependencies
@@ -20,7 +20,7 @@ npm run preview
 
 Visit: http://localhost:3000/lifelab
 
-## 📖 Documentation
+## Documentation
 
 All migration documentation is in the `docs/` folder:
 
@@ -28,7 +28,7 @@ All migration documentation is in the `docs/` folder:
 - **[ISLAND_BOUNDARIES.md](./docs/ISLAND_BOUNDARIES.md)** - Svelte island specifications
 - **[Original Behavior Docs](../docs/CURRENT_SYSTEM_BEHAVIOR.md)** - Original system baseline
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -50,12 +50,12 @@ src/
     └── health.astro
 ```
 
-## 🎯 Migration Status
+## Migration Status
 
 **Current Phase**: M4 (Partially Complete)  
 **Overall Progress**: ~50%
 
-### ✅ What Works
+### What Works
 
 - Dashboard with domain cards
 - All domain pages (Habits, Learning, Career, Health)
@@ -64,20 +64,20 @@ src/
 - Interactive navigation
 - localStorage persistence
 
-### 🔲 Still TODO
+### Still TODO
 
 - Notebook monthly view
 - Daily row controls
 - Year view
 - Timeline view
 
-## 🏗️ Architecture
+## Architecture
 
 **Astro** = Structure (static rendering)  
 **Svelte** = Interaction (islands)  
 **TypeScript** = Utilities (framework-agnostic)
 
-## 📚 References
+## References
 
 - [Astro Docs](https://docs.astro.build)
 - [Svelte Docs](https://svelte.dev)
