@@ -3,24 +3,30 @@
  * Monthly Notebook Page
  * Full month view with daily rows
  * 
- * MIGRATION NOTE: Phase M4.2 - Notebook with daily controls
- * Month navigation and reflection editor will be added in Phase M4.3
+ * MIGRATION NOTE: Phase M4.3 - Notebook with month navigation and reflection
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import DailyRowControls from '../components/DailyRowControls.svelte';
 import DomainPresenceBadges from '../components/DomainPresenceBadges.svelte';
+import NotebookMonthNavigation from '../components/NotebookMonthNavigation.svelte';
+import MonthlyReflectionEditor from '../components/MonthlyReflectionEditor.svelte';
+import MonthActionButtons from '../components/MonthActionButtons.svelte';
 import { performNonDestructiveSync } from '../lib/notebookSync';
 import { getMonthlyNotebook } from '../lib/storage';
 import { formatMonthYear, getDaysInMonth } from '../lib/utils';
 
-// Get current month by default (will add month navigation in M4.3)
+// Get month from URL query params or default to current month
+const url = new URL(Astro.request.url);
+const queryYear = url.searchParams.get('year');
+const queryMonth = url.searchParams.get('month');
+
 const now = new Date();
-const year = now.getFullYear();
-const month = now.getMonth() + 1;
+const year = queryYear ? parseInt(queryYear) : now.getFullYear();
+const month = queryMonth ? parseInt(queryMonth) : now.getMonth() + 1;
 
 // Note: This runs at build time, so we can't access localStorage
-// The sync will happen client-side in M4.3 components
+// The sync will happen client-side in components
 const monthTitle = formatMonthYear(year, month);
 const daysInMonth = getDaysInMonth(year, month);
 
@@ -36,10 +42,28 @@ const days = Array.from({ length: daysInMonth }, (_, i) => ({
   <div class="notebook-view">
     <!-- Notebook Header -->
     <div class="notebook-header">
-      <h2 class="notebook-title">{monthTitle}</h2>
-      <p class="notebook-subtitle">Monthly Notebook</p>
+      <div class="header-top">
+        <div class="title-section">
+          <h2 class="notebook-title">{monthTitle}</h2>
+          <p class="notebook-subtitle">Monthly Notebook</p>
+        </div>
+        
+        <NotebookMonthNavigation 
+          client:load
+          year={year}
+          month={month}
+        />
+      </div>
       
-      <!-- Month navigation will be added in Phase M4.3 -->
+      <div class="header-actions">
+        <MonthActionButtons 
+          client:load
+          year={year}
+          month={month}
+          isClosed={false}
+        />
+      </div>
+
       <div class="header-info">
         <span class="sync-note">💡 Data syncs automatically from your domain entries</span>
       </div>
