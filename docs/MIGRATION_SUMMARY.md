@@ -9,6 +9,7 @@ Successfully implemented **Phases M1-M4.1** of the Astro + Svelte migration plan
 ## ✅ What's Been Completed
 
 ### Core Infrastructure
+
 - ✅ **Astro Project Setup** - Static site generation configured for GitHub Pages
 - ✅ **Svelte Integration** - Framework installed and working
 - ✅ **TypeScript Migration** - All utilities converted to TypeScript
@@ -17,11 +18,13 @@ Successfully implemented **Phases M1-M4.1** of the Astro + Svelte migration plan
 - ✅ **CSS Migration** - Styles preserved and working
 
 ### Interactive Components (Svelte Islands)
+
 1. **NavigationMenu** (`client:load`) - Active route highlighting, domain navigation
-2. **QuickEntryForm** (`client:visible`) - Entry creation with validation  
+2. **QuickEntryForm** (`client:visible`) - Entry creation with validation
 3. **EntryHistoryList** (`client:visible`) - Display and delete entries
 
 ### Pages Migrated
+
 - ✅ **Dashboard** (`index.astro`) - Domain overview cards
 - ✅ **Habits** - Full interactive page with entry form and history
 - ✅ **Learning** - Full interactive page with entry form and history
@@ -29,6 +32,7 @@ Successfully implemented **Phases M1-M4.1** of the Astro + Svelte migration plan
 - ✅ **Health** - Full interactive page with entry form and history
 
 ### Documentation Created
+
 - ✅ `CURRENT_SYSTEM_BEHAVIOR.md` - Baseline behavioral snapshot
 - ✅ `INTERACTION_HOTSPOTS.md` - Component classification guide
 - ✅ `ISLAND_BOUNDARIES.md` - Svelte island specifications
@@ -39,6 +43,7 @@ Successfully implemented **Phases M1-M4.1** of the Astro + Svelte migration plan
 ## 🎯 Current State
 
 ### What Works
+
 - ✅ Navigate between pages
 - ✅ Log new entries in any domain
 - ✅ View entry history
@@ -47,6 +52,7 @@ Successfully implemented **Phases M1-M4.1** of the Astro + Svelte migration plan
 - ✅ Responsive UI matching original design
 
 ### What's Pending
+
 - 🔲 Notebook monthly view with daily rows
 - 🔲 Daily controls (intent, quality, outcome dropdowns)
 - 🔲 Domain presence badges per day
@@ -61,23 +67,24 @@ Successfully implemented **Phases M1-M4.1** of the Astro + Svelte migration plan
 
 ## 📊 Migration Progress: ~50%
 
-| Phase | Status | Progress |
-|-------|--------|----------|
-| M1: Baseline & Constraints | ✅ Complete | 100% |
-| M2: Introduce Astro | ✅ Complete | 100% |
-| M3: Add Svelte | ✅ Complete | 100% |
-| M4: Convert Components | 🟡 Partial | 40% |
-| M5: Storage Integration | ⏳ Not Started | 0% |
-| M6: Performance Hardening | ⏳ Not Started | 0% |
-| M7: GitHub Pages Deployment | ⏳ Not Started | 0% |
+| Phase                       | Status         | Progress |
+| --------------------------- | -------------- | -------- |
+| M1: Baseline & Constraints  | ✅ Complete    | 100%     |
+| M2: Introduce Astro         | ✅ Complete    | 100%     |
+| M3: Add Svelte              | ✅ Complete    | 100%     |
+| M4: Convert Components      | 🟡 Partial     | 40%      |
+| M5: Storage Integration     | ⏳ Not Started | 0%       |
+| M6: Performance Hardening   | ⏳ Not Started | 0%       |
+| M7: GitHub Pages Deployment | ⏳ Not Started | 0%       |
 
 ---
 
 ## 🏗️ Architecture
 
 ### Astro (Structure)
+
 ```
-Pages (*.astro) 
+Pages (*.astro)
   ↓ Render static HTML
   ↓ Fetch data at build/request time
   ↓ Pass props to islands
@@ -88,19 +95,21 @@ Svelte Islands
 ```
 
 ### Svelte (Interaction)
+
 - **Hydration**: `client:load` for above-fold, `client:visible` for below-fold
 - **State**: Local only, no global stores
 - **Communication**: CustomEvents for cross-island updates
 - **Data**: Direct calls to framework-agnostic utilities
 
 ### Storage (Framework-Agnostic)
+
 ```typescript
 // lib/config.ts - Domain configuration
 // lib/storage.ts - localStorage CRUD operations
 // lib/utils.ts - Helper functions
 
 // Works in both Astro and Svelte!
-import { saveEntry, getEntries } from '../lib/storage';
+import { saveEntry, getEntries } from "../lib/storage";
 ```
 
 ---
@@ -108,15 +117,17 @@ import { saveEntry, getEntries } from '../lib/storage';
 ## 🔑 Key Design Decisions
 
 ### 1. Island Hydration Strategy
+
 **Principle**: Hydrate only what needs interactivity
 
-| Component | Directive | Reason |
-|-----------|-----------|--------|
-| Navigation | `client:load` | Immediately visible, core UX |
-| Quick Entry | `client:visible` | Below fold, can lazy load |
-| History List | `client:visible` | Below fold, defer hydration |
+| Component    | Directive        | Reason                       |
+| ------------ | ---------------- | ---------------------------- |
+| Navigation   | `client:load`    | Immediately visible, core UX |
+| Quick Entry  | `client:visible` | Below fold, can lazy load    |
+| History List | `client:visible` | Below fold, defer hydration  |
 
 ### 2. No Global Stores
+
 **Anti-pattern**: ❌ Svelte writable stores for shared state  
 **Solution**: ✅ Direct storage calls + CustomEvents
 
@@ -134,6 +145,7 @@ function addEntry(entry) {
 ```
 
 ### 3. localStorage at Build Time
+
 **Problem**: Astro SSG can't access browser APIs  
 **Solution**: Empty initial props, hydrate on mount
 
@@ -147,7 +159,7 @@ function addEntry(entry) {
 <script>
   export let initialEntries = [];
   let entries = initialEntries;
-  
+
   onMount(() => {
     entries = getEntries(domainId); // Load from storage
   });
@@ -196,7 +208,9 @@ lifelab/
 ## 🎯 Next Steps
 
 ### Immediate (Complete Phase M4)
+
 1. **Create Notebook Page**
+
    - Port notebook sync logic to `lib/notebookSync.ts`
    - Build `DailyRowControls.svelte` component
    - Build `DomainPresenceBadges.svelte` component
@@ -208,7 +222,9 @@ lifelab/
    - `MonthActionButtons.svelte` - Export/Import/Close
 
 ### Medium Term (Phases M5-M6)
+
 3. **Storage & State Validation**
+
    - Verify no reactive over-fetching
    - Test cross-island event communication
    - Ensure storage isolation
@@ -220,6 +236,7 @@ lifelab/
    - Remove unused original JS
 
 ### Final (Phase M7)
+
 5. **GitHub Pages Deployment**
    - Configure production URLs
    - Set up GitHub Actions
@@ -257,6 +274,7 @@ lifelab/
 4. **Test original**: Reference `modules/notebook/notebook.js` for behavior
 
 ### Key files to reference:
+
 - `scripts/notebookSync.js` - Sync logic to port
 - `modules/notebook/notebook.js` - Notebook UI to convert
 - `docs/ASTRO_MIGRATION.md` - Original migration plan
@@ -272,6 +290,7 @@ lifelab/
 ## Contact / Questions
 
 If continuing this work:
+
 1. Review all `.md` files in `astro-app/docs/`
 2. Check `astro-app/docs/MIGRATION_PROGRESS.md` for detailed status
 3. Reference `docs/ASTRO_MIGRATION.md` for the complete plan
