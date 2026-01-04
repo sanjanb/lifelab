@@ -1,10 +1,10 @@
 /**
  * Notebook Sync - Domain Entry Aggregation
  * Framework-agnostic TypeScript port
- * 
+ *
  * MIGRATION NOTE: Direct port from notebookSync.js
  * Preserves all non-destructive sync behavior
- * 
+ *
  * DESIGN PRINCIPLES:
  * 1. Domains feed signals into notebooks, but don't own them
  * 2. Aggregation is always boolean presence, never counts
@@ -13,19 +13,23 @@
  * 5. NON-DESTRUCTIVE: Never touches manual outcomes or reflection notes
  */
 
-import { getEntries } from './storage';
-import { 
-  getMonthlyNotebook, 
-  saveMonthlyNotebook, 
+import { getEntries } from "./storage";
+import {
+  getMonthlyNotebook,
+  saveMonthlyNotebook,
   type MonthlyNotebook,
-  type DayEntry 
-} from './storage';
-import { getAllDomains } from './config';
+  type DayEntry,
+} from "./storage";
+import { getAllDomains } from "./config";
 
 /**
  * Map domain entries to dates for a specific month
  */
-function mapEntriesToDates(entries: any[], year: number, month: number): Set<string> {
+function mapEntriesToDates(
+  entries: any[],
+  year: number,
+  month: number
+): Set<string> {
   const dateSet = new Set<string>();
 
   // Define month boundaries
@@ -36,10 +40,10 @@ function mapEntriesToDates(entries: any[], year: number, month: number): Set<str
     if (!entry.timestamp) return;
 
     const entryDate = new Date(entry.timestamp);
-    
+
     // Only include entries within this month
     if (entryDate >= monthStart && entryDate <= monthEnd) {
-      const isoDate = entryDate.toISOString().split('T')[0]; // YYYY-MM-DD
+      const isoDate = entryDate.toISOString().split("T")[0]; // YYYY-MM-DD
       dateSet.add(isoDate);
     }
   });
@@ -49,7 +53,7 @@ function mapEntriesToDates(entries: any[], year: number, month: number): Set<str
 
 /**
  * Aggregate domain entries into a monthly notebook
- * 
+ *
  * NON-DESTRUCTIVE: Only updates domain presence signals
  * Preserves manual outcomes and reflection notes
  */
@@ -60,12 +64,14 @@ export function aggregateDomainToNotebook(
 ): boolean {
   try {
     if (!domainId) {
-      console.error('aggregateDomainToNotebook: domainId is required');
+      console.error("aggregateDomainToNotebook: domainId is required");
       return false;
     }
 
     if (!Number.isInteger(year) || !Number.isInteger(month)) {
-      console.error('aggregateDomainToNotebook: year and month must be integers');
+      console.error(
+        "aggregateDomainToNotebook: year and month must be integers"
+      );
       return false;
     }
 
@@ -86,16 +92,18 @@ export function aggregateDomainToNotebook(
     // NON-DESTRUCTIVE: Only updates domains array, preserves intent/quality/outcome/reflection
     Object.keys(notebook.days).forEach((dayKey) => {
       const day = notebook.days[dayKey];
-      const dateKey = day.date || `${year}-${String(month).padStart(2, '0')}-${dayKey.padStart(2, '0')}`;
-      
+      const dateKey =
+        day.date ||
+        `${year}-${String(month).padStart(2, "0")}-${dayKey.padStart(2, "0")}`;
+
       // Update domains array: add or remove domain based on presence
       const hasEntries = entriesByDate.has(dateKey);
       const currentDomains = day.domains || [];
-      
+
       if (hasEntries && !currentDomains.includes(domainId)) {
         day.domains = [...currentDomains, domainId];
       } else if (!hasEntries && currentDomains.includes(domainId)) {
-        day.domains = currentDomains.filter(d => d !== domainId);
+        day.domains = currentDomains.filter((d) => d !== domainId);
       }
 
       // NEVER touch these fields during sync:
@@ -107,7 +115,7 @@ export function aggregateDomainToNotebook(
     // Save updated notebook
     return saveMonthlyNotebook(notebook);
   } catch (error) {
-    console.error('aggregateDomainToNotebook error:', error);
+    console.error("aggregateDomainToNotebook error:", error);
     return false;
   }
 }
@@ -122,11 +130,11 @@ function createEmptyNotebook(year: number, month: number): MonthlyNotebook {
   for (let day = 1; day <= daysInMonth; day++) {
     const dayKey = String(day);
     const date = new Date(year, month - 1, day);
-    const isoDate = date.toISOString().split('T')[0];
+    const isoDate = date.toISOString().split("T")[0];
 
     days[dayKey] = {
       date: isoDate,
-      domains: []
+      domains: [],
     };
   }
 
@@ -134,18 +142,21 @@ function createEmptyNotebook(year: number, month: number): MonthlyNotebook {
     year,
     month,
     days,
-    _created: new Date().toISOString()
+    _created: new Date().toISOString(),
   };
 }
 
 /**
  * Aggregate all domains into a monthly notebook
  */
-export function aggregateAllDomainsToNotebook(year: number, month: number): boolean {
+export function aggregateAllDomainsToNotebook(
+  year: number,
+  month: number
+): boolean {
   try {
     const domains = getAllDomains();
     if (!domains || domains.length === 0) {
-      console.warn('aggregateAllDomainsToNotebook: no domains configured');
+      console.warn("aggregateAllDomainsToNotebook: no domains configured");
       return true;
     }
 
@@ -160,7 +171,7 @@ export function aggregateAllDomainsToNotebook(year: number, month: number): bool
 
     return allSuccess;
   } catch (error) {
-    console.error('aggregateAllDomainsToNotebook error:', error);
+    console.error("aggregateAllDomainsToNotebook error:", error);
     return false;
   }
 }
@@ -179,15 +190,15 @@ export function getDomainPresenceForDay(
 
     const dayKey = String(dayNum);
     const day = notebook.days[dayKey];
-    
+
     if (!day) {
-      console.error('getDomainPresenceForDay: invalid day number');
+      console.error("getDomainPresenceForDay: invalid day number");
       return null;
     }
 
     return [...(day.domains || [])]; // Return copy
   } catch (error) {
-    console.error('getDomainPresenceForDay error:', error);
+    console.error("getDomainPresenceForDay error:", error);
     return null;
   }
 }
@@ -195,7 +206,10 @@ export function getDomainPresenceForDay(
 /**
  * Get active domain count for each day in a month
  */
-export function getMonthlyDomainActivity(year: number, month: number): number[] | null {
+export function getMonthlyDomainActivity(
+  year: number,
+  month: number
+): number[] | null {
   try {
     const notebook = getMonthlyNotebook(year, month);
     if (!notebook) return null;
@@ -204,7 +218,7 @@ export function getMonthlyDomainActivity(year: number, month: number): number[] 
       return (day.domains || []).length;
     });
   } catch (error) {
-    console.error('getMonthlyDomainActivity error:', error);
+    console.error("getMonthlyDomainActivity error:", error);
     return null;
   }
 }
@@ -222,7 +236,7 @@ export function syncCurrentMonth(): boolean {
 
 /**
  * Perform non-destructive sync for a specific month
- * 
+ *
  * Main sync entry point - call when:
  * - User opens monthly notebook view
  * - User adds/deletes domain entries
@@ -238,7 +252,10 @@ export interface SyncResult {
   details?: Array<{ domainId: string; success: boolean }>;
 }
 
-export function performNonDestructiveSync(year: number, month: number): SyncResult {
+export function performNonDestructiveSync(
+  year: number,
+  month: number
+): SyncResult {
   try {
     console.log(`Starting non-destructive sync for ${year}-${month}`);
 
@@ -268,7 +285,9 @@ export function performNonDestructiveSync(year: number, month: number): SyncResu
     const successCount = syncResults.filter((r) => r.success).length;
     const failCount = syncResults.filter((r) => !r.success).length;
 
-    console.log(`Sync complete: ${successCount} domains synced, ${failCount} failed`);
+    console.log(
+      `Sync complete: ${successCount} domains synced, ${failCount} failed`
+    );
 
     return {
       success: failCount === 0,
@@ -279,7 +298,7 @@ export function performNonDestructiveSync(year: number, month: number): SyncResu
       details: syncResults,
     };
   } catch (error: any) {
-    console.error('performNonDestructiveSync error:', error);
+    console.error("performNonDestructiveSync error:", error);
     return {
       success: false,
       error: error.message,
