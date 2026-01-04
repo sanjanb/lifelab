@@ -77,6 +77,11 @@ export function saveEntry(domainId: string, entry: Entry): boolean {
  */
 export function getEntries(domainId: string): Entry[] {
   try {
+    // Browser check - localStorage only available in browser
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return [];
+    }
+
     if (!domainId) {
       console.error("getEntries: domainId is required");
       return [];
@@ -176,6 +181,11 @@ export function getMonthlyNotebook(
   month: number
 ): MonthlyNotebook | null {
   try {
+    // Browser check - localStorage only available in browser
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return null;
+    }
+
     if (!Number.isInteger(year) || !Number.isInteger(month)) {
       console.error("getMonthlyNotebook: year and month must be integers");
       return null;
