@@ -162,11 +162,6 @@ function getTypeIcon(type: string): string {
     line-height: 1.6;
     flex: 1;
   }
-  .obs-text {
-    font-size: 0.875rem;
-    color: #4b5563;
-    line-height: 1.6;
-  }
 
   .no-observations {
     margin: 0;
@@ -178,14 +173,15 @@ function getTypeIcon(type: string): string {
   }
 
   .disclaimer {
-    margin: 1rem 0 0 0;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
+    margin: 1.25rem 0 0 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
     color: #6b7280;
     background: #f9fafb;
     border-radius: 4px;
     line-height: 1.5;
     font-style: italic;
+    border: 1px solid #e5e7eb;
   }
 
   @media (max-width: 640px) {
