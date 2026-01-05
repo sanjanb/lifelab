@@ -9,9 +9,9 @@ export default defineConfig({
   // Static site generation for GitHub Pages
   output: "static",
 
-  // Site URL - update this with your GitHub Pages URL when deploying
-  // Format: https://<username>.github.io/<repo-name>/
-  // For now, using root path for local development
+  // Site URL - update this with your actual domain when deploying
+  // For GitHub Pages: https://<username>.github.io
+  // For custom domain: https://yourdomain.com
   site: "https://yourusername.github.io",
 
   base: "/lifelab",
