@@ -225,3 +225,44 @@ export function getHeatmapMatrix(insight: MonthlyInsight): number[][] {
     });
   });
 }
+
+/**
+ * PHASE 7: ANTI-DRIFT GUARDRAILS
+ *
+ * This module must remain strictly observational.
+ *
+ * WHAT THIS MODULE DOES:
+ * ✓ Transform daily data into insight structures
+ * ✓ Preserve temporal patterns and rhythms
+ * ✓ Calculate presence and breadth of engagement
+ * ✓ Enable visual pattern recognition
+ *
+ * WHAT THIS MODULE MUST NEVER DO:
+ * ❌ Calculate scores, grades, or ratings
+ * ❌ Compute productivity metrics or improvements
+ * ❌ Generate goal achievement percentages
+ * ❌ Create streak counters or gamification
+ * ❌ Compare months or time periods
+ * ❌ Add evaluative labels (good/bad, success/failure)
+ * ❌ Normalize data with prescriptive intent
+ *
+ * SIGNAL INTERPRETATION:
+ * The dailyAggregateSignal represents BREADTH (how many domains),
+ * not DEPTH (quality), SUCCESS (outcome), or EFFORT (intensity).
+ *
+ * It answers: "Where did attention go?" not "How well did you do?"
+ *
+ * PRESENCE VS PERFORMANCE:
+ * - Presence = domain had activity (binary or low-range)
+ * - Performance = evaluative judgment (FORBIDDEN)
+ *
+ * If you're adding features that:
+ * - Award points or badges
+ * - Track improvement over time with value judgments
+ * - Create competition or comparison
+ * - Generate motivational prompts
+ *
+ * STOP. You're drifting from the core philosophy.
+ *
+ * This tool is for UNDERSTANDING, not OPTIMIZATION.
+ */
