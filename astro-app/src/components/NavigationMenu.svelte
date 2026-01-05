@@ -26,6 +26,7 @@
     })),
     { href: '/notebook', label: 'Notebook', isSpecial: true },
     { href: '/year', label: 'Year', isSpecial: true },
+    { href: '/settings', label: '⚙️ Settings', isSpecial: true },
   ];
 
   function isActive(href: string): boolean {
