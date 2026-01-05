@@ -128,6 +128,8 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
     border-collapse: collapse;
     font-size: 0.875rem;
     background: white;
+    table-layout: auto;
+    min-width: 100%;
   }
 
   /* Headers */
@@ -143,6 +145,7 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
     font-weight: 600;
     color: #374151;
     border-bottom: 2px solid #e5e7eb;
+    white-space: nowrap;
   }
 
   .domain-header-label {
@@ -158,9 +161,11 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
   .day-header {
     min-width: 40px;
     max-width: 40px;
+    width: 40px;
     text-align: center;
     padding: 0.5rem 0.25rem;
     font-size: 0.875rem;
+    vertical-align: top;
   }
 
   .day-header.today {
@@ -170,6 +175,7 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
 
   .day-label {
     writing-mode: horizontal-tb;
+    display: block;
   }
 
   .today-marker {
@@ -188,6 +194,11 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
     background-color: #fafafa;
   }
 
+  tbody td {
+    padding: 0;
+    margin: 0;
+  }
+
   .domain-cell {
     padding: 0.75rem 1rem;
     font-weight: 500;
@@ -198,6 +209,7 @@ function getIntensity(domainIndex: number, dayIndex: number): number {
     border-right: 1px solid #e5e7eb;
     z-index: 5;
     min-width: 120px;
+    white-space: nowrap;
   }
 
   tbody tr:hover .domain-cell {
