@@ -2,7 +2,7 @@
 
 This folder contains the original vanilla JavaScript version of LifeLab.
 
-## ⚠️ Archived Code
+## Archived Code
 
 These files are preserved for historical reference and are no longer actively maintained.
 
