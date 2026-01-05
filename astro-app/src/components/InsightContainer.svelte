@@ -141,17 +141,19 @@ function loadData() {
   }
 
   @media (max-width: 768px) {
-    .insight-section {
-      padding: 1.5rem 1rem;
-      margin: 2rem 0;
-    }
-
     .insight-title {
       font-size: 1.125rem;
     }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 480px) {
+    .insight-section {
+      padding: 1.5rem 1rem;
+      margin: 2rem 0;
+    }
+  }
+
+  @media (max-width: 360px) {
     .insight-section {
       padding: 1rem 0.75rem;
     }
