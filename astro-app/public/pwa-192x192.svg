@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="bg192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square background -->
+  <rect width="192" height="192" rx="42" fill="url(#bg192)"/>
+  
+  <!-- Life pulse line -->
+  <path 
+    d="M 30 96 L 52 96 L 63 75 L 74 117 L 84 96 L 96 96 L 107 78 L 118 114 L 128 96 L 162 96" 
+    stroke="white" 
+    stroke-width="6" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+    fill="none"
+    opacity="0.95"
+  />
+  
+  <!-- Domain dots -->
+  <circle cx="52" cy="60" r="5" fill="white" opacity="0.75"/>
+  <circle cx="96" cy="53" r="5" fill="white" opacity="0.75"/>
+  <circle cx="140" cy="60" r="5" fill="white" opacity="0.75"/>
+  <circle cx="128" cy="132" r="5" fill="white" opacity="0.75"/>
+  <circle cx="64" cy="132" r="5" fill="white" opacity="0.75"/>
+  
+  <!-- LifeLab text -->
+  <text x="96" y="160" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="white" text-anchor="middle" opacity="0.9">LifeLab</text>
+</svg>
