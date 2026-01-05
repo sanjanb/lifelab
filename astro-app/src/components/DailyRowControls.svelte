@@ -8,7 +8,8 @@
    */
 
   import { onMount } from 'svelte';
-  import { getMonthlyNotebook, saveMonthlyNotebook } from '../lib/storage';
+  import { getMonthlyNotebook, saveMonthlyNotebook, type DayEntry } from '../lib/storage';
+  import { aggregateAllDomainsToNotebook } from '../lib/notebookSync';
 
   export let year: number;
   export let month: number;
@@ -51,6 +52,9 @@
   ];
 
   onMount(() => {
+    // Ensure notebook exists and is synced with domain entries
+    aggregateAllDomainsToNotebook(year, month);
+    
     // Load current values from storage
     const notebook = getMonthlyNotebook(year, month);
     if (notebook && notebook.days[dayKey]) {

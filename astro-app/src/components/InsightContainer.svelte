@@ -13,6 +13,7 @@ import InsightObservations from './InsightObservations.svelte';
 import { getMonthlyNotebook } from '../lib/storage';
 import { buildMonthlyInsight, getSignalArray, getHeatmapMatrix } from '../lib/monthlyInsight';
 import { generateInsightObservations, getMonthSummary } from '../lib/insightText';
+import { aggregateAllDomainsToNotebook } from '../lib/notebookSync';
 
 export let year: number;
 export let month: number;
@@ -31,6 +32,9 @@ onMount(() => {
 });
 
 function loadData() {
+  // Ensure notebook is synced with all domain entries
+  aggregateAllDomainsToNotebook(year, month);
+  
   // Get monthly notebook from storage
   const notebook = getMonthlyNotebook(year, month);
   
