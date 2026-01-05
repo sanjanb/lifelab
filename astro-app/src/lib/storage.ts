@@ -353,3 +353,236 @@ export function isNotebookClosed(year: number, month: number): boolean {
     return false;
   }
 }
+
+// ============================================================================
+// EXPORT / IMPORT FUNCTIONALITY
+// ============================================================================
+
+export interface LifeLabExport {
+  version: string;
+  exportDate: string;
+  domains: Record<string, Entry[]>;
+  notebooks: Record<string, MonthlyNotebook>;
+}
+
+/**
+ * Export all LifeLab data to JSON
+ * 
+ * @returns Complete data export object
+ */
+export function exportAllData(): LifeLabExport {
+  if (typeof window === "undefined" || typeof localStorage === "undefined") {
+    throw new Error("Export only available in browser environment");
+  }
+
+  const exportData: LifeLabExport = {
+    version: "1.0.0",
+    exportDate: new Date().toISOString(),
+    domains: {},
+    notebooks: {},
+  };
+
+  // Export all localStorage items
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key) continue;
+
+    try {
+      const value = localStorage.getItem(key);
+      if (!value) continue;
+
+      // Domain entries (lifelab_habits, lifelab_learning, etc.)
+      if (key.startsWith("lifelab_") && !key.includes("notebook")) {
+        exportData.domains[key] = JSON.parse(value);
+      }
+      // Notebook entries (lifelab_notebook_YYYY_MM)
+      else if (key.startsWith("lifelab_notebook_")) {
+        exportData.notebooks[key] = JSON.parse(value);
+      }
+    } catch (error) {
+      console.error(`Error exporting ${key}:`, error);
+    }
+  }
+
+  return exportData;
+}
+
+/**
+ * Download export data as JSON file
+ * 
+ * @param filename - Optional custom filename
+ */
+export function downloadExportData(filename?: string): void {
+  try {
+    const exportData = exportAllData();
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
+    
+    const downloadUrl = URL.createObjectURL(dataBlob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = filename || `lifelab-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(downloadUrl);
+  } catch (error) {
+    console.error("Download export error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Import LifeLab data from export object
+ * 
+ * @param importData - Export data object
+ * @param mode - 'merge' (keep existing) or 'replace' (overwrite all)
+ * @returns Import statistics
+ */
+export function importData(
+  importData: LifeLabExport,
+  mode: "merge" | "replace" = "merge"
+): { success: boolean; imported: number; errors: number } {
+  if (typeof window === "undefined" || typeof localStorage === "undefined") {
+    throw new Error("Import only available in browser environment");
+  }
+
+  let imported = 0;
+  let errors = 0;
+
+  try {
+    // Replace mode: clear all LifeLab data first
+    if (mode === "replace") {
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith("lifelab_")) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach((key) => localStorage.removeItem(key));
+    }
+
+    // Import domain entries
+    Object.entries(importData.domains).forEach(([key, entries]) => {
+      try {
+        if (mode === "merge") {
+          // Merge with existing entries
+          const existing = getStorageItem<Entry[]>(key) || [];
+          const existingIds = new Set(existing.map((e) => e.id));
+          const newEntries = entries.filter((e) => !existingIds.has(e.id));
+          localStorage.setItem(key, JSON.stringify([...existing, ...newEntries]));
+        } else {
+          // Replace mode
+          localStorage.setItem(key, JSON.stringify(entries));
+        }
+        imported++;
+      } catch (error) {
+        console.error(`Error importing ${key}:`, error);
+        errors++;
+      }
+    });
+
+    // Import notebooks
+    Object.entries(importData.notebooks).forEach(([key, notebook]) => {
+      try {
+        if (mode === "merge") {
+          // Merge notebook days
+          const existing = getStorageItem<MonthlyNotebook>(key);
+          if (existing) {
+            notebook.days = { ...existing.days, ...notebook.days };
+            notebook.reflection = notebook.reflection || existing.reflection;
+          }
+        }
+        localStorage.setItem(key, JSON.stringify(notebook));
+        imported++;
+      } catch (error) {
+        console.error(`Error importing ${key}:`, error);
+        errors++;
+      }
+    });
+
+    return { success: errors === 0, imported, errors };
+  } catch (error) {
+    console.error("Import data error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Import data from file
+ * 
+ * @param file - JSON file from file input
+ * @param mode - 'merge' or 'replace'
+ * @returns Promise with import statistics
+ */
+export async function importFromFile(
+  file: File,
+  mode: "merge" | "replace" = "merge"
+): Promise<{ success: boolean; imported: number; errors: number }> {
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text) as LifeLabExport;
+    
+    // Validate import data
+    if (!data.version || !data.domains || !data.notebooks) {
+      throw new Error("Invalid LifeLab export file format");
+    }
+
+    return importData(data, mode);
+  } catch (error) {
+    console.error("Import from file error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get storage statistics
+ * 
+ * @returns Storage usage information
+ */
+export function getStorageStats(): {
+  totalEntries: number;
+  totalNotebooks: number;
+  domains: Record<string, number>;
+  estimatedSize: number;
+} {
+  if (typeof window === "undefined" || typeof localStorage === "undefined") {
+    return { totalEntries: 0, totalNotebooks: 0, domains: {}, estimatedSize: 0 };
+  }
+
+  let totalEntries = 0;
+  let totalNotebooks = 0;
+  let estimatedSize = 0;
+  const domains: Record<string, number> = {};
+
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith("lifelab_")) continue;
+
+    try {
+      const value = localStorage.getItem(key);
+      if (!value) continue;
+
+      estimatedSize += value.length;
+
+      if (key.includes("notebook")) {
+        totalNotebooks++;
+      } else {
+        const entries = JSON.parse(value) as Entry[];
+        totalEntries += entries.length;
+        domains[key] = entries.length;
+      }
+    } catch (error) {
+      console.error(`Error reading ${key}:`, error);
+    }
+  }
+
+  return {
+    totalEntries,
+    totalNotebooks,
+    domains,
+    estimatedSize,
+  };
+}
+
