@@ -172,7 +172,10 @@ function analyzeDensityPattern(signals: number[]): {
       // Inactive day
       currentQuietPeriod++;
       if (currentActiveStreak > 0) {
-        longestActiveStreak = Math.max(longestActiveStreak, currentActiveStreak);
+        longestActiveStreak = Math.max(
+          longestActiveStreak,
+          currentActiveStreak
+        );
         currentActiveStreak = 0;
       }
       inCluster = false;
@@ -225,11 +228,11 @@ function analyzeDensityPattern(signals: number[]): {
  * 6. EXAMPLE YEARLY VIEW STRUCTURE
  *    ```
  *    2026 Annual Overview
- *    
+ *
  *    [12 small line graphs showing monthly signal shapes]
- *    
+ *
  *    [Heatmap grid: months × domains showing participation]
- *    
+ *
  *    Notable Patterns:
  *    - Spring months showed focus in learning domain
  *    - Summer had broader participation across all domains
