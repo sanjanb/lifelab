@@ -5,6 +5,7 @@ A lightweight personal metrics dashboard for tracking and visualizing your life 
 ## 🚀 Active Development: Astro + Svelte
 
 This is a modern web application built with:
+
 - **Astro** - Static site generation and optimal performance
 - **Svelte** - Interactive components with minimal JavaScript
 - **TypeScript** - Type-safe utilities and configuration
@@ -34,7 +35,6 @@ astro-app/              # Modern Astro + Svelte application
 legacy-archive/        # Original vanilla JS version (preserved for reference)
 ```
 
-
 ## 📚 Documentation
 
 - **[Migration Progress](./astro-app/docs/MIGRATION_PROGRESS.md)** - Current status and completed phases
@@ -58,7 +58,6 @@ Automatically deploys to GitHub Pages via GitHub Actions when pushing to `main` 
 ## 📁 Legacy Code
 
 The original vanilla JavaScript version is preserved in `legacy-archive/` for reference and historical context.
-
 
 All data is stored locally in your browser, giving you complete privacy and control.
 
