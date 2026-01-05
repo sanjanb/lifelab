@@ -97,8 +97,9 @@ const dailyCounts = Array(daysInMonth).fill(0);
             <div class="col-domains">
               <DomainPresenceBadges 
                 client:visible
+                year={activeMonth.year}
+                month={activeMonth.month}
                 dayNumber={day.dayNumber}
-                activeDomains={[]}
               />
             </div>
           </div>

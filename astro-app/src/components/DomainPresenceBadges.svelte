@@ -7,13 +7,33 @@
    * Visual indicator only - minimal interaction
    */
 
+  import { onMount } from 'svelte';
   import { getAllDomains, type Domain } from '../lib/config';
+  import { getDomainPresenceForDay } from '../lib/notebookSync';
 
+  export let year: number;
+  export let month: number;
   export let dayNumber: number;
-  export let activeDomains: string[] = [];
 
   const allDomains = getAllDomains();
+  let activeDomains: string[] = [];
   let hoveredDomain: string | null = null;
+
+  onMount(() => {
+    loadDomainPresence();
+    
+    // Listen for entry changes
+    window.addEventListener('entryAdded', loadDomainPresence);
+    
+    return () => {
+      window.removeEventListener('entryAdded', loadDomainPresence);
+    };
+  });
+
+  function loadDomainPresence() {
+    const domains = getDomainPresenceForDay(year, month, dayNumber);
+    activeDomains = domains || [];
+  }
 
   function getDomainConfig(domainId: string): Domain | undefined {
     return allDomains.find(d => d.id === domainId);

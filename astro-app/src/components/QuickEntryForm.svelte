@@ -10,6 +10,8 @@
   import { onMount } from 'svelte';
   import { saveEntry, getEntries } from '../lib/storage';
   import { createEntry } from '../lib/utils';
+  import { aggregateDomainToNotebook } from '../lib/notebookSync';
+  import { getCurrentMonth } from '../lib/monthResolution';
   import type { Domain } from '../lib/config';
   import type { Entry } from '../lib/storage';
 
@@ -52,6 +54,10 @@
       const success = saveEntry(domainId, entry);
 
       if (success) {
+        // Sync to notebook (aggregate domain entries into monthly notebook)
+        const currentMonth = getCurrentMonth();
+        aggregateDomainToNotebook(domainId, currentMonth.year, currentMonth.month);
+        
         // Clear form
         formData = { value: '', notes: '' };
         

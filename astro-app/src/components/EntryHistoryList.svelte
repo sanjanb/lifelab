@@ -10,6 +10,8 @@
   import { onMount } from 'svelte';
   import { getEntries, deleteEntry } from '../lib/storage';
   import { formatDate, formatDateTime } from '../lib/utils';
+  import { aggregateDomainToNotebook } from '../lib/notebookSync';
+  import { getCurrentMonth } from '../lib/monthResolution';
   import type { Entry } from '../lib/storage';
 
   export let domainId: string;
@@ -53,6 +55,10 @@
     if (deleteConfirmId) {
       const success = deleteEntry(domainId, deleteConfirmId);
       if (success) {
+        // Sync to notebook after deletion
+        const currentMonth = getCurrentMonth();
+        aggregateDomainToNotebook(domainId, currentMonth.year, currentMonth.month);
+        
         refreshEntries();
       }
       deleteConfirmId = null;
