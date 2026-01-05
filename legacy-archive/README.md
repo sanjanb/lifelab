@@ -4,7 +4,7 @@ This folder contains the original vanilla JavaScript version of LifeLab.
 
 ## ⚠️ Archived Code
 
-These files are preserved for historical reference and are no longer actively maintained. 
+These files are preserved for historical reference and are no longer actively maintained.
 
 **For current development, see the main `astro-app/` directory.**
 
@@ -19,6 +19,7 @@ These files are preserved for historical reference and are no longer actively ma
 ## Original Architecture
 
 Simple vanilla JavaScript with no build tools:
+
 - Direct browser execution
 - localStorage for data persistence
 - Module-based organization

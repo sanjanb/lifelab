@@ -2,7 +2,7 @@
 
 A lightweight personal metrics dashboard for tracking and visualizing your life across multiple domains.
 
-## 🚀 Active Development: Astro + Svelte
+## Active Development: Astro + Svelte
 
 This is a modern web application built with:
 
@@ -35,21 +35,21 @@ astro-app/              # Modern Astro + Svelte application
 legacy-archive/        # Original vanilla JS version (preserved for reference)
 ```
 
-## 📚 Documentation
+## Documentation
 
 - **[Migration Progress](./astro-app/docs/MIGRATION_PROGRESS.md)** - Current status and completed phases
 - **[Island Boundaries](./astro-app/docs/ISLAND_BOUNDARIES.md)** - Svelte component specifications
 - **[Migration Summary](./astro-app/docs/MIGRATION_SUMMARY.md)** - Architecture overview
 
-## 📦 Features
+## Features
 
 LifeLab helps you monitor and improve different areas of your life with a unified dashboard:
 
-- **📝 Daily Notebook** - Monthly view with daily intent, quality, and outcome tracking
-- **🎯 Habits Tracker** - Log and monitor habit formation
-- **📚 Learning Log** - Document learning activities and progress
-- **💼 Career Journal** - Record milestones and achievements
-- **💪 Health Metrics** - Track wellness and fitness activities
+- **Daily Notebook** - Monthly view with daily intent, quality, and outcome tracking
+- **Habits Tracker** - Log and monitor habit formation
+- **Learning Log** - Document learning activities and progress
+- **Career Journal** - Record milestones and achievements
+- **Health Metrics** - Track wellness and fitness activities
 
 ## 🚢 Deployment
 
