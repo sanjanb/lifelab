@@ -1,0 +1,1 @@
+function n(){const t=new Date;return{year:t.getFullYear(),month:t.getMonth()+1}}function o(t){return t.month===1?{year:t.year-1,month:12}:{year:t.year,month:t.month-1}}function e(t){return t.month===12?{year:t.year+1,month:1}:{year:t.year,month:t.month+1}}function a(t){return`${t.year}-${String(t.month).padStart(2,"0")}`}export{o as a,a as b,e as c,n as g};
