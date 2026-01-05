@@ -51,12 +51,16 @@ function loadData() {
   const daysInMonth = new Date(year, month, 0).getDate();
   const dailyRows = Array.from({ length: daysInMonth }, (_, i) => {
     const dayNumber = i + 1;
+    const dayKey = String(dayNumber);
     const date = new Date(year, month - 1, dayNumber).toISOString().split('T')[0];
-    const dayData = notebook.days[dayNumber] || {};
+    const dayData = notebook.days[dayKey] || {};
     
     return {
       date,
-      domains: dayData.domains || []
+      domains: dayData.domains || [],
+      intent: dayData.intent,
+      quality: dayData.quality,
+      outcome: dayData.outcome
     };
   });
   
