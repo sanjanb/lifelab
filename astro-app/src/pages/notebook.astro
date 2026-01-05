@@ -2,16 +2,16 @@
 /**
  * Notebook Page - Monthly Notebook View
  * 
- * Same structure as home page but allows navigation to any month
- * - Supports URL month parameter for viewing past/future months
- * - Shows monthly header, graph, daily rows, analytics, and reflection
+ * NEW: Calendar Grid Layout
+ * - Visual month calendar for pattern recognition
+ * - Click any day to expand full controls
+ * - Maintains all existing functionality
+ * - Responsive: collapses to week-view on mobile
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MonthlyHeader from '../components/MonthlyHeader.svelte';
-import DailyActivityGraph from '../components/DailyActivityGraph.svelte';
-import DailyRowControls from '../components/DailyRowControls.svelte';
-import DomainPresenceBadges from '../components/DomainPresenceBadges.svelte';
+import NotebookCalendar from '../components/NotebookCalendar.svelte';
 import MonthlyOutcomeSummary from '../components/MonthlyOutcomeSummary.svelte';
 import DomainParticipationSummary from '../components/DomainParticipationSummary.svelte';
 import TrendObservations from '../components/TrendObservations.svelte';
@@ -31,22 +31,11 @@ const daysInMonth = getDaysInMonth(activeMonth.year, activeMonth.month);
 // Get today info for highlighting
 const today = getTodayInfo();
 const todayDay = metadata.isCurrentMonth ? today.day : null;
-
-// Create array of days for rendering
-const days = Array.from({ length: daysInMonth }, (_, i) => ({
-  dayNumber: i + 1,
-  dayName: new Date(activeMonth.year, activeMonth.month - 1, i + 1).toLocaleDateString('en-US', { weekday: 'short' }),
-  date: new Date(activeMonth.year, activeMonth.month - 1, i + 1).toISOString().split('T')[0],
-  isToday: metadata.isCurrentMonth && (i + 1) === today.day
-}));
-
-// Placeholder data for graph (will be populated by Svelte component)
-const dailyCounts = Array(daysInMonth).fill(0);
 ---
 
 <BaseLayout title="LifeLab - Notebook">
   <div class="notebook-view">
-    <!-- Monthly Context + Line Graph -->
+    <!-- Monthly Context Header -->
     <MonthlyHeader 
       client:load
       currentMonth={activeMonth}
@@ -55,57 +44,13 @@ const dailyCounts = Array(daysInMonth).fill(0);
       isFutureMonth={metadata.isFutureMonth}
     />
 
-    <DailyActivityGraph 
-      client:visible
-      dailyCounts={dailyCounts}
-      daysInMonth={daysInMonth}
+    <!-- Calendar Grid + Day Detail Panel -->
+    <NotebookCalendar 
+      client:load
+      year={activeMonth.year}
+      month={activeMonth.month}
       currentDay={todayDay}
     />
-
-    <!-- Monthly Notebook (Primary Surface) -->
-    <div class="notebook-section">
-      <h2 class="section-title">Daily Rows</h2>
-      
-      <div class="daily-rows">
-        <div class="grid-header">
-          <div class="col-day">Day</div>
-          <div class="col-controls">Intent / Quality / Outcome</div>
-          <div class="col-domains">Active Domains</div>
-        </div>
-
-        {days.map((day) => (
-          <div 
-            class:list={['day-row', { 'day-row-today': day.isToday }]} 
-            data-day={day.dayNumber}
-          >
-            <div class="col-day">
-              <div class="day-number">{day.dayNumber}</div>
-              <div class="day-name">{day.dayName}</div>
-              {day.isToday && <div class="today-badge">Today</div>}
-            </div>
-
-            <div class="col-controls">
-              <DailyRowControls 
-                client:visible
-                year={activeMonth.year}
-                month={activeMonth.month}
-                dayNumber={day.dayNumber}
-                initialData={{}}
-              />
-            </div>
-
-            <div class="col-domains">
-              <DomainPresenceBadges 
-                client:visible
-                year={activeMonth.year}
-                month={activeMonth.month}
-                dayNumber={day.dayNumber}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
 
     <!-- Inline Analytics (Post-Notebook) -->
     <div class="analytics-section">
