@@ -1,0 +1,1 @@
+function r(){return`${Date.now()}-${Math.random().toString(36).substr(2,9)}`}function i(t,n=""){const e=new Date;return{id:r(),timestamp:e.toISOString(),date:e.toISOString().split("T")[0],value:t,notes:n}}function a(t){return new Date(t).toLocaleString("en-US",{year:"numeric",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})}export{i as c,a as f};

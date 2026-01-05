@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Beautiful gradient background -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="url(#bgGradient)"/>
+  
+  <!-- Life pulse line (heartbeat style representing life tracking) -->
+  <path 
+    d="M 20 64 L 35 64 L 42 50 L 49 78 L 56 64 L 64 64 L 71 52 L 78 76 L 85 64 L 108 64" 
+    stroke="white" 
+    stroke-width="4" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+    fill="none"
+    opacity="0.9"
+  />
+  
+  <!-- Small dots representing different life domains -->
+  <circle cx="35" cy="40" r="3" fill="white" opacity="0.7"/>
+  <circle cx="64" cy="35" r="3" fill="white" opacity="0.7"/>
+  <circle cx="93" cy="40" r="3" fill="white" opacity="0.7"/>
+  <circle cx="85" cy="88" r="3" fill="white" opacity="0.7"/>
+  <circle cx="43" cy="88" r="3" fill="white" opacity="0.7"/>
+</svg>
