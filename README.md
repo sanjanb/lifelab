@@ -2,25 +2,14 @@
 
 A lightweight personal metrics dashboard for tracking and visualizing your life across multiple domains.
 
-## Project Structure
+## 🚀 Active Development: Astro + Svelte
 
-This repository contains two versions of LifeLab:
+This is a modern web application built with:
+- **Astro** - Static site generation and optimal performance
+- **Svelte** - Interactive components with minimal JavaScript
+- **TypeScript** - Type-safe utilities and configuration
 
-### Original Version (Root Directory)
-
-The original vanilla JavaScript version - simple HTML, CSS, and JavaScript with no build tools.
-
-### Astro + Svelte Version (`astro-app/`)
-
-**[Active Development]** Modern migration using Astro for static site generation and Svelte for interactive components. This version is being deployed to GitHub Pages.
-
-- 📁 **Source**: `astro-app/src/`
-- 📚 **Documentation**: `astro-app/docs/`
-- 🚀 **Deployment**: Automated via GitHub Actions to GitHub Pages
-
-## Quick Start
-
-### Run Astro Version (Recommended)
+### Quick Start
 
 ```bash
 cd astro-app
@@ -30,24 +19,46 @@ npm run dev
 
 Visit `http://localhost:4321`
 
-### Run Original Version
+### Project Structure
 
-Simply open `index.html` in your browser.
+```
+astro-app/              # Modern Astro + Svelte application
+├── src/
+│   ├── components/    # Interactive Svelte islands
+│   ├── layouts/       # Astro page layouts
+│   ├── lib/          # Framework-agnostic utilities
+│   └── pages/        # Astro pages (routes)
+├── docs/             # Migration docs & specifications
+└── public/           # Static assets
 
-## Deployment
+legacy-archive/        # Original vanilla JS version (preserved for reference)
+```
 
-The Astro version automatically deploys to GitHub Pages when you push to the `main` branch.
 
-**Live Site**: https://[your-username].github.io/lifelab
+## 📚 Documentation
 
-## What is LifeLab?
+- **[Migration Progress](./astro-app/docs/MIGRATION_PROGRESS.md)** - Current status and completed phases
+- **[Island Boundaries](./astro-app/docs/ISLAND_BOUNDARIES.md)** - Svelte component specifications
+- **[Migration Summary](./astro-app/docs/MIGRATION_SUMMARY.md)** - Architecture overview
 
-LifeLab helps you monitor and improve different areas of your life by providing a unified dashboard where you can:
+## 📦 Features
 
-- Track daily habits
-- Log learning activities
-- Record career milestones
-- Monitor health metrics
+LifeLab helps you monitor and improve different areas of your life with a unified dashboard:
+
+- **📝 Daily Notebook** - Monthly view with daily intent, quality, and outcome tracking
+- **🎯 Habits Tracker** - Log and monitor habit formation
+- **📚 Learning Log** - Document learning activities and progress
+- **💼 Career Journal** - Record milestones and achievements
+- **💪 Health Metrics** - Track wellness and fitness activities
+
+## 🚢 Deployment
+
+Automatically deploys to GitHub Pages via GitHub Actions when pushing to `main` branch.
+
+## 📁 Legacy Code
+
+The original vanilla JavaScript version is preserved in `legacy-archive/` for reference and historical context.
+
 
 All data is stored locally in your browser, giving you complete privacy and control.
 
