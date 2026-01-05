@@ -132,7 +132,10 @@ function getTypeIcon(type: string): string {
     line-height: 1.6;
   }
 
-  .observation-li.25rem 0;
+  .observation-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem 0;
   }
 
   .observation-item {
