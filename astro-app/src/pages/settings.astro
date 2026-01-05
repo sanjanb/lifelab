@@ -1,0 +1,313 @@
+---
+/**
+ * Settings Page
+ * 
+ * Central location for:
+ * - Data export/import
+ * - Cloud sync (if configured)
+ * - App preferences
+ * - About/Help
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavigationMenu from '../components/NavigationMenu.svelte';
+import ExportImport from '../components/ExportImport.svelte';
+
+const currentPath = Astro.url.pathname;
+---
+
+<BaseLayout title="Settings - LifeLab">
+  <NavigationMenu client:load currentPath={currentPath} />
+
+  <div class="settings-page">
+    <header class="page-header">
+      <h1 class="page-title">⚙️ Settings</h1>
+      <p class="page-subtitle">
+        Manage your data and app preferences
+      </p>
+    </header>
+
+    <div class="settings-container">
+      <!-- Export/Import Section -->
+      <section class="settings-section">
+        <ExportImport client:load />
+      </section>
+
+      <!-- Cloud Sync Section (if Firebase configured) -->
+      <section class="settings-section">
+        <div class="coming-soon-card">
+          <h3>☁️ Cloud Sync</h3>
+          <p>Sync your data across devices with Firebase (coming soon)</p>
+          <p class="hint">Configure Firebase in <code>src/lib/firebase.ts</code> to enable</p>
+        </div>
+      </section>
+
+      <!-- Preferences Section -->
+      <section class="settings-section">
+        <div class="preferences-card">
+          <h3>🎨 Preferences</h3>
+          <div class="preference-item">
+            <label>
+              <input type="checkbox" id="dark-mode" />
+              <span>Dark mode (coming soon)</span>
+            </label>
+          </div>
+          <div class="preference-item">
+            <label>
+              <input type="checkbox" id="pwa-install" />
+              <span>Enable offline mode (PWA)</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Keyboard Shortcuts Section -->
+      <section class="settings-section">
+        <div class="shortcuts-card">
+          <h3>⌨️ Keyboard Shortcuts</h3>
+          <table class="shortcuts-table">
+            <tr>
+              <td class="shortcut-key">Ctrl + E</td>
+              <td>Export data</td>
+            </tr>
+            <tr>
+              <td class="shortcut-key">Ctrl + K</td>
+              <td>Search (coming soon)</td>
+            </tr>
+            <tr>
+              <td class="shortcut-key">?</td>
+              <td>Show help</td>
+            </tr>
+            <tr>
+              <td class="shortcut-key">Esc</td>
+              <td>Close dialogs</td>
+            </tr>
+          </table>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section class="settings-section">
+        <div class="about-card">
+          <h3>ℹ️ About LifeLab</h3>
+          <p><strong>Version:</strong> 0.0.1</p>
+          <p><strong>Philosophy:</strong> Understanding over optimization</p>
+          <p><strong>Privacy:</strong> All data stored locally in your browser</p>
+          <p class="docs-link">
+            <a href="https://github.com/yourusername/lifelab" target="_blank" rel="noopener">
+              📖 Documentation & Source Code
+            </a>
+          </p>
+        </div>
+      </section>
+
+      <!-- Danger Zone -->
+      <section class="settings-section danger-zone">
+        <div class="danger-card">
+          <h3>⚠️ Danger Zone</h3>
+          <p>These actions are irreversible</p>
+          <button class="btn-danger" onclick="if(confirm('Delete ALL data? This cannot be undone!')) { localStorage.clear(); alert('All data deleted'); window.location.href='/lifelab/'; }">
+            Delete All Data
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .settings-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .page-header {
+    margin-bottom: 3rem;
+    text-align: center;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .page-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .settings-section {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .coming-soon-card,
+  .preferences-card,
+  .shortcuts-card,
+  .about-card,
+  .danger-card {
+    padding: 1.5rem;
+  }
+
+  .coming-soon-card h3,
+  .preferences-card h3,
+  .shortcuts-card h3,
+  .about-card h3,
+  .danger-card h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .coming-soon-card p,
+  .about-card p {
+    margin: 0.5rem 0;
+    color: #4b5563;
+  }
+
+  .hint {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    font-family: monospace;
+  }
+
+  .preference-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .preference-item:last-child {
+    border-bottom: none;
+  }
+
+  .preference-item label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+  }
+
+  .shortcuts-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .shortcuts-table tr {
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .shortcuts-table tr:last-child {
+    border-bottom: none;
+  }
+
+  .shortcuts-table td {
+    padding: 0.75rem 0;
+    color: #4b5563;
+  }
+
+  .shortcut-key {
+    font-family: monospace;
+    background: #f3f4f6;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    color: #1f2937;
+    white-space: nowrap;
+  }
+
+  .docs-link {
+    margin-top: 1rem !important;
+    padding-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+  }
+
+  .docs-link a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .docs-link a:hover {
+    text-decoration: underline;
+  }
+
+  .danger-zone {
+    border-color: #fca5a5;
+  }
+
+  .danger-card {
+    background: #fef2f2;
+  }
+
+  .danger-card h3 {
+    color: #991b1b;
+  }
+
+  .danger-card p {
+    color: #7f1d1d;
+  }
+
+  .btn-danger {
+    margin-top: 1rem;
+    padding: 0.625rem 1.25rem;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .btn-danger:hover {
+    background: #b91c1c;
+  }
+
+  @media (max-width: 768px) {
+    .settings-page {
+      padding: 1rem 0.75rem;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .shortcuts-table {
+      font-size: 0.875rem;
+    }
+  }
+</style>
+
+<script>
+  // Initialize keyboard shortcuts
+  import { setupGlobalShortcuts } from '../lib/keyboardShortcuts';
+  
+  setupGlobalShortcuts();
+
+  // PWA install handler
+  const pwaCheckbox = document.getElementById('pwa-install');
+  if (pwaCheckbox) {
+    pwaCheckbox.addEventListener('change', (e) => {
+      const target = e.target as HTMLInputElement;
+      if (target.checked) {
+        alert('PWA is already enabled! You can install LifeLab from your browser menu.');
+        target.checked = false;
+      }
+    });
+  }
+</script>
