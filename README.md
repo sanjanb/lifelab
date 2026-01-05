@@ -51,11 +51,11 @@ LifeLab helps you monitor and improve different areas of your life with a unifie
 - **Career Journal** - Record milestones and achievements
 - **Health Metrics** - Track wellness and fitness activities
 
-## 🚢 Deployment
+## Deployment
 
 Automatically deploys to GitHub Pages via GitHub Actions when pushing to `main` branch.
 
-## 📁 Legacy Code
+## Legacy Code
 
 The original vanilla JavaScript version is preserved in `legacy-archive/` for reference and historical context.
 
@@ -76,13 +76,13 @@ All data is stored locally in your browser, giving you complete privacy and cont
 - At-a-glance statistics showing entries this month
 - Active days tracking to see your consistency
 
-### ⏱️ Timeline View
+### Timeline View
 
 - Unified timeline across all domains
 - See all your entries in chronological order
 - Filter and review your progress over time
 
-### 💾 Local Storage
+### Local Storage
 
 - All data saved in your browser's localStorage
 - No server required, no accounts needed
