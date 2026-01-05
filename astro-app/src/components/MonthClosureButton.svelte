@@ -51,6 +51,16 @@
     window.dispatchEvent(new CustomEvent('monthClosed', { 
       detail: { year, month } 
     }));
+
+    // Auto-advance to next month
+    const nextMonth = month === 12 ? 1 : month + 1;
+    const nextYear = month === 12 ? year + 1 : year;
+    const nextMonthKey = `${nextYear}-${String(nextMonth).padStart(2, '0')}`;
+    
+    // Navigate to next month after a brief delay (allows user to see confirmation)
+    setTimeout(() => {
+      window.location.href = `/lifelab/notebook?month=${nextMonthKey}`;
+    }, 1500);
   }
 
   function cancelClose() {
