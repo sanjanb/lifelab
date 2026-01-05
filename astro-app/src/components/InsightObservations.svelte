@@ -73,78 +73,95 @@ function getTypeIcon(type: string): string {
   .insight-observations {
     margin: 2rem 0;
     border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    background: #fafafa;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
   .section-toggle {
     width: 100%;
     padding: 1rem 1.25rem;
-    background: transparent;
+    background: #f9fafb;
     border: none;
+    border-radius: 8px 8px 0 0;
     display: flex;
     align-items: center;
     gap: 0.75rem;
     cursor: pointer;
     transition: background-color 0.15s ease;
+    text-align: left;
   }
 
   .section-toggle:hover {
     background-color: #f3f4f6;
   }
 
+  .section-toggle:active {
+    background-color: #e5e7eb;
+  }
+
   .toggle-icon {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     color: #6b7280;
     transition: transform 0.2s ease;
+    line-height: 1;
   }
 
   .section-title {
     margin: 0;
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 600;
-    color: #374151;
+    color: #111827;
+    flex: 1;
   }
 
   .observations-content {
-    padding: 0 1.25rem 1.25rem 1.25rem;
+    padding: 1.5rem 1.25rem 1.25rem 1.25rem;
+    background: white;
+    border-radius: 0 0 8px 8px;
   }
 
   .month-summary {
-    margin: 0 0 1rem 0;
-    padding: 0.75rem 1rem;
-    background: white;
-    border-left: 3px solid #6b7280;
+    margin: 0 0 1.25rem 0;
+    padding: 1rem 1.25rem;
+    background: #f9fafb;
+    border-left: 3px solid #3b82f6;
+    border-radius: 4px;
     font-size: 0.9375rem;
     color: #1f2937;
     line-height: 1.6;
   }
 
-  .observation-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 1rem 0;
+  .observation-li.25rem 0;
   }
 
   .observation-item {
-    padding: 0.625rem 0;
+    padding: 0.75rem 0;
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: 0.875rem;
     border-bottom: 1px solid #f3f4f6;
   }
 
   .observation-item:last-child {
     border-bottom: none;
+    padding-bottom: 0;
   }
 
   .obs-icon {
-    font-size: 0.875rem;
-    color: #9ca3af;
+    font-size: 1rem;
+    color: #6b7280;
     margin-top: 0.125rem;
     flex-shrink: 0;
+    line-height: 1.5;
   }
 
+  .obs-text {
+    font-size: 0.9375rem;
+    color: #374151;
+    line-height: 1.6;
+    flex: 1;
+  }
   .obs-text {
     font-size: 0.875rem;
     color: #4b5563;
