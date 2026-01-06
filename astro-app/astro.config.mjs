@@ -11,7 +11,7 @@ export default defineConfig({
   // Site URL - update this with your actual domain when deploying
   // For GitHub Pages: https://<username>.github.io
   // For custom domain: https://yourdomain.com
-  site: "https://YOUR_GITHUB_USERNAME.github.io",
+  site: "https://sanjanb.github.io",
 
   base: "/lifelab",
 
