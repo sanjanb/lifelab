@@ -110,7 +110,7 @@ const monthName = new Date(activeMonth.year, activeMonth.month - 1).toLocaleDate
       <h1 class="page-title">LifeLab</h1>
       <p class="page-subtitle">
         {monthName} • 
-        <a href="/lifelab/notebook" class="edit-link">Edit in Notebook →</a>
+        <a href={`${import.meta.env.BASE_URL}notebook`} class="edit-link">Edit in Notebook →</a>
       </p>
     </header>
 
@@ -126,7 +126,7 @@ const monthName = new Date(activeMonth.year, activeMonth.month - 1).toLocaleDate
     <div class="nav-hint">
       <p>
         This page shows insights only. 
-        To add or edit entries, visit <a href="/lifelab/notebook">Notebook</a>.
+        To add or edit entries, visit <a href={`${import.meta.env.BASE_URL}notebook`}>Notebook</a>.
       </p>
     </div>
   </div>

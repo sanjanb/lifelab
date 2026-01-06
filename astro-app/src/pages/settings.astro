@@ -106,7 +106,7 @@ const currentPath = Astro.url.pathname;
         <div class="danger-card">
           <h3>⚠️ Danger Zone</h3>
           <p>These actions are irreversible</p>
-          <button class="btn-danger" onclick="if(confirm('Delete ALL data? This cannot be undone!')) { localStorage.clear(); alert('All data deleted'); window.location.href='/lifelab/'; }">
+          <button class="btn-danger" onclick="if(confirm('Delete ALL data? This cannot be undone!')) { localStorage.clear(); alert('All data deleted'); window.location.href=import.meta.env.BASE_URL; }">
             Delete All Data
           </button>
         </div>
