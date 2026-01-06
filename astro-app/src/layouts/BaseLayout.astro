@@ -22,8 +22,8 @@ const { title = 'LifeLab - Personal Dashboard' } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
     <title>{title}</title>
-    <link rel="icon" type="image/svg+xml" href="/lifelab/favicon.svg" />
-    <link rel="stylesheet" href="/lifelab/styles/main.css" />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="stylesheet" href={`${import.meta.env.BASE_URL}styles/main.css`} />
   </head>
   <body>
     <!-- Header -->
