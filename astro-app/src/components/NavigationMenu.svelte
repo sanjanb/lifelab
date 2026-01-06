@@ -11,6 +11,10 @@
 
   export let currentPath = '/';
 
+  // Get base path from Astro's build config
+  // This is passed from the build process and works in production
+  const base = import.meta.env.BASE_URL || '/';
+
   const domains = getAllDomains();
   
   interface NavItem {
@@ -31,20 +35,19 @@
 
   function isActive(href: string): boolean {
     if (typeof window === 'undefined') return false;
-    const base = '/lifelab';
     const currentRoute = window.location.pathname.replace(base, '') || '/';
     return currentRoute === href || (href !== '/' && currentRoute.startsWith(href));
   }
 </script>
 
 <nav class="nav" id="nav">
-  <a href="/lifelab/" class="nav-item" class:active={isActive('/')}>
+  <a href={base} class="nav-item" class:active={isActive('/')}>
     Home
   </a>
   
   {#each navItems as item}
     <a 
-      href={`/lifelab${item.href}`}
+      href={`${base.replace(/\/$/, '')}${item.href}`}
       class="nav-item"
       class:nav-item-special={item.isSpecial}
       class:active={isActive(item.href)}
