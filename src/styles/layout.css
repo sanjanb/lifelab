@@ -103,7 +103,7 @@
 }
 
 .insights-list li::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -151,7 +151,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--insight-color), var(--insight-color));
+  background: linear-gradient(
+    135deg,
+    var(--insight-color),
+    var(--insight-color)
+  );
   opacity: 0.1;
   border-radius: var(--radius-md);
   position: relative;

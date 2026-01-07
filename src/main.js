@@ -139,7 +139,12 @@ function showEmptyState() {
 
   const insightsList = document.getElementById("insights-list");
   if (insightsList) {
-    insightsList.innerHTML = "<li>Start tracking to generate insights</li>";
+    insightsList.innerHTML = renderInsightCard({
+      type: 'info',
+      icon: 'info',
+      message: 'Start tracking to generate insights',
+      highlight: null
+    });
   }
 }
 
