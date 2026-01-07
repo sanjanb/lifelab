@@ -1,29 +1,53 @@
 /**
- * Heatmap Visualization - Yearly overview with neutral colors
- * Emphasizes consistency over perfection
+ * Heatmap Visualization - Monthly domain overview
+ * Shows domains as rows, days as columns
  */
 
 /**
- * Renders a yearly heatmap visualization
- * @param {Array} data - Array of all day records for the year
+ * Renders a monthly heatmap visualization
+ * @param {Array} data - Array of day records for the month
  * @param {HTMLElement} container - DOM element to render into
  * @param {Object} options - Configuration options
  */
 export function renderHeatmap(data, container, options = {}) {
   const {
-    cellSize = 12,
-    cellGap = 2,
+    cellSize = 16,
+    cellGap = 3,
+    labelWidth = 80,
     year = new Date().getFullYear(),
+    month = new Date().getMonth() + 1,
   } = options;
 
   // Clear container
   container.innerHTML = "";
 
-  // Group data by week
-  const weeks = groupByWeek(data, year);
+  if (!data || data.length === 0) {
+    container.innerHTML = '<p class="empty-state">No data for this month</p>';
+    return;
+  }
 
-  const width = (cellSize + cellGap) * 53; // ~52 weeks
-  const height = (cellSize + cellGap) * 7 + 40; // 7 days + labels
+  // Get all unique domains from the data
+  const domainsSet = new Set();
+  data.forEach(day => {
+    if (day.domains) {
+      Object.keys(day.domains).forEach(domain => domainsSet.add(domain));
+    }
+  });
+  const domains = Array.from(domainsSet).sort();
+
+  // Get number of days in month
+  const daysInMonth = new Date(year, month, 0).getDate();
+
+  // Create a map of data by date
+  const dataByDate = new Map();
+  data.forEach(day => {
+    const date = new Date(day.date + "T00:00:00");
+    const dayNum = date.getDate();
+    dataByDate.set(dayNum, day);
+  });
+
+  const width = labelWidth + (cellSize + cellGap) * daysInMonth + 20;
+  const height = 40 + (cellSize + cellGap) * domains.length + 10;
 
   // Create SVG
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -33,71 +57,86 @@ export function renderHeatmap(data, container, options = {}) {
 
   // Add border rectangle
   const border = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  border.setAttribute("x", 38);
-  border.setAttribute("y", 18);
-  border.setAttribute("width", (cellSize + cellGap) * 53 + 2);
-  border.setAttribute("height", (cellSize + cellGap) * 7 + 4);
+  border.setAttribute("x", labelWidth - 5);
+  border.setAttribute("y", 35);
+  border.setAttribute("width", (cellSize + cellGap) * daysInMonth + 5);
+  border.setAttribute("height", (cellSize + cellGap) * domains.length + 5);
   border.setAttribute("fill", "none");
   border.setAttribute("stroke", "#edf2f7");
   border.setAttribute("stroke-width", "2");
   border.setAttribute("rx", "6");
   svg.appendChild(border);
 
-  // Add month labels at top
-  const monthLabels = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const monthsShown = new Set();
+  // Add day numbers at top
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dayLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    dayLabel.setAttribute("x", labelWidth + (day - 1) * (cellSize + cellGap) + cellSize / 2);
+    dayLabel.setAttribute("y", 30);
+    dayLabel.setAttribute("text-anchor", "middle");
+    dayLabel.setAttribute("font-size", "10px");
+    dayLabel.setAttribute("font-weight", "500");
+    dayLabel.setAttribute("fill", "#718096");
+    dayLabel.setAttribute("font-family", "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif");
+    dayLabel.textContent = day;
+    svg.appendChild(dayLabel);
+  }
 
-  weeks.forEach((week, weekIdx) => {
-    if (week.some((day) => day)) {
-      const firstDay = week.find((day) => day);
-      if (firstDay) {
-        const date = new Date(firstDay.date + "T00:00:00");
-        const month = date.getMonth();
-        const weekOfMonth = Math.floor(date.getDate() / 7);
+  // Add domain labels on left and render cells
+  domains.forEach((domain, domainIdx) => {
+    // Domain label
+    const domainLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    domainLabel.setAttribute("x", labelWidth - 10);
+    domainLabel.setAttribute("y", 40 + domainIdx * (cellSize + cellGap) + cellSize / 2 + 5);
+    domainLabel.setAttribute("text-anchor", "end");
+    domainLabel.setAttribute("font-size", "11px");
+    domainLabel.setAttribute("font-weight", "600");
+    domainLabel.setAttribute("fill", "#4a5568");
+    domainLabel.setAttribute("font-family", "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif");
+    domainLabel.textContent = capitalizeFirst(domain);
+    svg.appendChild(domainLabel);
 
-        // Show month label at first week of each month
-        if (!monthsShown.has(month) || weekOfMonth === 0) {
-          monthsShown.add(month);
-          const monthLabel = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "text"
-          );
-          monthLabel.setAttribute("x", 40 + weekIdx * (cellSize + cellGap));
-          monthLabel.setAttribute("y", 12);
-          monthLabel.setAttribute("text-anchor", "start");
-          monthLabel.setAttribute("font-size", "10px");
-          monthLabel.setAttribute("font-weight", "600");
-          monthLabel.setAttribute("fill", "#4a5568");
-          monthLabel.setAttribute(
-            "font-family",
-            "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
-          );
-          monthLabel.textContent = monthLabels[month].toUpperCase();
-          svg.appendChild(monthLabel);
-        }
-      }
+    // Render cells for each day
+    for (let day = 1; day <= daysInMonth; day++) {
+      const x = labelWidth + (day - 1) * (cellSize + cellGap);
+      const y = 40 + domainIdx * (cellSize + cellGap);
+
+      const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rect.setAttribute("x", x);
+      rect.setAttribute("y", y);
+      rect.setAttribute("width", cellSize);
+      rect.setAttribute("height", cellSize);
+      rect.setAttribute("rx", 3);
+      rect.classList.add("heatmap-cell");
+
+      // Get score for this domain on this day
+      const dayData = dataByDate.get(day);
+      const score = (dayData && dayData.domains && dayData.domains[domain]) || 0;
+      
+      const color = getHeatmapColor(score);
+      rect.setAttribute("fill", color);
+
+      // Add subtle animation delay
+      rect.style.animationDelay = `${(domainIdx * daysInMonth + day) * 2}ms`;
+
+      // Tooltip
+      const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+      const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      title.textContent = `${capitalizeFirst(domain)} on ${dateStr}: ${score.toFixed(2)}`;
+      rect.appendChild(title);
+
+      svg.appendChild(rect);
     }
   });
 
-  // Add day labels (Mon, Wed, Fri)
-  const dayLabels = ["Mon", "Wed", "Fri"];
-  const dayIndices = [0, 2, 4];
+  container.appendChild(svg);
+}
 
-  dayIndices.forEach((dayIdx, i) => {
-    const label = document.createElementNS(
+/**
+ * Helper: Capitalize first letter
+ */
+function capitalizeFirst(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
       "http://www.w3.org/2000/svg",
       "text"
     );
