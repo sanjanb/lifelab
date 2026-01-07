@@ -82,9 +82,11 @@ function renderInsightCard(insight) {
     up: '<path d="M5 15l7-7 7 7"/><path d="M12 8v14"/>',
     down: '<path d="M19 9l-7 7-7-7"/><path d="M12 16V2"/>',
     trend: '<path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/>',
-    energy: '<circle cx="12" cy="12" r="10"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>',
+    energy:
+      '<circle cx="12" cy="12" r="10"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>',
     alert: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>',
-    calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    calendar:
+      '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
     check: '<path d="M20 6L9 17l-5-5"/>',
     info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/>',
   };
@@ -98,7 +100,11 @@ function renderInsightCard(insight) {
       </div>
       <div class="insight-content">
         <div class="insight-message">${insight.message}</div>
-        ${insight.highlight ? `<div class="insight-highlight">${insight.highlight}</div>` : ''}
+        ${
+          insight.highlight
+            ? `<div class="insight-highlight">${insight.highlight}</div>`
+            : ""
+        }
       </div>
     </li>
   `;
@@ -139,10 +145,10 @@ function showEmptyState() {
   const insightsList = document.getElementById("insights-list");
   if (insightsList) {
     insightsList.innerHTML = renderInsightCard({
-      type: 'info',
-      icon: 'info',
-      message: 'Start tracking to generate insights',
-      highlight: null
+      type: "info",
+      icon: "info",
+      message: "Start tracking to generate insights",
+      highlight: null,
     });
   }
 }
