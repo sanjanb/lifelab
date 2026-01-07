@@ -1358,3 +1358,113 @@
 .about-content h3 {
   margin-top: var(--spacing-md);
 }
+
+/* Settings Page - Minimalist Override */
+#domain-config .domain-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-lg);
+}
+
+#domain-config .domain-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+#domain-config .domain-item:hover {
+  opacity: 0.7;
+}
+
+#domain-config .domain-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+#domain-config .domain-item span {
+  font-size: 0.9375rem;
+}
+
+#domain-config .add-domain {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+#domain-config .add-domain input {
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  background: var(--color-surface);
+}
+
+#data-management .data-stats {
+  display: flex;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md) 0;
+}
+
+#data-management .stat {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+}
+
+#data-management .stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+#data-management .stat-label {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+#data-management .data-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+#data-management .danger-zone {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+#preferences .preference-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+#preferences .preference-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+#preferences .preference-item label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+#preferences .preference-item select {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  background: var(--color-surface);
+  max-width: 200px;
+}
