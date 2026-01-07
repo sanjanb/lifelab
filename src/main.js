@@ -11,16 +11,24 @@ import { loadMonth } from "./data/storage.js";
 import { renderLineGraph } from "./graphs/lineGraph.js";
 import { renderHeatmap } from "./graphs/heatmap.js";
 import { generateInsights } from "./insights/analytics.js";
+import { autoMigrate } from "./data/migrate.js";
 
 /**
  * Initialize the application
  */
 async function init() {
   try {
-    // Load current month data from LocalStorage
     showLoading();
+    
+    // Auto-migrate sample data if needed
     const now = new Date();
-    const data = loadMonth(now.getFullYear(), now.getMonth() + 1);
+    let data = loadMonth(now.getFullYear(), now.getMonth() + 1);
+    
+    if (data.length === 0) {
+      // Try to load from JSON file
+      await autoMigrate();
+      data = loadMonth(now.getFullYear(), now.getMonth() + 1);
+    }
 
     if (data.length === 0) {
       showEmptyState();

@@ -3,7 +3,7 @@
  * Import JSON files from /public/data/months into LocalStorage
  */
 
-import { saveMonth } from './storage.js';
+import { saveMonth } from "./storage.js";
 
 /**
  * Migrates JSON file data to LocalStorage
@@ -14,19 +14,19 @@ import { saveMonth } from './storage.js';
 export async function migrateMonthFromJSON(year, month) {
   try {
     const response = await fetch(`/data/months/${year}-${month}.json`);
-    
+
     if (!response.ok) {
       console.warn(`No JSON file found for ${year}-${month}`);
       return false;
     }
-    
+
     const data = await response.json();
-    
+
     if (!Array.isArray(data)) {
       console.error(`Invalid format for ${year}-${month}`);
       return false;
     }
-    
+
     // Save to LocalStorage
     saveMonth(parseInt(year), parseInt(month), data);
     console.log(`Migrated ${data.length} entries for ${year}-${month}`);
@@ -43,7 +43,7 @@ export async function migrateMonthFromJSON(year, month) {
 export async function autoMigrate() {
   const now = new Date();
   const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+
   await migrateMonthFromJSON(year, month);
 }
