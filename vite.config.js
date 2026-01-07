@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import { resolve } from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -20,6 +21,13 @@ export default defineConfig({
     minify: "terser",
 
     rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+        notebook: resolve(__dirname, "notebook.html"),
+        year: resolve(__dirname, "year.html"),
+        settings: resolve(__dirname, "settings.html"),
+        about: resolve(__dirname, "about.html"),
+      },
       output: {
         // Manual chunk splitting for better caching
         manualChunks: {
