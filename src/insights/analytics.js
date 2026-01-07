@@ -6,11 +6,11 @@
 /**
  * Analyzes monthly data and generates insights
  * @param {Array} data - Array of day records
- * @returns {Array} Array of insight strings
+ * @returns {Array} Array of insight objects
  */
 export function generateInsights(data) {
   if (!data || data.length === 0) {
-    return ["No data available for analysis"];
+    return [{ type: 'info', icon: 'info', message: 'No data available for analysis', highlight: null }];
   }
 
   const insights = [];
@@ -35,7 +35,7 @@ export function generateInsights(data) {
   const weekendPattern = analyzeWeekendPattern(data);
   if (weekendPattern) insights.push(weekendPattern);
 
-  return insights.length > 0 ? insights : ["Gathering patterns..."];
+  return insights.length > 0 ? insights : [{ type: 'info', icon: 'info', message: 'Gathering patterns...', highlight: null }];
 }
 
 /**
@@ -56,13 +56,11 @@ function analyzeTrend(data) {
   const diff = secondAvg - firstAvg;
 
   if (Math.abs(diff) < 0.05) {
-    return "Scores remained stable throughout the month";
+    return { type: 'neutral', icon: 'trend', message: 'Scores remained stable throughout the month', highlight: null };
   } else if (diff > 0) {
-    return `Upward trend detected: ${(diff * 100).toFixed(1)}% improvement`;
+    return { type: 'positive', icon: 'up', message: 'Upward trend detected', highlight: `+${(diff * 100).toFixed(1)}%` };
   } else {
-    return `Scores dipped in second half by ${Math.abs(diff * 100).toFixed(
-      1
-    )}%`;
+    return { type: 'warning', icon: 'down', message: 'Scores dipped in second half', highlight: `-${Math.abs(diff * 100).toFixed(1)}%` };
   }
 }
 
@@ -94,7 +92,7 @@ function analyzeEnergyPattern(data) {
   }
 
   if (minAvg < 0.5) {
-    return `Energy dips around day ${minDay}`;
+    return { type: 'warning', icon: 'energy', message: 'Energy dips detected', highlight: `Day ${minDay}` };
   }
 
   return null;
@@ -128,9 +126,7 @@ function analyzeDomainCorrelation(data) {
   }
 
   if (lowestDomain && lowestAvg < 0.4) {
-    return `${capitalizeFirst(
-      lowestDomain
-    )} needs attention (avg: ${lowestAvg.toFixed(2)})`;
+    return { type: 'alert', icon: 'alert', message: `${capitalizeFirst(lowestDomain)} needs attention`, highlight: `${(lowestAvg * 100).toFixed(0)}%` };
   }
 
   return null;
@@ -144,9 +140,9 @@ function analyzeConsistency(data) {
   const coverage = (data.length / daysInMonth) * 100;
 
   if (coverage < 50) {
-    return `Low tracking coverage: ${coverage.toFixed(0)}% of days recorded`;
+    return { type: 'warning', icon: 'calendar', message: 'Low tracking coverage', highlight: `${coverage.toFixed(0)}% recorded` };
   } else if (coverage > 90) {
-    return `Excellent tracking consistency: ${coverage.toFixed(0)}% coverage`;
+    return { type: 'positive', icon: 'check', message: 'Excellent tracking consistency', highlight: `${coverage.toFixed(0)}%` };
   }
 
   return null;
@@ -181,9 +177,9 @@ function analyzeWeekendPattern(data) {
 
   if (Math.abs(diff) > 0.15) {
     if (diff > 0) {
-      return "Weekend scores consistently higher than weekdays";
+      return { type: 'info', icon: 'calendar', message: 'Weekend scores consistently higher', highlight: '+' + (diff * 100).toFixed(0) + '%' };
     } else {
-      return "Weekday performance exceeds weekend habits";
+      return { type: 'info', icon: 'calendar', message: 'Weekday performance exceeds weekends', highlight: '+' + (Math.abs(diff) * 100).toFixed(0) + '%' };
     }
   }
 
