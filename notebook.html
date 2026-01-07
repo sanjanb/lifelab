@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notebook — LifeLab</title>
+    <script type="module" crossorigin src="/lifelab/assets/notebook-DKg3wJp8.js"></script>
+    <link rel="modulepreload" crossorigin href="/lifelab/assets/storage-BXgAf6ik.js">
+    <link rel="modulepreload" crossorigin href="/lifelab/assets/schema-Cp9kWJcO.js">
+    <link rel="modulepreload" crossorigin href="/lifelab/assets/export-JXG8QGfe.js">
+    <link rel="stylesheet" crossorigin href="/lifelab/assets/storage-yVjlCLs8.css">
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>Notebook</h1>
+        <p>Raw data view — 30-day detailed entries</p>
+        <nav class="nav-links">
+          <a href="/lifelab/">← Home</a>
+          <a href="/lifelab/year.html">Year</a>
+          <a href="/lifelab/settings.html">Settings</a>
+        </nav>
+      </header>
+
+      <main>
+        <!-- Month Selector -->
+        <section class="section">
+          <div class="month-selector">
+            <button id="prev-month">← Previous</button>
+            <span id="current-month-display"></span>
+            <button id="next-month">Next →</button>
+          </div>
+        </section>
+
+        <!-- Quick Entry -->
+        <section class="section">
+          <div id="quick-entry-container"></div>
+        </section>
+
+        <!-- Data Table -->
+        <section class="section">
+          <div id="notebook-table-container"></div>
+        </section>
+
+        <!-- Export Options -->
+        <section class="section">
+          <h2 class="section-title">Data Management</h2>
+          <div id="export-container"></div>
+        </section>
+      </main>
+    </div>
+
+  </body>
+</html>
