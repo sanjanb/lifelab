@@ -103,7 +103,6 @@ function renderInsightCard(insight) {
     </li>
   `;
 }
-}
 
 /**
  * Show loading state
