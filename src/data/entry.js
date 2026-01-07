@@ -45,10 +45,6 @@ export function renderDataEntryForm(
         <button class="btn-primary" id="save-entry">Save Entry</button>
         <button class="btn-secondary" id="cancel-entry">Cancel</button>
       </div>
-      
-      <div class="form-hint">
-        💡 Tip: Changes are saved locally. Export your data to download as JSON.
-      </div>
     </div>
   `;
 
@@ -113,30 +109,69 @@ export function renderQuickEntry(container, onSave) {
 
   container.innerHTML = `
     <div class="quick-entry">
-      <h3>Quick Entry - Today</h3>
+      <div class="quick-entry-header">
+        <h3>Quick Entry</h3>
+        <span class="quick-entry-date">${formatDate(today)}</span>
+      </div>
       <div class="quick-domains">
         ${Object.keys(DEFAULT_DOMAINS)
           .map(
             (domain) => `
           <div class="quick-domain-slider">
-            <label>${capitalizeFirst(domain)}</label>
-            <input type="range" id="quick-${domain}" min="0" max="100" value="50" />
-            <span class="slider-value">0.5</span>
+            <div class="slider-label">
+              <label>${capitalizeFirst(domain)}</label>
+              <span class="slider-value" id="value-${domain}">50%</span>
+            </div>
+            <div class="slider-track-wrapper">
+              <div class="slider-markers">
+                <span>0</span>
+                <span>25</span>
+                <span>50</span>
+                <span>75</span>
+                <span>100</span>
+              </div>
+              <input type="range" id="quick-${domain}" min="0" max="100" step="5" value="50" list="markers" />
+            </div>
           </div>
         `
           )
           .join("")}
       </div>
-      <button class="btn-primary" id="quick-save">Save Today's Entry</button>
+      <button class="btn-primary" id="quick-save">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="margin-right: 8px;">
+          <path d="M13 2H3C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V3C14 2.44772 13.5523 2 13 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M11 2V6H5V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5 10H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Save Entry
+      </button>
     </div>
   `;
 
-  // Update slider values
+  // Update slider values with snap-to-grid behavior
   container.querySelectorAll('input[type="range"]').forEach((slider) => {
+    const updateValue = (value) => {
+      const domain = slider.id.replace("quick-", "");
+      const valueSpan = document.getElementById(`value-${domain}`);
+      valueSpan.textContent = `${value}%`;
+      
+      // Visual feedback for value ranges
+      slider.style.setProperty('--slider-value', value);
+    };
+    
     slider.addEventListener("input", (e) => {
-      const value = (e.target.value / 100).toFixed(1);
-      e.target.nextElementSibling.textContent = value;
+      updateValue(e.target.value);
     });
+    
+    // Snap to nearest 5 on release
+    slider.addEventListener("change", (e) => {
+      const snapped = Math.round(e.target.value / 5) * 5;
+      e.target.value = snapped;
+      updateValue(snapped);
+    });
+    
+    // Initialize
+    updateValue(slider.value);
   });
 
   // Save handler
