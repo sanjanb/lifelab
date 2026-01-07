@@ -16,77 +16,89 @@ export function renderLineGraph(data, container, options = {}) {
     marginTop = 20,
     marginRight = 20,
     marginBottom = 40,
-    marginLeft = 50
+    marginLeft = 50,
   } = options;
 
   // Clear container
-  container.innerHTML = '';
+  container.innerHTML = "";
 
   // Calculate dimensions
   const chartWidth = width - marginLeft - marginRight;
   const chartHeight = height - marginTop - marginBottom;
 
   // Create SVG
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-  svg.classList.add('svg-graph');
-  
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  svg.classList.add("svg-graph");
+
   // Create chart group
-  const chartGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  chartGroup.setAttribute('transform', `translate(${marginLeft}, ${marginTop})`);
+  const chartGroup = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "g"
+  );
+  chartGroup.setAttribute(
+    "transform",
+    `translate(${marginLeft}, ${marginTop})`
+  );
 
   // Get max day number for X axis
-  const maxDay = Math.max(...data.map(d => new Date(d.date).getDate()));
-  
+  const maxDay = Math.max(...data.map((d) => new Date(d.date).getDate()));
+
   // Draw X axis
-  const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-  xAxis.setAttribute('x1', 0);
-  xAxis.setAttribute('y1', chartHeight);
-  xAxis.setAttribute('x2', chartWidth);
-  xAxis.setAttribute('y2', chartHeight);
-  xAxis.classList.add('axis-line');
+  const xAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  xAxis.setAttribute("x1", 0);
+  xAxis.setAttribute("y1", chartHeight);
+  xAxis.setAttribute("x2", chartWidth);
+  xAxis.setAttribute("y2", chartHeight);
+  xAxis.classList.add("axis-line");
   chartGroup.appendChild(xAxis);
 
   // Draw Y axis
-  const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-  yAxis.setAttribute('x1', 0);
-  yAxis.setAttribute('y1', 0);
-  yAxis.setAttribute('x2', 0);
-  yAxis.setAttribute('y2', chartHeight);
-  yAxis.classList.add('axis-line');
+  const yAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  yAxis.setAttribute("x1", 0);
+  yAxis.setAttribute("y1", 0);
+  yAxis.setAttribute("x2", 0);
+  yAxis.setAttribute("y2", chartHeight);
+  yAxis.classList.add("axis-line");
   chartGroup.appendChild(yAxis);
 
   // Add Y axis labels (0 to 1.0)
   for (let i = 0; i <= 4; i++) {
     const value = i * 0.25;
-    const y = chartHeight - (value * chartHeight);
-    
-    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    label.setAttribute('x', -10);
-    label.setAttribute('y', y + 4);
-    label.setAttribute('text-anchor', 'end');
+    const y = chartHeight - value * chartHeight;
+
+    const label = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+    label.setAttribute("x", -10);
+    label.setAttribute("y", y + 4);
+    label.setAttribute("text-anchor", "end");
     label.textContent = value.toFixed(2);
     chartGroup.appendChild(label);
-    
+
     // Grid line
-    const gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    gridLine.setAttribute('x1', 0);
-    gridLine.setAttribute('y1', y);
-    gridLine.setAttribute('x2', chartWidth);
-    gridLine.setAttribute('y2', y);
-    gridLine.setAttribute('stroke', '#e0e0e0');
-    gridLine.setAttribute('stroke-dasharray', '2,2');
+    const gridLine = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "line"
+    );
+    gridLine.setAttribute("x1", 0);
+    gridLine.setAttribute("y1", y);
+    gridLine.setAttribute("x2", chartWidth);
+    gridLine.setAttribute("y2", y);
+    gridLine.setAttribute("stroke", "#e0e0e0");
+    gridLine.setAttribute("stroke-dasharray", "2,2");
     chartGroup.appendChild(gridLine);
   }
 
   // Calculate points for line
-  const points = data.map(d => {
+  const points = data.map((d) => {
     const day = new Date(d.date).getDate();
     const score = calculateScore(d);
-    
+
     const x = (day / maxDay) * chartWidth;
-    const y = chartHeight - (score * chartHeight);
-    
+    const y = chartHeight - score * chartHeight;
+
     return { x, y, day, score };
   });
 
@@ -95,47 +107,55 @@ export function renderLineGraph(data, container, options = {}) {
 
   // Create line path
   if (points.length > 0) {
-    const pathData = points.map((p, i) => {
-      return `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`;
-    }).join(' ');
+    const pathData = points
+      .map((p, i) => {
+        return `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`;
+      })
+      .join(" ");
 
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', pathData);
-    path.classList.add('data-line');
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", pathData);
+    path.classList.add("data-line");
     chartGroup.appendChild(path);
 
     // Add data points
-    points.forEach(p => {
-      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      circle.setAttribute('cx', p.x);
-      circle.setAttribute('cy', p.y);
-      circle.setAttribute('r', 3);
-      circle.classList.add('data-point');
-      
+    points.forEach((p) => {
+      const circle = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+      circle.setAttribute("cx", p.x);
+      circle.setAttribute("cy", p.y);
+      circle.setAttribute("r", 3);
+      circle.classList.add("data-point");
+
       // Tooltip
-      const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+      const title = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "title"
+      );
       title.textContent = `Day ${p.day}: ${p.score.toFixed(2)}`;
       circle.appendChild(title);
-      
+
       chartGroup.appendChild(circle);
     });
   }
 
   // Add X axis label
-  const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  xLabel.setAttribute('x', chartWidth / 2);
-  xLabel.setAttribute('y', chartHeight + 30);
-  xLabel.setAttribute('text-anchor', 'middle');
-  xLabel.textContent = 'Day of Month';
+  const xLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  xLabel.setAttribute("x", chartWidth / 2);
+  xLabel.setAttribute("y", chartHeight + 30);
+  xLabel.setAttribute("text-anchor", "middle");
+  xLabel.textContent = "Day of Month";
   chartGroup.appendChild(xLabel);
 
   // Add Y axis label
-  const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  yLabel.setAttribute('x', -chartHeight / 2);
-  yLabel.setAttribute('y', -35);
-  yLabel.setAttribute('text-anchor', 'middle');
-  yLabel.setAttribute('transform', `rotate(-90, -${chartHeight / 2}, -35)`);
-  yLabel.textContent = 'Daily Score';
+  const yLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  yLabel.setAttribute("x", -chartHeight / 2);
+  yLabel.setAttribute("y", -35);
+  yLabel.setAttribute("text-anchor", "middle");
+  yLabel.setAttribute("transform", `rotate(-90, -${chartHeight / 2}, -35)`);
+  yLabel.textContent = "Daily Score";
   chartGroup.appendChild(yLabel);
 
   svg.appendChild(chartGroup);
