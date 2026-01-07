@@ -39,33 +39,88 @@
         <!-- About -->
         <section class="section">
           <h2 class="section-title">About LifeLab</h2>
-          <div class="about-content">
-            <p><strong>Version:</strong> 1.0.0</p>
-            <p><strong>Stack:</strong> Vite + Vanilla JavaScript</p>
-            <p>
-              <strong>Philosophy:</strong> A thinking surface for self-tracking
-            </p>
+          <div class="settings-card about-card">
+            <div class="about-grid">
+              <div class="about-item">
+                <svg class="about-icon" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 16v-4m0-4h.01"/>
+                </svg>
+                <div>
+                  <strong>Version</strong>
+                  <span>1.0.0</span>
+                </div>
+              </div>
+              
+              <div class="about-item">
+                <svg class="about-icon" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                  <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <div>
+                  <strong>Stack</strong>
+                  <span>Vite + Vanilla JS</span>
+                </div>
+              </div>
+              
+              <div class="about-item">
+                <svg class="about-icon" viewBox="0 0 24 24">
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <div>
+                  <strong>Philosophy</strong>
+                  <span>A thinking surface for self-tracking</span>
+                </div>
+              </div>
+            </div>
 
-            <h3>Core Principles</h3>
-            <ul>
-              <li>No framework abstractions</li>
-              <li>No hidden state</li>
-              <li>Deterministic rendering</li>
-              <li>Data-first, visuals second</li>
-            </ul>
+            <div class="principles-section">
+              <h3>Core Principles</h3>
+              <ul class="principles-list">
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                  <span>No framework abstractions</span>
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                  <span>No hidden state</span>
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                  <span>Deterministic rendering</span>
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                  <span>Data-first, visuals second</span>
+                </li>
+              </ul>
+            </div>
 
-            <h3>Data Storage</h3>
-            <p>
-              All data is stored locally in your browser and can be exported as
-              JSON or CSV files. For persistent storage across devices, manually
-              save your exported data and commit to GitHub.
-            </p>
+            <div class="info-sections\">
+              <div class=\"info-block\">
+                <h4>
+                  <svg viewBox=\"0 0 24 24\"><path d=\"M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z\"/></svg>
+                  Data Storage
+                </h4>
+                <p>
+                  All data is stored locally in your browser and can be exported as
+                  JSON or CSV files. For persistent storage across devices, manually
+                  save your exported data and commit to GitHub.
+                </p>
+              </div>
 
-            <h3>Privacy</h3>
-            <p>
-              This application runs entirely in your browser. No data is sent to
-              any server or third party.
-            </p>
+              <div class=\"info-block\">
+                <h4>
+                  <svg viewBox=\"0 0 24 24\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg>
+                  Privacy
+                </h4>
+                <p>
+                  This application runs entirely in your browser. No data is sent to
+                  any server or third party.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       </main>
