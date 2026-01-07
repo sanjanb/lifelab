@@ -86,8 +86,9 @@ Output will be in the `dist/` directory.
 ### Deploying to GitHub Pages
 
 1. Update `vite.config.js` with your repository name:
+
    ```js
-   base: '/your-repo-name/'
+   base: "/your-repo-name/";
    ```
 
 2. Deploy:
@@ -98,16 +99,19 @@ Output will be in the `dist/` directory.
 ## Features
 
 ### Monthly Line Graph
+
 - Pure SVG rendering
 - Shows daily score trends
 - No external libraries
 
 ### Yearly Heatmap
+
 - GitHub-style visualization
 - Neutral color palette (no guilt)
 - Emphasizes consistency over perfection
 
 ### Analytics & Insights
+
 - Pattern detection
 - Trend analysis
 - Domain correlation
