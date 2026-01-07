@@ -31,6 +31,18 @@ export function renderHeatmap(data, container, options = {}) {
   svg.style.width = "100%";
   svg.style.height = "auto";
 
+  // Add border rectangle
+  const border = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  border.setAttribute("x", 38);
+  border.setAttribute("y", 18);
+  border.setAttribute("width", (cellSize + cellGap) * 53 + 2);
+  border.setAttribute("height", (cellSize + cellGap) * 7 + 4);
+  border.setAttribute("fill", "none");
+  border.setAttribute("stroke", "#e0e0e0");
+  border.setAttribute("stroke-width", "1");
+  border.setAttribute("rx", "4");
+  svg.appendChild(border);
+
   // Add day labels (Mon, Wed, Fri)
   const dayLabels = ["Mon", "Wed", "Fri"];
   const dayIndices = [0, 2, 4];
