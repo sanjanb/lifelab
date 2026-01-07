@@ -132,7 +132,7 @@ function showEmptyState() {
     lineGraphContainer.innerHTML = `
       <div class="empty-state">
         <p>No data available for the current month.</p>
-        <p>Go to <a href="/notebook.html">Notebook</a> to start tracking!</p>
+        <p>Go to <a href="./notebook.html">Notebook</a> to start tracking!</p>
       </div>
     `;
   }
