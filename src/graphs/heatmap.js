@@ -11,9 +11,9 @@
  */
 export function renderHeatmap(data, container, options = {}) {
   const {
-    cellSize = 16,
-    cellGap = 3,
-    labelWidth = 80,
+    cellSize = 24,
+    cellGap = 4,
+    labelWidth = 100,
     year = new Date().getFullYear(),
     month = new Date().getMonth() + 1,
   } = options;
