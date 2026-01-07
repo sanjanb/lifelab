@@ -35,60 +35,35 @@ function renderDomainConfig() {
   const container = document.getElementById("domain-config");
 
   container.innerHTML = `
-    <div class="settings-card">
-      <div class="settings-card-header">
-        <svg class="settings-icon" viewBox="0 0 24 24">
-          <rect x="3" y="3" width="7" height="7" rx="1"/>
-          <rect x="14" y="3" width="7" height="7" rx="1"/>
-          <rect x="3" y="14" width="7" height="7" rx="1"/>
-          <rect x="14" y="14" width="7" height="7" rx="1"/>
-        </svg>
-        <div>
-          <h3>Tracking Domains</h3>
-          <p class="card-description">Select which areas of life to track</p>
-        </div>
-      </div>
+    <div class="settings-section">
+      <h2>Tracking Domains</h2>
+      <p class="section-desc">Select which areas of life you want to track</p>
       
-      <div class="domain-grid">
+      <div class="domain-list">
         ${Object.entries(currentSettings.domains)
           .map(
             ([domain, enabled]) => `
-          <label class="domain-toggle-card ${enabled ? 'active' : ''}">
+          <label class="domain-item ${enabled ? "active" : ""}">
             <input 
               type="checkbox" 
               class="domain-checkbox" 
               data-domain="${domain}" 
               ${enabled ? "checked" : ""}
             />
-            <div class="domain-toggle-content">
-              <span class="domain-name">${capitalizeFirst(domain)}</span>
-              <span class="toggle-indicator"></span>
-            </div>
+            <span class="domain-label">${capitalizeFirst(domain)}</span>
+            <span class="check-mark"></span>
           </label>
         `
           )
           .join("")}
       </div>
       
-      <div class="add-domain-card">
-        <svg class="add-icon" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 8v8M8 12h8"/>
-        </svg>
-        <div class="add-domain-form">
-          <input type="text" id="new-domain-name" placeholder="Add new domain (e.g., creativity)" />
-          <button class="btn-icon" id="add-domain-btn" title="Add">
-            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
-        </div>
+      <div class="add-domain">
+        <input type="text" id="new-domain-name" placeholder="Add new domain..." />
+        <button class="btn-add" id="add-domain-btn">Add</button>
       </div>
       
-      <div class="card-actions">
-        <button class="btn-primary" id="save-domains">
-          <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
-          Save Changes
-        </button>
-      </div>
+      <button class="btn-primary" id="save-domains">Save Changes</button>
     </div>
   `;
 
