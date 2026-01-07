@@ -258,23 +258,30 @@
 
 /* Forms */
 .form-group {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
 }
 
 .form-group label {
   display: block;
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
   font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: var(--spacing-xs);
+  padding: var(--spacing-md);
   border: 1px solid var(--color-border);
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  transition: all var(--transition-base);
+  background: var(--color-surface);
 }
 
 .form-group input:focus,
@@ -282,12 +289,16 @@
 .form-group select:focus {
   outline: none;
   border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+  transform: translateY(-1px);
 }
 
 .form-actions {
   display: flex;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-md);
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border-light);
 }
 
 .form-hint {
@@ -301,30 +312,58 @@
 
 /* Data Entry Form */
 .data-entry-form {
-  background-color: white;
-  padding: var(--spacing-lg);
-  border-radius: 4px;
+  background: var(--color-surface);
+  padding: var(--spacing-2xl);
+  border-radius: var(--radius-xl);
+}
+
+.data-entry-form h3 {
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 2px solid var(--color-border-light);
+  color: var(--color-text);
 }
 
 .domains-section {
-  margin: var(--spacing-md) 0;
+  margin: var(--spacing-xl) 0;
+}
+
+.domains-section h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-lg);
 }
 
 .domain-input {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-sm);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: var(--color-heatmap-low);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-base);
+}
+
+.domain-input:hover {
+  background: #e2e8f0;
 }
 
 .domain-input label {
-  flex: 0 0 120px;
+  flex: 0 0 140px;
   font-weight: 600;
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
 }
 
 .domain-input input {
   flex: 1;
   max-width: 200px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
 }
 
 /* Quick Entry */
