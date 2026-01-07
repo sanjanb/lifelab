@@ -48,7 +48,7 @@ async function init() {
  */
 function renderVisualizations(data) {
   const now = new Date();
-  
+
   // Line graph
   const lineGraphContainer = document.getElementById("line-graph");
   if (lineGraphContainer) {
@@ -60,7 +60,7 @@ function renderVisualizations(data) {
   if (heatmapContainer) {
     renderHeatmap(data, heatmapContainer, {
       year: now.getFullYear(),
-      month: now.getMonth() + 1
+      month: now.getMonth() + 1,
     });
   }
 

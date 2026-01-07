@@ -28,9 +28,9 @@ export function renderHeatmap(data, container, options = {}) {
 
   // Get all unique domains from the data
   const domainsSet = new Set();
-  data.forEach(day => {
+  data.forEach((day) => {
     if (day.domains) {
-      Object.keys(day.domains).forEach(domain => domainsSet.add(domain));
+      Object.keys(day.domains).forEach((domain) => domainsSet.add(domain));
     }
   });
   const domains = Array.from(domainsSet).sort();
@@ -40,7 +40,7 @@ export function renderHeatmap(data, container, options = {}) {
 
   // Create a map of data by date
   const dataByDate = new Map();
-  data.forEach(day => {
+  data.forEach((day) => {
     const date = new Date(day.date + "T00:00:00");
     const dayNum = date.getDate();
     dataByDate.set(dayNum, day);
@@ -69,14 +69,23 @@ export function renderHeatmap(data, container, options = {}) {
 
   // Add day numbers at top
   for (let day = 1; day <= daysInMonth; day++) {
-    const dayLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    dayLabel.setAttribute("x", labelWidth + (day - 1) * (cellSize + cellGap) + cellSize / 2);
+    const dayLabel = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+    dayLabel.setAttribute(
+      "x",
+      labelWidth + (day - 1) * (cellSize + cellGap) + cellSize / 2
+    );
     dayLabel.setAttribute("y", 30);
     dayLabel.setAttribute("text-anchor", "middle");
     dayLabel.setAttribute("font-size", "10px");
     dayLabel.setAttribute("font-weight", "500");
     dayLabel.setAttribute("fill", "#718096");
-    dayLabel.setAttribute("font-family", "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif");
+    dayLabel.setAttribute(
+      "font-family",
+      "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+    );
     dayLabel.textContent = day;
     svg.appendChild(dayLabel);
   }
@@ -84,14 +93,23 @@ export function renderHeatmap(data, container, options = {}) {
   // Add domain labels on left and render cells
   domains.forEach((domain, domainIdx) => {
     // Domain label
-    const domainLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    const domainLabel = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
     domainLabel.setAttribute("x", labelWidth - 10);
-    domainLabel.setAttribute("y", 40 + domainIdx * (cellSize + cellGap) + cellSize / 2 + 5);
+    domainLabel.setAttribute(
+      "y",
+      40 + domainIdx * (cellSize + cellGap) + cellSize / 2 + 5
+    );
     domainLabel.setAttribute("text-anchor", "end");
     domainLabel.setAttribute("font-size", "11px");
     domainLabel.setAttribute("font-weight", "600");
     domainLabel.setAttribute("fill", "#4a5568");
-    domainLabel.setAttribute("font-family", "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif");
+    domainLabel.setAttribute(
+      "font-family",
+      "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+    );
     domainLabel.textContent = capitalizeFirst(domain);
     svg.appendChild(domainLabel);
 
@@ -100,7 +118,10 @@ export function renderHeatmap(data, container, options = {}) {
       const x = labelWidth + (day - 1) * (cellSize + cellGap);
       const y = 40 + domainIdx * (cellSize + cellGap);
 
-      const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      const rect = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "rect"
+      );
       rect.setAttribute("x", x);
       rect.setAttribute("y", y);
       rect.setAttribute("width", cellSize);
@@ -110,8 +131,9 @@ export function renderHeatmap(data, container, options = {}) {
 
       // Get score for this domain on this day
       const dayData = dataByDate.get(day);
-      const score = (dayData && dayData.domains && dayData.domains[domain]) || 0;
-      
+      const score =
+        (dayData && dayData.domains && dayData.domains[domain]) || 0;
+
       const color = getHeatmapColor(score);
       rect.setAttribute("fill", color);
 
@@ -119,9 +141,16 @@ export function renderHeatmap(data, container, options = {}) {
       rect.style.animationDelay = `${(domainIdx * daysInMonth + day) * 2}ms`;
 
       // Tooltip
-      const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
-      const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      title.textContent = `${capitalizeFirst(domain)} on ${dateStr}: ${score.toFixed(2)}`;
+      const title = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "title"
+      );
+      const dateStr = `${year}-${String(month).padStart(2, "0")}-${String(
+        day
+      ).padStart(2, "0")}`;
+      title.textContent = `${capitalizeFirst(
+        domain
+      )} on ${dateStr}: ${score.toFixed(2)}`;
       rect.appendChild(title);
 
       svg.appendChild(rect);
