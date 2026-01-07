@@ -19,9 +19,11 @@ Successfully implemented **all features** from the previous update page, creatin
 ## New Pages Implemented
 
 ### 1. Notebook Page (`/notebook.html`)
+
 **Purpose:** Daily data entry and detailed table view
 
 **Features:**
+
 - Month-by-month navigation
 - Quick Entry widget with sliders for fast daily logging
 - Full data table showing all domains and scores
@@ -32,13 +34,16 @@ Successfully implemented **all features** from the previous update page, creatin
 - Average score calculation per day
 
 **Files:**
+
 - `notebook.html` - Page structure
 - `src/pages/notebook.js` - Page logic and rendering
 
 ### 2. Year Review Page (`/year.html`)
+
 **Purpose:** Annual overview and comprehensive statistics
 
 **Features:**
+
 - Full year heatmap visualization
 - Year statistics cards (total days, coverage %, average score, best month, longest streak, top domain)
 - Monthly comparison bar chart
@@ -47,13 +52,16 @@ Successfully implemented **all features** from the previous update page, creatin
 - Year-by-year navigation
 
 **Files:**
+
 - `year.html` - Page structure
 - `src/pages/year.js` - Year analytics and visualization
 
 ### 3. Settings Page (`/settings.html`)
+
 **Purpose:** Configuration and data management
 
 **Features:**
+
 - Domain configuration (enable/disable, add custom domains)
 - Data management section with storage stats
 - Full backup download
@@ -63,13 +71,16 @@ Successfully implemented **all features** from the previous update page, creatin
 - About information
 
 **Files:**
+
 - `settings.html` - Page structure
 - `src/pages/settings.js` - Settings management
 
 ### 4. About Page (`/about.html`)
+
 **Purpose:** Documentation and philosophy
 
 **Features:**
+
 - Project philosophy explanation
 - Core principles list
 - Data model documentation
@@ -79,12 +90,15 @@ Successfully implemented **all features** from the previous update page, creatin
 - License information
 
 **Files:**
+
 - `about.html` - Static content page
 
 ## New Core Functionality
 
 ### LocalStorage Persistence (`src/data/storage.js`)
+
 **Features:**
+
 - Save/load data by month
 - Add/update/delete individual day entries
 - Get available months
@@ -93,6 +107,7 @@ Successfully implemented **all features** from the previous update page, creatin
 - Merge imported data
 
 **Key Functions:**
+
 - `saveMonth()` - Save month data
 - `loadMonth()` - Load month data
 - `saveDayEntry()` - Add/update single day
@@ -101,7 +116,9 @@ Successfully implemented **all features** from the previous update page, creatin
 - `mergeImportedData()` - Merge imports without overwriting
 
 ### Data Entry UI (`src/data/entry.js`)
+
 **Features:**
+
 - Full data entry form with domain inputs
 - Quick entry widget with sliders (0-100% range)
 - Date picker
@@ -110,11 +127,14 @@ Successfully implemented **all features** from the previous update page, creatin
 - Save/Cancel actions
 
 **Key Functions:**
+
 - `renderDataEntryForm()` - Full edit form
 - `renderQuickEntry()` - Fast daily entry widget
 
 ### Export/Import (`src/data/export.js`)
+
 **Features:**
+
 - Export to JSON (monthly or full backup)
 - Export to CSV with proper formatting
 - Import from JSON files
@@ -122,6 +142,7 @@ Successfully implemented **all features** from the previous update page, creatin
 - File download utilities
 
 **Key Functions:**
+
 - `exportToJSON()` - Month export
 - `exportToCSV()` - CSV export with all domains
 - `importFromJSON()` - File import with validation
@@ -129,19 +150,24 @@ Successfully implemented **all features** from the previous update page, creatin
 - `renderImportExportUI()` - UI component
 
 ### Data Migration (`src/data/migrate.js`)
+
 **Features:**
+
 - Auto-import JSON files from `/public/data/months/`
 - Migrate on first load if LocalStorage is empty
 - Seamless transition from file-based to LocalStorage
 
 **Key Functions:**
+
 - `migrateMonthFromJSON()` - Import specific month
 - `autoMigrate()` - Auto-import current month
 
 ## Updated Files
 
 ### Enhanced Styling (`src/styles/components.css`)
+
 **Added:**
+
 - Button styles (primary, secondary, danger, icon)
 - Form components (inputs, textareas, labels)
 - Data entry form styling
@@ -157,7 +183,9 @@ Successfully implemented **all features** from the previous update page, creatin
 - About page styling
 
 ### Updated Home Page (`index.html` & `src/main.js`)
+
 **Changes:**
+
 - Added links to all new pages
 - Integrated LocalStorage loading
 - Auto-migration on first load
@@ -166,6 +194,7 @@ Successfully implemented **all features** from the previous update page, creatin
 ## Data Flow
 
 ### Before (File-based):
+
 ```
 JSON files (/public/data/months/*.json)
   ↓ fetch()
@@ -174,6 +203,7 @@ Display only
 ```
 
 ### After (LocalStorage + Import):
+
 ```
 LocalStorage (primary storage)
   ↓
@@ -186,46 +216,54 @@ Import from user files (anytime)
 ## Usage Workflow
 
 ### First Time Setup:
+
 1. Visit home page → Auto-migrates sample data from `/public/data/months/2026-01.json`
 2. Data now in LocalStorage
 3. All features immediately available
 
 ### Daily Usage:
+
 1. **Add Entry:** Notebook → Quick Entry → Adjust sliders → Save
 2. **Edit Entry:** Notebook → Click edit icon → Modify → Save
 3. **View Insights:** Home page shows automatic insights
 4. **Review Year:** Year page shows annual statistics
 
 ### Data Management:
+
 1. **Export:** Settings → Export as JSON or CSV
 2. **Backup:** Settings → Download Full Backup
 3. **Import:** Settings → Choose JSON file → Import
 4. **Clear:** Settings → Clear All Data (with confirmation)
 
 ### Customization:
+
 1. **Add Domain:** Settings → Add New Domain → Enter name
 2. **Configure:** Settings → Enable/disable domains → Save
 
 ## Technical Highlights
 
 ### Pure Vanilla JavaScript
+
 - No frameworks, no build-time magic
 - All code is readable and debuggable
 - No hidden state or reactivity systems
 
 ### Data Integrity
+
 - LocalStorage with error handling
 - Validation on import
 - Merge logic prevents data loss
 - Double confirmation on destructive actions
 
 ### Performance
+
 - Efficient data structures (Maps for lookups)
 - Minimal DOM manipulation
 - Client-side only (no server calls after initial load)
 - Fast visualization rendering
 
 ### User Experience
+
 - Intuitive navigation
 - Clear visual feedback
 - Empty states guide users
@@ -235,10 +273,12 @@ Import from user files (anytime)
 ## Browser Storage
 
 ### LocalStorage Keys:
+
 - `lifelab_data` - All tracked day entries (by month)
 - `lifelab_settings` - User preferences and domain config
 
 ### Storage Format:
+
 ```javascript
 // lifelab_data
 {
@@ -267,16 +307,19 @@ Import from user files (anytime)
 ## Migration from Old System
 
 ### What Changed:
+
 - **Old:** Manual JSON file editing, commit to GitHub
 - **New:** In-app editing, LocalStorage persistence, optional export
 
 ### Data Compatibility:
+
 - JSON format remains identical
 - Old JSON files can be imported
 - Export maintains compatibility
 - Sample data auto-migrates
 
 ### Benefits:
+
 - No GitHub commits required for daily use
 - Instant updates (no build/deploy cycle)
 - Works offline
@@ -305,7 +348,7 @@ The system is complete, but these could be added later:
 ✅ **Deterministic rendering** - Same data = same output  
 ✅ **SVG for graphs** - No external libraries  
 ✅ **Data-first** - Storage and retrieval prioritized  
-✅ **Works everywhere** - Localhost = Production  
+✅ **Works everywhere** - Localhost = Production
 
 **Still boring. Still clear. Still a thinking surface.**
 
