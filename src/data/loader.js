@@ -3,8 +3,8 @@
  * Works identically in localhost and GitHub Pages
  */
 
-import { setMonthlyData } from './store.js';
-import { isValidDayRecord } from './schema.js';
+import { setMonthlyData } from "./store.js";
+import { isValidDayRecord } from "./schema.js";
 
 /**
  * Constructs the path to a monthly data file
@@ -13,7 +13,7 @@ import { isValidDayRecord } from './schema.js';
  * @returns {string} Path to JSON file
  */
 function getMonthFilePath(year, month) {
-  const monthStr = String(month).padStart(2, '0');
+  const monthStr = String(month).padStart(2, "0");
   return `/data/months/${year}-${monthStr}.json`;
 }
 
@@ -25,36 +25,36 @@ function getMonthFilePath(year, month) {
  */
 export async function loadMonth(year, month) {
   const path = getMonthFilePath(year, month);
-  
+
   try {
     const response = await fetch(path);
-    
+
     if (!response.ok) {
       // Month file doesn't exist - return empty array
       console.warn(`No data found for ${year}-${month}`);
       return [];
     }
-    
+
     const data = await response.json();
-    
+
     // Validate data
     if (!Array.isArray(data)) {
       console.error(`Invalid data format for ${year}-${month}`);
       return [];
     }
-    
+
     // Filter out invalid records
-    const validRecords = data.filter(record => {
+    const validRecords = data.filter((record) => {
       if (!isValidDayRecord(record)) {
-        console.warn('Invalid record found:', record);
+        console.warn("Invalid record found:", record);
         return false;
       }
       return true;
     });
-    
+
     // Update store
     setMonthlyData(validRecords, year, month);
-    
+
     return validRecords;
   } catch (error) {
     console.error(`Error loading month ${year}-${month}:`, error);
@@ -77,7 +77,7 @@ export async function loadCurrentMonth() {
  * @returns {Promise<Array>} Array of all loaded records
  */
 export async function loadMultipleMonths(periods) {
-  const promises = periods.map(p => loadMonth(p.year, p.month));
+  const promises = periods.map((p) => loadMonth(p.year, p.month));
   const results = await Promise.all(promises);
   return results.flat();
 }

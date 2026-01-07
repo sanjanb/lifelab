@@ -19,7 +19,7 @@ export function setMonthlyData(data, year, month) {
   monthlyData = {
     year,
     month,
-    days: data
+    days: data,
   };
 }
 
@@ -38,7 +38,7 @@ export function getMonthlyData() {
  */
 export function getDayData(date) {
   if (!monthlyData.days) return null;
-  return monthlyData.days.find(day => day.date === date) || null;
+  return monthlyData.days.find((day) => day.date === date) || null;
 }
 
 /**
@@ -57,6 +57,6 @@ export function clearData() {
 export function getCurrentPeriod() {
   return {
     year: currentYear,
-    month: currentMonth
+    month: currentMonth,
   };
 }
