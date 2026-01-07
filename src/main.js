@@ -19,11 +19,11 @@ import { autoMigrate } from "./data/migrate.js";
 async function init() {
   try {
     showLoading();
-    
+
     // Auto-migrate sample data if needed
     const now = new Date();
     let data = loadMonth(now.getFullYear(), now.getMonth() + 1);
-    
+
     if (data.length === 0) {
       // Try to load from JSON file
       await autoMigrate();

@@ -98,24 +98,36 @@ Output will be in the `dist/` directory.
 
 ## Features
 
-### Monthly Line Graph
+### Home Dashboard
+- **Monthly Line Graph** - Pure SVG rendering of daily score trends
+- **Yearly Heatmap** - GitHub-style visualization with neutral colors
+- **Automated Insights** - Pattern detection and trend analysis
+- **Quick Navigation** - Access all features from the home page
 
-- Pure SVG rendering
-- Shows daily score trends
-- No external libraries
+### Notebook
+- **Daily Entry Table** - View and edit all entries for any month
+- **Quick Entry Widget** - Fast data entry with sliders
+- **Inline Editing** - Edit individual days with full form
+- **Export Options** - Download month data as JSON or CSV
 
-### Yearly Heatmap
+### Year Review
+- **Full Year Heatmap** - Complete annual visualization
+- **Year Statistics** - Total days, coverage, averages, streaks
+- **Monthly Comparison** - Bar chart comparing all months
+- **Domain Trends** - Track performance across all domains
+- **Yearly Insights** - Automated pattern detection for the year
 
-- GitHub-style visualization
-- Neutral color palette (no guilt)
-- Emphasizes consistency over perfection
+### Settings
+- **Domain Configuration** - Enable/disable domains, add custom domains
+- **Data Management** - Export, import, and backup all data
+- **Preferences** - Customize display settings
+- **Privacy Controls** - Clear data, manage storage
 
-### Analytics & Insights
-
-- Pattern detection
-- Trend analysis
-- Domain correlation
-- Focus on reflection, not metrics
+### Data Management
+- **LocalStorage Persistence** - Data saved locally in your browser
+- **Export/Import** - JSON and CSV export, JSON import
+- **Full Backup** - Download all data in one file
+- **Data Merging** - Import data without overwriting existing entries
 
 ## Philosophy
 
