@@ -42,11 +42,16 @@
 .heatmap {
   width: 100%;
   overflow-x: auto;
-  background: var(--color-surface);
-  padding: var(--spacing-xl);
+  background: linear-gradient(135deg, var(--color-surface) 0%, #f7fafc 100%);
+  padding: var(--spacing-2xl);
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border-light);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
+  transition: box-shadow var(--transition-base);
+}
+
+.heatmap:hover {
+  box-shadow: var(--shadow-lg);
 }
 
 .heatmap svg {
@@ -58,13 +63,28 @@
   stroke-width: 3;
   transition: all var(--transition-fast);
   cursor: pointer;
+  opacity: 0;
+  animation: fadeInCell 0.3s ease-out forwards;
+}
+
+@keyframes fadeInCell {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .heatmap-cell:hover {
   stroke: var(--color-accent);
-  stroke-width: 2;
-  transform: scale(1.05);
+  stroke-width: 2.5;
+  transform: scale(1.15);
   filter: brightness(1.1);
+  opacity: 1;
+  box-shadow: 0 2px 8px rgba(66, 153, 225, 0.3);
 }
   stroke-width: 2;
 }

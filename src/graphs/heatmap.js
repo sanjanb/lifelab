@@ -43,6 +43,36 @@ export function renderHeatmap(data, container, options = {}) {
   border.setAttribute("rx", "6");
   svg.appendChild(border);
 
+  // Add month labels at top
+  const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthsShown = new Set();
+  
+  weeks.forEach((week, weekIdx) => {
+    if (week.some(day => day)) {
+      const firstDay = week.find(day => day);
+      if (firstDay) {
+        const date = new Date(firstDay.date + "T00:00:00");
+        const month = date.getMonth();
+        const weekOfMonth = Math.floor(date.getDate() / 7);
+        
+        // Show month label at first week of each month
+        if (!monthsShown.has(month) || weekOfMonth === 0) {
+          monthsShown.add(month);
+          const monthLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          monthLabel.setAttribute("x", 40 + weekIdx * (cellSize + cellGap));
+          monthLabel.setAttribute("y", 12);
+          monthLabel.setAttribute("text-anchor", "start");
+          monthLabel.setAttribute("font-size", "10px");
+          monthLabel.setAttribute("font-weight", "600");
+          monthLabel.setAttribute("fill", "#4a5568");
+          monthLabel.setAttribute("font-family", "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif");
+          monthLabel.textContent = monthLabels[month].toUpperCase();
+          svg.appendChild(monthLabel);
+        }
+      }
+    }
+  });
+  
   // Add day labels (Mon, Wed, Fri)
   const dayLabels = ["Mon", "Wed", "Fri"];
   const dayIndices = [0, 2, 4];
@@ -58,8 +88,10 @@ export function renderHeatmap(data, container, options = {}) {
       20 + dayIdx * (cellSize + cellGap) + cellSize / 2 + 4
     );
     label.setAttribute("text-anchor", "start");
-    label.setAttribute("font-size", "10px");
-    label.setAttribute("fill", "#666");
+    label.setAttribute("font-size", "11px");
+    label.setAttribute("font-weight", "500");
+    label.setAttribute("fill", "#718096");
+    label.setAttribute("font-family", "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif");
     label.textContent = dayLabels[i];
     svg.appendChild(label);
   });
@@ -80,8 +112,11 @@ export function renderHeatmap(data, container, options = {}) {
       rect.setAttribute("y", y);
       rect.setAttribute("width", cellSize);
       rect.setAttribute("height", cellSize);
-      rect.setAttribute("rx", 2);
+      rect.setAttribute("rx", 3);
       rect.classList.add("heatmap-cell");
+      
+      // Add subtle animation delay based on position
+      rect.style.animationDelay = `${(weekIdx * 7 + dayIdx) * 5}ms`;
 
       // Calculate color based on score
       const score = calculateScore(day);
@@ -159,23 +194,22 @@ function calculateScore(day) {
 }
 
 /**
- * Gets neutral heatmap color based on score
+ * Gets refined heatmap color based on score
  * @param {number} score - Score value (0-1)
  * @returns {string} Hex color
  */
 function getHeatmapColor(score) {
-  if (score === 0) return "#f0f0f0";
+  if (score === 0) return "#edf2f7";
 
-  // Neutral gray scale - no guilt, no judgment
-  const intensity = Math.floor(score * 4);
-
+  // Sophisticated blue-gray gradient - calm, focused, minimal
   const colors = [
-    "#f0f0f0", // 0-0.25
-    "#d0d0d0", // 0.25-0.5
-    "#a0a0a0", // 0.5-0.75
-    "#707070", // 0.75-1.0
-    "#4a5568", // 1.0
+    "#edf2f7", // 0-0.2 - very light
+    "#cbd5e0", // 0.2-0.4 - light
+    "#a0aec0", // 0.4-0.6 - medium
+    "#718096", // 0.6-0.8 - darker
+    "#4a5568", // 0.8-1.0 - darkest
   ];
 
-  return colors[Math.min(intensity, 4)];
+  const index = Math.min(Math.floor(score * 5), 4);
+  return colors[index];
 }
