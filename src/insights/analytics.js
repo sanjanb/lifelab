@@ -10,7 +10,7 @@
  */
 export function generateInsights(data) {
   if (!data || data.length === 0) {
-    return ['No data available for analysis'];
+    return ["No data available for analysis"];
   }
 
   const insights = [];
@@ -35,14 +35,16 @@ export function generateInsights(data) {
   const weekendPattern = analyzeWeekendPattern(data);
   if (weekendPattern) insights.push(weekendPattern);
 
-  return insights.length > 0 ? insights : ['Gathering patterns...'];
+  return insights.length > 0 ? insights : ["Gathering patterns..."];
 }
 
 /**
  * Analyzes overall trend direction
  */
 function analyzeTrend(data) {
-  const scores = data.map(d => calculateDailyScore(d)).filter(s => s !== null);
+  const scores = data
+    .map((d) => calculateDailyScore(d))
+    .filter((s) => s !== null);
   if (scores.length < 5) return null;
 
   const firstHalf = scores.slice(0, Math.floor(scores.length / 2));
@@ -54,11 +56,13 @@ function analyzeTrend(data) {
   const diff = secondAvg - firstAvg;
 
   if (Math.abs(diff) < 0.05) {
-    return 'Scores remained stable throughout the month';
+    return "Scores remained stable throughout the month";
   } else if (diff > 0) {
     return `Upward trend detected: ${(diff * 100).toFixed(1)}% improvement`;
   } else {
-    return `Scores dipped in second half by ${Math.abs(diff * 100).toFixed(1)}%`;
+    return `Scores dipped in second half by ${Math.abs(diff * 100).toFixed(
+      1
+    )}%`;
   }
 }
 
@@ -66,10 +70,12 @@ function analyzeTrend(data) {
  * Analyzes energy patterns across the month
  */
 function analyzeEnergyPattern(data) {
-  const scores = data.map((d, i) => ({
-    day: i + 1,
-    score: calculateDailyScore(d)
-  })).filter(s => s.score !== null);
+  const scores = data
+    .map((d, i) => ({
+      day: i + 1,
+      score: calculateDailyScore(d),
+    }))
+    .filter((s) => s.score !== null);
 
   if (scores.length < 10) return null;
 
@@ -80,7 +86,7 @@ function analyzeEnergyPattern(data) {
 
   for (let i = 0; i <= scores.length - windowSize; i++) {
     const window = scores.slice(i, i + windowSize);
-    const avg = average(window.map(s => s.score));
+    const avg = average(window.map((s) => s.score));
     if (avg < minAvg) {
       minAvg = avg;
       minDay = window[Math.floor(windowSize / 2)].day;
@@ -102,10 +108,10 @@ function analyzeDomainCorrelation(data) {
   if (domains.length < 2) return null;
 
   const domainScores = {};
-  domains.forEach(domain => {
+  domains.forEach((domain) => {
     domainScores[domain] = data
-      .filter(d => d.domains && d.domains[domain] !== undefined)
-      .map(d => d.domains[domain]);
+      .filter((d) => d.domains && d.domains[domain] !== undefined)
+      .map((d) => d.domains[domain]);
   });
 
   // Find domain with lowest average
@@ -122,7 +128,9 @@ function analyzeDomainCorrelation(data) {
   }
 
   if (lowestDomain && lowestAvg < 0.4) {
-    return `${capitalizeFirst(lowestDomain)} needs attention (avg: ${lowestAvg.toFixed(2)})`;
+    return `${capitalizeFirst(
+      lowestDomain
+    )} needs attention (avg: ${lowestAvg.toFixed(2)})`;
   }
 
   return null;
@@ -151,11 +159,11 @@ function analyzeWeekendPattern(data) {
   const weekdays = [];
   const weekends = [];
 
-  data.forEach(d => {
+  data.forEach((d) => {
     const date = new Date(d.date);
     const day = date.getDay();
     const score = calculateDailyScore(d);
-    
+
     if (score === null) return;
 
     if (day === 0 || day === 6) {
@@ -173,9 +181,9 @@ function analyzeWeekendPattern(data) {
 
   if (Math.abs(diff) > 0.15) {
     if (diff > 0) {
-      return 'Weekend scores consistently higher than weekdays';
+      return "Weekend scores consistently higher than weekdays";
     } else {
-      return 'Weekday performance exceeds weekend habits';
+      return "Weekday performance exceeds weekend habits";
     }
   }
 
@@ -200,9 +208,9 @@ function average(numbers) {
 
 function getAllDomains(data) {
   const domains = new Set();
-  data.forEach(d => {
+  data.forEach((d) => {
     if (d.domains) {
-      Object.keys(d.domains).forEach(domain => domains.add(domain));
+      Object.keys(d.domains).forEach((domain) => domains.add(domain));
     }
   });
   return Array.from(domains);
