@@ -24,7 +24,9 @@ let currentSettings = {};
 async function init() {
   currentSettings = loadSettings();
   renderDomainConfig();
-  renderDataManagement();
+  renderDataStats();
+  renderExportImport();
+  renderDangerZone();
   renderPreferences();
 }
 
@@ -114,10 +116,10 @@ function saveDomainSettings() {
 }
 
 /**
- * Render data management section
+ * Render data stats section
  */
-function renderDataManagement() {
-  const container = document.getElementById("data-management");
+function renderDataStats() {
+  const container = document.getElementById("data-stats");
 
   const allData = loadFromLocalStorage();
   const dataSize = JSON.stringify(allData).length;
@@ -127,26 +129,30 @@ function renderDataManagement() {
   );
 
   container.innerHTML = `
-    <div class="data-stats">
-      <div class="stat">
-        <span class="stat-value">${entriesCount}</span>
-        <span class="stat-label">entries</span>
+    <div class="bento-stats">
+      <div class="bento-stat">
+        <div class="stat-value">${entriesCount}</div>
+        <div class="stat-label">entries</div>
       </div>
-      <div class="stat">
-        <span class="stat-value">${(dataSize / 1024).toFixed(1)}</span>
-        <span class="stat-label">KB</span>
-      </div>
-    </div>
-    
-    <div class="data-actions">
-      <div id="import-export-ui"></div>
-      
-      <button class="btn-secondary" id="full-backup">Full Backup</button>
-      
-      <div class="danger-zone">
-        <button class="btn-danger" id="clear-all-data">Clear All Data</button>
+      <div class="bento-stat">
+        <div class="stat-value">${(dataSize / 1024).toFixed(1)}</div>
+        <div class="stat-label">KB</div>
       </div>
     </div>
+  `;
+}
+
+/**
+ * Render export/import section
+ */
+function renderExportImport() {
+  const container = document.getElementById("export-import");
+
+  const allData = loadFromLocalStorage();
+
+  container.innerHTML = `
+    <div id="import-export-ui"></div>
+    <button class="btn-secondary" id="full-backup">Full Backup</button>
   `;
 
   // Render import/export UI
@@ -155,7 +161,7 @@ function renderDataManagement() {
     Object.values(allData).flat(),
     (importedData) => {
       mergeImportedData(importedData);
-      renderDataManagement();
+      renderDataStats();
     }
   );
 
@@ -163,6 +169,18 @@ function renderDataManagement() {
   container.querySelector("#full-backup").addEventListener("click", () => {
     exportFullBackup(allData);
   });
+}
+
+/**
+ * Render danger zone section
+ */
+function renderDangerZone() {
+  const container = document.getElementById("danger-zone");
+
+  container.innerHTML = `
+    <p class="danger-warning">This will permanently delete all your data. This cannot be undone.</p>
+    <button class="btn-danger" id="clear-all-data">Clear All Data</button>
+  `;
 
   // Clear all data
   container.querySelector("#clear-all-data").addEventListener("click", () => {
@@ -178,7 +196,7 @@ function renderDataManagement() {
     if (doubleCheck === "DELETE ALL") {
       if (clearAllData()) {
         alert("All data has been cleared");
-        renderDataManagement();
+        renderDataStats();
       } else {
         alert("Failed to clear data");
       }

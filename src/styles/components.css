@@ -1360,18 +1360,123 @@
 }
 
 /* Settings Page - Minimalist Override */
-#domain-config .domain-list {
+
+/* Bento Grid Layout */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.bento-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  transition: border-color var(--transition-base);
+}
+
+.bento-box:hover {
+  border-color: var(--color-text);
+}
+
+.bento-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-md);
+  opacity: 0.6;
+}
+
+/* Bento Box Sizes */
+.bento-large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.bento-medium {
+  grid-column: span 1;
+}
+
+.bento-small {
+  grid-column: span 1;
+}
+
+.bento-danger {
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.bento-danger:hover {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Bento Stats */
+.bento-stats {
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-md);
+  height: 100%;
+  justify-content: center;
+}
+
+.bento-stat {
+  text-align: center;
+}
+
+.bento-stat .stat-value {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.bento-stat .stat-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-xs);
+}
+
+/* Danger Warning */
+.danger-warning {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.5;
+}
+
+/* Responsive Bento Grid */
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .bento-large,
+  .bento-medium,
+  .bento-small {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+}
+
+/* Legacy Settings Styles */
+#domain-config .domain-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
 }
 
 #domain-config .domain-item {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-sm);
+  padding: var(--spacing-xs);
   cursor: pointer;
   transition: opacity var(--transition-fast);
 }
@@ -1387,13 +1492,13 @@
 }
 
 #domain-config .domain-item span {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
 }
 
 #domain-config .add-domain {
   display: flex;
   gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
 }
 
 #domain-config .add-domain input {
@@ -1401,51 +1506,32 @@
   padding: var(--spacing-sm) var(--spacing-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   background: var(--color-surface);
 }
 
-#data-management .data-stats {
-  display: flex;
-  gap: var(--spacing-xl);
-  margin-bottom: var(--spacing-lg);
-  padding: var(--spacing-md) 0;
+#domain-config .btn-primary {
+  width: 100%;
 }
 
-#data-management .stat {
-  display: flex;
-  align-items: baseline;
-  gap: var(--spacing-xs);
-}
-
-#data-management .stat-value {
-  font-size: 1.5rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-#data-management .stat-label {
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-}
-
-#data-management .data-actions {
+#export-import {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
 }
 
-#data-management .danger-zone {
-  margin-top: var(--spacing-lg);
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--color-border);
+#export-import .btn-secondary {
+  width: 100%;
+}
+
+#danger-zone .btn-danger {
+  width: 100%;
 }
 
 #preferences .preference-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
+  gap: var(--spacing-sm);
 }
 
 #preferences .preference-item {
@@ -1455,7 +1541,7 @@
 }
 
 #preferences .preference-item label {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   margin-bottom: 0;
 }
@@ -1464,7 +1550,12 @@
   padding: var(--spacing-sm) var(--spacing-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   background: var(--color-surface);
-  max-width: 200px;
+  width: 100%;
+}
+
+#preferences .btn-primary {
+  width: 100%;
+  margin-top: var(--spacing-sm);
 }
