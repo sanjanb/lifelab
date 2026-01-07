@@ -1,18 +1,22 @@
 # Settings Page Minimalist Redesign — Complete
 
 ## Overview
+
 The settings page has been completely restructured from a heavy card-based design to a minimalist layout matching the site's overall theme.
 
 ## Changes Made
 
 ### 1. HTML Structure (settings.html)
+
 **Before:**
+
 - Complex layout with `settings-layout`, `settings-main`, `settings-sidebar`
 - Heavy card wrappers around every section
 - Embedded "About" section with icons and grids
 - 200+ lines of HTML
 
 **After:**
+
 - Simple 3-section layout: Tracking Domains → Data → Preferences
 - Clean `section` + `section-title` + container pattern
 - Matches home page minimalism
@@ -21,19 +25,24 @@ The settings page has been completely restructured from a heavy card-based desig
 ### 2. JavaScript Rendering (src/pages/settings.js)
 
 #### renderDomainConfig()
+
 **Before:**
+
 - `settings-section` wrapper with description
 - `domain-item` with custom `check-mark` spans
 - `btn-add` for adding domains
 
 **After:**
+
 - Simple `.domain-list` with plain checkboxes
 - Basic `.domain-item` labels
 - `.add-domain` flex container with input + button
 - Single "Save Changes" button
 
 #### renderDataManagement()
+
 **Before:**
+
 - 3-card grid layout (`settings-grid`)
 - Each card with header + SVG icon
 - `stats-grid`, `stat-item`, `card-actions` structure
@@ -41,6 +50,7 @@ The settings page has been completely restructured from a heavy card-based desig
 - 120+ lines of HTML generation
 
 **After:**
+
 - Simple `.data-stats` with 2 stat values (entries, KB)
 - `.data-actions` column of buttons
 - `.danger-zone` separated by border
@@ -48,13 +58,16 @@ The settings page has been completely restructured from a heavy card-based desig
 - ~40 lines of HTML generation
 
 #### renderPreferences()
+
 **Before:**
+
 - Settings card with header + icon
 - `preferences-grid` with `preference-card` elements
 - Each preference had icon + label + coming-soon badge
 - Theme preference (disabled) included
 
 **After:**
+
 - Simple `.preference-list`
 - `.preference-item` with label + select
 - Only one preference (First Day of Week)
@@ -64,18 +77,60 @@ The settings page has been completely restructured from a heavy card-based desig
 ### 3. CSS Styling (src/styles/components.css)
 
 **Added Minimalist Styles:**
+
 ```css
-#domain-config .domain-list — Vertical flex list
-#domain-config .domain-item — Simple checkbox row
-#domain-config .add-domain — Flex input + button
-
-#data-management .data-stats — Horizontal stat display
-#data-management .stat — Value + label pair
-#data-management .data-actions — Vertical button stack
-#data-management .danger-zone — Border-separated area
-
-#preferences .preference-list — Vertical list
-#preferences .preference-item — Label + select pair
+#domain-config
+  .domain-list
+  —
+  Vertical
+  flex
+  list
+  #domain-config
+  .domain-item
+  —
+  Simple
+  checkbox
+  row
+  #domain-config
+  .add-domain
+  —
+  Flex
+  input
+  + button
+  #data-management
+  .data-stats
+  —
+  Horizontal
+  stat
+  display
+  #data-management
+  .stat
+  —
+  Value
+  + label
+  pair
+  #data-management
+  .data-actions
+  —
+  Vertical
+  button
+  stack
+  #data-management
+  .danger-zone
+  —
+  Border-separated
+  area
+  #preferences
+  .preference-list
+  —
+  Vertical
+  list
+  #preferences
+  .preference-item
+  —
+  Label
+  + select
+  pair;
 ```
 
 **Preserved Legacy Styles:**
