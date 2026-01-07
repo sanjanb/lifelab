@@ -154,22 +154,22 @@ export function renderQuickEntry(container, onSave) {
       const domain = slider.id.replace("quick-", "");
       const valueSpan = document.getElementById(`value-${domain}`);
       valueSpan.textContent = `${value}%`;
-      
+
       // Visual feedback for value ranges
-      slider.style.setProperty('--slider-value', value);
+      slider.style.setProperty("--slider-value", value);
     };
-    
+
     slider.addEventListener("input", (e) => {
       updateValue(e.target.value);
     });
-    
+
     // Snap to nearest 5 on release
     slider.addEventListener("change", (e) => {
       const snapped = Math.round(e.target.value / 5) * 5;
       e.target.value = snapped;
       updateValue(snapped);
     });
-    
+
     // Initialize
     updateValue(slider.value);
   });
