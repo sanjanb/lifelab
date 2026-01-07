@@ -1,0 +1,72 @@
+[
+  {
+    "date": "2026-01-01",
+    "domains": {
+      "health": 0.7,
+      "skills": 0.6,
+      "finance": 0.5,
+      "academics": 0.8
+    },
+    "notes": "Good start to the year"
+  },
+  {
+    "date": "2026-01-02",
+    "domains": {
+      "health": 0.8,
+      "skills": 0.7,
+      "finance": 0.6,
+      "academics": 0.7
+    },
+    "notes": "Maintained momentum"
+  },
+  {
+    "date": "2026-01-03",
+    "domains": {
+      "health": 0.6,
+      "skills": 0.5,
+      "finance": 0.4,
+      "academics": 0.6
+    },
+    "notes": "Slower day, still showed up"
+  },
+  {
+    "date": "2026-01-04",
+    "domains": {
+      "health": 0.7,
+      "skills": 0.8,
+      "finance": 0.7,
+      "academics": 0.8
+    },
+    "notes": "Strong performance"
+  },
+  {
+    "date": "2026-01-05",
+    "domains": {
+      "health": 0.9,
+      "skills": 0.8,
+      "finance": 0.8,
+      "academics": 0.9
+    },
+    "notes": "Excellent day across all domains"
+  },
+  {
+    "date": "2026-01-06",
+    "domains": {
+      "health": 0.5,
+      "skills": 0.6,
+      "finance": 0.5,
+      "academics": 0.6
+    },
+    "notes": "Recovery day"
+  },
+  {
+    "date": "2026-01-07",
+    "domains": {
+      "health": 0.6,
+      "skills": 0.7,
+      "finance": 0.6,
+      "academics": 0.7
+    },
+    "notes": "Building back up"
+  }
+]
