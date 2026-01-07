@@ -7,8 +7,7 @@ import "./styles/base.css";
 import "./styles/layout.css";
 import "./styles/components.css";
 
-import { loadCurrentMonth } from "./data/loader.js";
-import { getMonthlyData } from "./data/store.js";
+import { loadMonth } from "./data/storage.js";
 import { renderLineGraph } from "./graphs/lineGraph.js";
 import { renderHeatmap } from "./graphs/heatmap.js";
 import { generateInsights } from "./insights/analytics.js";
@@ -18,9 +17,10 @@ import { generateInsights } from "./insights/analytics.js";
  */
 async function init() {
   try {
-    // Load current month data
+    // Load current month data from LocalStorage
     showLoading();
-    const data = await loadCurrentMonth();
+    const now = new Date();
+    const data = loadMonth(now.getFullYear(), now.getMonth() + 1);
 
     if (data.length === 0) {
       showEmptyState();
@@ -45,7 +45,7 @@ function renderVisualizations(data) {
     renderLineGraph(data, lineGraphContainer);
   }
 
-  // Heatmap (for now, just show current month - later we'll load full year)
+  // Heatmap (show current month data)
   const heatmapContainer = document.getElementById("heatmap");
   if (heatmapContainer) {
     renderHeatmap(data, heatmapContainer);
@@ -83,7 +83,7 @@ function showEmptyState() {
     lineGraphContainer.innerHTML = `
       <div class="empty-state">
         <p>No data available for the current month.</p>
-        <p>Add JSON files to <code>/public/data/months/</code> to get started.</p>
+        <p>Go to <a href="/notebook.html">Notebook</a> to start tracking!</p>
       </div>
     `;
   }
