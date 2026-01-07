@@ -38,9 +38,9 @@ export function renderHeatmap(data, container, options = {}) {
   border.setAttribute("width", (cellSize + cellGap) * 53 + 2);
   border.setAttribute("height", (cellSize + cellGap) * 7 + 4);
   border.setAttribute("fill", "none");
-  border.setAttribute("stroke", "#e0e0e0");
-  border.setAttribute("stroke-width", "1");
-  border.setAttribute("rx", "4");
+  border.setAttribute("stroke", "#edf2f7");
+  border.setAttribute("stroke-width", "2");
+  border.setAttribute("rx", "6");
   svg.appendChild(border);
 
   // Add day labels (Mon, Wed, Fri)
