@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About — LifeLab</title>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>About LifeLab</h1>
+        <p>A thinking surface for self-tracking</p>
+        <nav class="nav-links">
+          <a href="/">← Home</a>
+          <a href="/notebook.html">Notebook</a>
+          <a href="/year.html">Year</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="section">
+          <h2>Philosophy</h2>
+          <p>This project is not a dashboard. It is a <strong>thinking surface</strong>.</p>
+          <p>If anything feels flashy, clever, or impressive — remove it.<br>
+          If it feels boring but clear — you're doing it right.</p>
+        </section>
+
+        <section class="section">
+          <h2>Core Principles</h2>
+          <ul class="principles-list">
+            <li><strong>No framework abstractions</strong> — Pure JavaScript</li>
+            <li><strong>No hidden state</strong> — Everything is explicit</li>
+            <li><strong>Deterministic rendering</strong> — Same input = same output</li>
+            <li><strong>SVG for graphs</strong> — No canvas, no libraries</li>
+            <li><strong>Data-first</strong> — Visuals serve the data</li>
+            <li><strong>Works everywhere</strong> — Localhost = GitHub Pages</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>Data Model</h2>
+          <p>Each day is a record tracking multiple domains on a 0-1 scale:</p>
+          <ul>
+            <li><strong>0.0</strong> — No engagement with this domain</li>
+            <li><strong>0.5</strong> — Moderate engagement</li>
+            <li><strong>1.0</strong> — Full engagement</li>
+          </ul>
+          <p>The system is extensible — add new domains without breaking old data.</p>
+        </section>
+
+        <section class="section">
+          <h2>Technology Stack</h2>
+          <ul>
+            <li><strong>Vite</strong> — Build tool (no framework)</li>
+            <li><strong>Vanilla JavaScript</strong> — No abstractions</li>
+            <li><strong>Pure SVG</strong> — No chart libraries</li>
+            <li><strong>JSON files</strong> — No database</li>
+            <li><strong>GitHub Pages</strong> — Static hosting</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>Privacy & Data</h2>
+          <p>All data is stored locally in your browser using LocalStorage. 
+          Nothing is sent to external servers.</p>
+          <p>For backup and persistence:</p>
+          <ul>
+            <li>Export your data as JSON or CSV</li>
+            <li>Save files to your local machine</li>
+            <li>Optionally commit to a private GitHub repository</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>Usage Guide</h2>
+          <h3>Daily Tracking</h3>
+          <ol>
+            <li>Visit the Notebook page</li>
+            <li>Use Quick Entry or edit individual days</li>
+            <li>Rate each domain honestly (0.0 - 1.0)</li>
+            <li>Add notes for reflection</li>
+          </ol>
+          
+          <h3>Analysis</h3>
+          <ol>
+            <li>Home page shows monthly trends</li>
+            <li>Year page shows annual patterns</li>
+            <li>Insights highlight patterns automatically</li>
+          </ol>
+          
+          <h3>Data Management</h3>
+          <ol>
+            <li>Export regularly for backup</li>
+            <li>Import to restore or merge data</li>
+            <li>Customize domains in Settings</li>
+          </ol>
+        </section>
+
+        <section class="section">
+          <h2>License</h2>
+          <p>MIT License — Free to use, modify, and distribute.</p>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
