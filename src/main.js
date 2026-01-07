@@ -47,16 +47,21 @@ async function init() {
  * Render all visualizations
  */
 function renderVisualizations(data) {
+  const now = new Date();
+  
   // Line graph
   const lineGraphContainer = document.getElementById("line-graph");
   if (lineGraphContainer) {
     renderLineGraph(data, lineGraphContainer);
   }
 
-  // Heatmap (show current month data)
+  // Heatmap (show current month data with month/year context)
   const heatmapContainer = document.getElementById("heatmap");
   if (heatmapContainer) {
-    renderHeatmap(data, heatmapContainer);
+    renderHeatmap(data, heatmapContainer, {
+      year: now.getFullYear(),
+      month: now.getMonth() + 1
+    });
   }
 
   // Insights
