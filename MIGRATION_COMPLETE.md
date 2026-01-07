@@ -6,6 +6,7 @@
 ## Why Migrate?
 
 The Astro + Svelte stack was causing problems:
+
 - Complex build process
 - Framework abstractions hiding behavior
 - Difficult to debug
@@ -24,28 +25,34 @@ The Astro + Svelte stack was causing problems:
 ## What Was Built
 
 ### ✅ Core Data System
+
 - [schema.js](src/data/schema.js) - Data model with flexible domain tracking
 - [store.js](src/data/store.js) - Simple in-memory state
 - [loader.js](src/data/loader.js) - Fetch monthly JSON files
 
 ### ✅ Visualizations
+
 - [lineGraph.js](src/graphs/lineGraph.js) - Pure SVG monthly trend line
 - [heatmap.js](src/graphs/heatmap.js) - GitHub-style yearly heatmap with neutral colors
 
 ### ✅ Analytics
+
 - [analytics.js](src/insights/analytics.js) - Pattern detection and insights generation
 
 ### ✅ Styling
+
 - [base.css](src/styles/base.css) - System fonts, clean typography
 - [layout.css](src/styles/layout.css) - Vertical flow, white space
 - [components.css](src/styles/components.css) - Graph and component styles
 
 ### ✅ Configuration
+
 - [vite.config.js](vite.config.js) - Build config for GitHub Pages
 - [deploy.yml](.github/workflows/deploy.yml) - Auto-deployment workflow
 - [package.json](package.json) - Dependencies (only Vite + gh-pages)
 
 ### ✅ Documentation
+
 - [README.md](README.md) - Project overview
 - [DEPLOYMENT.md](DEPLOYMENT.md) - Deployment guide
 - Sample data in [2026-01.json](public/data/months/2026-01.json)
@@ -91,7 +98,7 @@ lifelab/
 ✅ **Deterministic rendering** - Same input = same output  
 ✅ **SVG for graphs** - No canvas, no libraries  
 ✅ **Data-first** - Visuals serve the data  
-✅ **Works everywhere** - Localhost = GitHub Pages  
+✅ **Works everywhere** - Localhost = GitHub Pages
 
 ## Development Workflow
 
@@ -134,14 +141,14 @@ Simple, extensible JSON:
 ## What's Different?
 
 | Old (Astro + Svelte) | New (Vite + Vanilla JS) |
-|---------------------|------------------------|
-| Complex build | Simple build |
-| Framework magic | Plain JavaScript |
-| Component state | Simple functions |
-| 50+ dependencies | 2 dependencies |
-| Hard to debug | Easy to debug |
-| Slow builds | Fast builds |
-| Confusing flow | Linear flow |
+| -------------------- | ----------------------- |
+| Complex build        | Simple build            |
+| Framework magic      | Plain JavaScript        |
+| Component state      | Simple functions        |
+| 50+ dependencies     | 2 dependencies          |
+| Hard to debug        | Easy to debug           |
+| Slow builds          | Fast builds             |
+| Confusing flow       | Linear flow             |
 
 ## Next Steps (Optional)
 

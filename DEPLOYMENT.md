@@ -7,6 +7,7 @@ This project is configured for automatic deployment to GitHub Pages using GitHub
 ### Initial Setup
 
 1. **Push to GitHub**
+
    ```bash
    git add .
    git commit -m "Initial commit: Vite + Vanilla JS stack"
@@ -14,6 +15,7 @@ This project is configured for automatic deployment to GitHub Pages using GitHub
    ```
 
 2. **Enable GitHub Pages**
+
    - Go to your repository settings
    - Navigate to "Pages" section
    - Under "Build and deployment":
@@ -21,9 +23,9 @@ This project is configured for automatic deployment to GitHub Pages using GitHub
    - Save changes
 
 3. **Update Vite Config**
-   
+
    Edit `vite.config.js` and update the `base` path to match your repository name:
-   
+
    ```js
    base: process.env.NODE_ENV === 'production' ? '/your-repo-name/' : '/',
    ```
@@ -31,6 +33,7 @@ This project is configured for automatic deployment to GitHub Pages using GitHub
 ### Automatic Deployment
 
 Once set up, every push to the `main` branch will automatically:
+
 1. Build the project
 2. Deploy to GitHub Pages
 3. Make it available at `https://your-username.github.io/your-repo-name/`
@@ -72,6 +75,7 @@ Opens at `http://localhost:4173`
 
 1. Create a JSON file in `public/data/months/` with the format `YYYY-MM.json`
 2. Follow the schema:
+
    ```json
    [
      {
@@ -92,6 +96,7 @@ Opens at `http://localhost:4173`
 ### Editing Data
 
 You can edit data files directly on GitHub:
+
 1. Navigate to `public/data/months/`
 2. Click on the file
 3. Click "Edit" (pencil icon)
@@ -144,6 +149,7 @@ src/               # Source code
 ## Performance
 
 The built site is:
+
 - Fully static (no server needed)
 - Optimized and minified
 - Cached efficiently
@@ -168,6 +174,7 @@ npm audit fix
 ## Migration Notes
 
 This is a complete rewrite from the Astro + Svelte stack:
+
 - No build complexity
 - No framework magic
 - Plain JavaScript that you can understand
