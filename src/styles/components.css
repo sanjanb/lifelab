@@ -1,0 +1,93 @@
+/**
+ * Component styles - Graphs, heatmaps, tables
+ */
+
+/* SVG Graph Styles */
+.svg-graph {
+  width: 100%;
+  height: 300px;
+  border: 1px solid var(--color-border);
+  background-color: #fafafa;
+}
+
+.svg-graph text {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  fill: var(--color-text-muted);
+}
+
+.svg-graph .axis-line {
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.svg-graph .data-line {
+  fill: none;
+  stroke: var(--color-graph-line);
+  stroke-width: 2;
+}
+
+.svg-graph .data-point {
+  fill: var(--color-graph-line);
+}
+
+/* Heatmap Styles */
+.heatmap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.heatmap svg {
+  display: block;
+}
+
+.heatmap-cell {
+  stroke: var(--color-bg);
+  stroke-width: 2;
+}
+
+.heatmap-cell:hover {
+  stroke: var(--color-accent);
+  stroke-width: 2;
+}
+
+/* Table Styles */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--spacing-md);
+}
+
+.data-table th,
+.data-table td {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.data-table th {
+  font-weight: 600;
+  background-color: var(--color-heatmap-low);
+}
+
+.data-table tr:hover {
+  background-color: var(--color-heatmap-low);
+}
+
+/* Loading State */
+.loading {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.loading::after {
+  content: '...';
+  animation: ellipsis 1.5s infinite;
+}
+
+@keyframes ellipsis {
+  0% { content: '.'; }
+  33% { content: '..'; }
+  66% { content: '...'; }
+}

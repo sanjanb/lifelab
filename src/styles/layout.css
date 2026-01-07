@@ -1,0 +1,68 @@
+/**
+ * Layout styles - Vertical flow, white space
+ */
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text);
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.nav-links a {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.nav-links a:hover {
+  background-color: var(--color-heatmap-low);
+  text-decoration: none;
+}
+
+.graph-container {
+  width: 100%;
+  margin-bottom: var(--spacing-lg);
+}
+
+.insights-list {
+  list-style: none;
+  padding: 0;
+}
+
+.insights-list li {
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+  border-left: 3px solid var(--color-accent);
+  background-color: var(--color-heatmap-low);
+}
+
+.empty-state {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--color-text-muted);
+  border: 1px dashed var(--color-border);
+  border-radius: 4px;
+}
