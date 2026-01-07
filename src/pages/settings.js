@@ -35,36 +35,34 @@ function renderDomainConfig() {
   const container = document.getElementById("domain-config");
 
   container.innerHTML = `
-    <div class="settings-section">
-      <h2>Tracking Domains</h2>
-      <p class="section-desc">Select which areas of life you want to track</p>
-      
-      <div class="domain-list">
-        ${Object.entries(currentSettings.domains)
-          .map(
-            ([domain, enabled]) => `
-          <label class="domain-item ${enabled ? "active" : ""}">
-            <input 
-              type="checkbox" 
-              class="domain-checkbox" 
-              data-domain="${domain}" 
-              ${enabled ? "checked" : ""}
-            />
-            <span class="domain-label">${capitalizeFirst(domain)}</span>
-            <span class="check-mark"></span>
-          </label>
-        `
-          )
-          .join("")}
-      </div>
-      
-      <div class="add-domain">
-        <input type="text" id="new-domain-name" placeholder="Add new domain..." />
-        <button class="btn-add" id="add-domain-btn">Add</button>
-      </div>
-      
-      <button class="btn-primary" id="save-domains">Save Changes</button>
+    <div class="domain-list">
+      ${Object.entries(currentSettings.domains)
+        .map(
+          ([domain, enabled]) => `
+        <label class="domain-item">
+          <input 
+            type="checkbox" 
+            class="domain-checkbox" 
+            data-domain="${domain}" 
+            ${enabled ? "checked" : ""}
+          />
+          <span>${capitalizeFirst(domain)}</span>
+        </label>
+      `
+        )
+        .join("")}
     </div>
+    
+    <div class="add-domain">
+      <input 
+        type="text" 
+        id="new-domain-name" 
+        placeholder="Add new domain" 
+      />
+      <button class="btn-secondary" id="add-domain-btn">Add</button>
+    </div>
+    
+    <button class="btn-primary" id="save-domains">Save Changes</button>
   `;
 
   // Attach event listeners
@@ -129,68 +127,24 @@ function renderDataManagement() {
   );
 
   container.innerHTML = `
-    <div class="settings-grid">
-      <div class="settings-card">
-        <div class="settings-card-header">
-          <svg class="settings-icon" viewBox="0 0 24 24">
-            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-          <div>
-            <h3>Storage Overview</h3>
-            <p class="card-description">Your tracking data statistics</p>
-          </div>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-item">
-            <div class="stat-value">${entriesCount}</div>
-            <div class="stat-label">Total Entries</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">${(dataSize / 1024).toFixed(1)}</div>
-            <div class="stat-label">KB Used</div>
-          </div>
-        </div>
+    <div class="data-stats">
+      <div class="stat">
+        <span class="stat-value">${entriesCount}</span>
+        <span class="stat-label">entries</span>
       </div>
-      
-      <div class="settings-card">
-        <div class="settings-card-header">
-          <svg class="settings-icon" viewBox="0 0 24 24">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-            <path d="M7 10l5 5 5-5M12 15V3"/>
-          </svg>
-          <div>
-            <h3>Export & Import</h3>
-            <p class="card-description">Backup or restore your data</p>
-          </div>
-        </div>
-        <div id="import-export-ui"></div>
-        <div class="card-actions">
-          <button class="btn-secondary" id="full-backup">
-            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-            Full Backup
-          </button>
-        </div>
+      <div class="stat">
+        <span class="stat-value">${(dataSize / 1024).toFixed(1)}</span>
+        <span class="stat-label">KB</span>
       </div>
+    </div>
+    
+    <div class="data-actions">
+      <div id="import-export-ui"></div>
       
-      <div class="settings-card danger-card">
-        <div class="settings-card-header">
-          <svg class="settings-icon danger-icon" viewBox="0 0 24 24">
-            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-            <path d="M12 9v4M12 17h.01"/>
-          </svg>
-          <div>
-            <h3>Danger Zone</h3>
-            <p class="card-description">Irreversible actions</p>
-          </div>
-        </div>
-        <div class="danger-content">
-          <p class="warning-text">This will permanently delete all your tracked data. This action cannot be undone.</p>
-          <button class="btn-danger" id="clear-all-data">
-            <svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
-            Clear All Data
-          </button>
-        </div>
+      <button class="btn-secondary" id="full-backup">Full Backup</button>
+      
+      <div class="danger-zone">
+        <button class="btn-danger" id="clear-all-data">Clear All Data</button>
       </div>
     </div>
   `;
@@ -239,59 +193,21 @@ function renderPreferences() {
   const container = document.getElementById("preferences");
 
   container.innerHTML = `
-    <div class="settings-card">
-      <div class="settings-card-header">
-        <svg class="settings-icon" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"/>
-        </svg>
-        <div>
-          <h3>Display Preferences</h3>
-          <p class="card-description">Customize your experience</p>
-        </div>
-      </div>
-      
-      <div class="preferences-grid">
-        <div class="preference-card">
-          <label class="preference-label">
-            <svg viewBox="0 0 24 24" class="pref-icon">
-              <rect x="3" y="4" width="18" height="18" rx="2"/>
-              <path d="M16 2v4M8 2v4M3 10h18"/>
-            </svg>
-            <span>First Day of Week</span>
-          </label>
-          <select id="first-day-select" class="preference-select">
-            <option value="0" ${
-              currentSettings.firstDayOfWeek === 0 ? "selected" : ""
-            }>Sunday</option>
-            <option value="1" ${
-              currentSettings.firstDayOfWeek === 1 ? "selected" : ""
-            }>Monday</option>
-          </select>
-        </div>
-        
-        <div class="preference-card disabled">
-          <label class="preference-label">
-            <svg viewBox="0 0 24 24" class="pref-icon">
-              <circle cx="12" cy="12" r="5"/>
-              <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-            </svg>
-            <span>Theme <span class="coming-soon">Coming Soon</span></span>
-          </label>
-          <select id="theme-select" class="preference-select" disabled>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-        </div>
-      </div>
-      
-      <div class="card-actions">
-        <button class="btn-primary" id="save-preferences">
-          <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
-          Save Preferences
-        </button>
+    <div class="preference-list">
+      <div class="preference-item">
+        <label>First Day of Week</label>
+        <select id="first-day-select">
+          <option value="0" ${
+            currentSettings.firstDayOfWeek === 0 ? "selected" : ""
+          }>Sunday</option>
+          <option value="1" ${
+            currentSettings.firstDayOfWeek === 1 ? "selected" : ""
+          }>Monday</option>
+        </select>
       </div>
     </div>
+    
+    <button class="btn-primary" id="save-preferences">Save Changes</button>
   `;
 
   container.querySelector("#save-preferences").addEventListener("click", () => {
