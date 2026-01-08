@@ -13,6 +13,7 @@ import {
   saveDayEntry,
   deleteDayEntry,
   getEnabledDomainNames,
+  loadSettings,
 } from "../data/storage.js";
 import { renderQuickEntry, renderDataEntryForm } from "../data/entry.js";
 import {
@@ -20,6 +21,8 @@ import {
   exportToCSV,
   exportToJSON,
 } from "../data/export.js";
+import { getTodaysMemory } from "../data/memoryQuery.js";
+import { renderMemoryCard } from "../components/memoryCard.js";
 
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth() + 1;
@@ -34,6 +37,7 @@ async function init() {
   setupNavigation();
   renderQuickEntryWidget();
   renderExportOptions();
+  await renderMemoryAid();
 }
 
 /**
@@ -287,6 +291,34 @@ function renderExportOptions() {
  */
 function capitalizeFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * Render Memory Aid (if enabled)
+ */
+async function renderMemoryAid() {
+  const container = document.getElementById("memory-aid-container");
+  if (!container) return;
+
+  // Check if feature is enabled
+  const settings = loadSettings();
+  if (!settings.memoryAidsEnabled) {
+    container.innerHTML = "";
+    return;
+  }
+
+  // Fetch today's memory
+  try {
+    const memory = await getTodaysMemory();
+    if (memory) {
+      renderMemoryCard(memory, container);
+    } else {
+      container.innerHTML = "";
+    }
+  } catch (error) {
+    console.warn("Memory aid failed silently:", error);
+    container.innerHTML = "";
+  }
 }
 
 // Initialize
