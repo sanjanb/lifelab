@@ -230,9 +230,8 @@ function renderPreferences() {
     currentSettings.firstDayOfWeek = parseInt(
       document.getElementById("first-day-select").value
     );
-    currentSettings.memoryAidsEnabled = document.getElementById(
-      "memory-aids-toggle"
-    ).checked;
+    currentSettings.memoryAidsEnabled =
+      document.getElementById("memory-aids-toggle").checked;
 
     if (saveSettings(currentSettings)) {
       alert("Preferences saved!");
