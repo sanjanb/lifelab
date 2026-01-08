@@ -88,12 +88,12 @@ function attachEventListeners(container, today, onSaved) {
   });
 
   // Save win
-  saveBtn.addEventListener("click", () => {
+  saveBtn.addEventListener("click", async () => {
     const text = textarea.value.trim();
 
     if (!text) return;
 
-    const result = saveWin(today, text);
+    const result = await saveWin(today, text);
 
     if (result.success) {
       // Silent success - just re-render to show read-only view

@@ -77,9 +77,9 @@ async function saveWinsToStorage(wins) {
  * Save a win for a specific date
  * @param {string} date - ISO date string (YYYY-MM-DD)
  * @param {string} text - Acknowledgement text
- * @returns {Object} Result object with success status and optional error
+ * @returns {Promise<Object>} Result object with success status and optional error
  */
-export function saveWin(date, text) {
+export async function saveWin(date, text) {
   if (!date || !text) {
     return { success: false, error: "Date and text are required" };
   }
@@ -104,7 +104,7 @@ export function saveWin(date, text) {
 
   wins[date] = win;
 
-  const saved = saveWinsToStorage(wins);
+  const saved = await saveWinsToStorage(wins);
   return {
     success: saved,
     error: saved ? null : "Failed to save win to storage",
