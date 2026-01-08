@@ -1671,3 +1671,87 @@
   font-weight: 500;
   margin-bottom: var(--spacing-md);
 }
+
+/* ============================================
+   WIN COUNTER & STATS
+   Archival feel - no celebration, no comparison
+   ============================================ */
+
+/* Lifetime counter */
+.win-counter {
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+.win-counter-value {
+  font-size: 3rem;
+  font-weight: 300;
+  color: var(--color-text);
+  line-height: 1;
+  margin-bottom: var(--spacing-sm);
+}
+
+.win-counter-label {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+}
+
+/* Stats grid */
+.win-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-lg);
+  margin: var(--spacing-xl) 0;
+}
+
+.win-stat-card {
+  padding: var(--spacing-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.win-stat-value {
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--color-text);
+  line-height: 1;
+  margin-bottom: var(--spacing-sm);
+}
+
+.win-stat-label {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+}
+
+/* Home page summary (minimal presence) */
+.win-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: #f7fafc;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-light);
+  margin: var(--spacing-lg) 0;
+}
+
+.win-summary-count {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.win-summary-link {
+  font-size: 0.875rem;
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+.win-summary-link:hover {
+  color: var(--color-accent-hover);
+}

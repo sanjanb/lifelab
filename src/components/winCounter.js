@@ -1,6 +1,6 @@
 /**
  * Win Counter Component
- * 
+ *
  * Archival display - counts only, no performance metrics.
  * Neutral language, no celebration.
  */
@@ -13,7 +13,7 @@ import { getWinStats } from "../data/winLedger.js";
  */
 export function renderWinCounter(container) {
   const stats = getWinStats();
-  
+
   container.innerHTML = `
     <div class="win-counter">
       <div class="win-counter-value">${stats.total}</div>
@@ -28,7 +28,7 @@ export function renderWinCounter(container) {
  */
 export function renderWinStats(container) {
   const stats = getWinStats();
-  
+
   container.innerHTML = `
     <div class="win-stats">
       <div class="win-stat-card">
@@ -53,7 +53,7 @@ export function renderWinStats(container) {
  */
 export function renderWinSummary(container) {
   const stats = getWinStats();
-  
+
   container.innerHTML = `
     <div class="win-summary">
       <span class="win-summary-count">${stats.total} acknowledgements recorded</span>
