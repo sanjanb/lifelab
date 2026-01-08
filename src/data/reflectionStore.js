@@ -1,7 +1,7 @@
 /**
  * Reflection Data Store
  * Local storage only for now - Firebase integration in Phase 6
- * 
+ *
  * Rules:
  * - No shared data models with daily logs or wins
  * - No sentiment analysis
@@ -18,11 +18,11 @@ const STORAGE_KEY = "lifelab_reflections";
 export function listReflections() {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (!stored) return [];
-  
+
   try {
     const reflections = JSON.parse(stored);
-    return reflections.sort((a, b) => 
-      new Date(b.createdAt) - new Date(a.createdAt)
+    return reflections.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
     );
   } catch (error) {
     console.error("Failed to parse reflections:", error);
@@ -37,7 +37,7 @@ export function listReflections() {
  */
 export function getReflection(id) {
   const reflections = listReflections();
-  return reflections.find(r => r.id === id) || null;
+  return reflections.find((r) => r.id === id) || null;
 }
 
 /**
@@ -51,15 +51,15 @@ export function saveReflection(reflection) {
     console.error("Invalid reflection: missing required fields");
     return false;
   }
-  
+
   // Ensure createdAt is set
   if (!reflection.createdAt) {
     reflection.createdAt = new Date().toISOString();
   }
-  
+
   const reflections = listReflections();
-  const existingIndex = reflections.findIndex(r => r.id === reflection.id);
-  
+  const existingIndex = reflections.findIndex((r) => r.id === reflection.id);
+
   if (existingIndex >= 0) {
     // Update existing
     reflections[existingIndex] = reflection;
@@ -67,7 +67,7 @@ export function saveReflection(reflection) {
     // Add new
     reflections.push(reflection);
   }
-  
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(reflections));
     return true;
@@ -84,8 +84,8 @@ export function saveReflection(reflection) {
  */
 export function deleteReflection(id) {
   const reflections = listReflections();
-  const filtered = reflections.filter(r => r.id !== id);
-  
+  const filtered = reflections.filter((r) => r.id !== id);
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
     return true;

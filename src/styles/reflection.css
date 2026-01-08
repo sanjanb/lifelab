@@ -194,7 +194,7 @@
 .reflection-editor {
   min-height: 400px;
   padding: 1rem;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   font-size: 1.05rem;
   line-height: 1.8;
   border: 1px solid #e0e0e0;
@@ -289,7 +289,7 @@
 }
 
 .reflection-body {
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   font-size: 1.1rem;
   line-height: 1.9;
   color: #333;
@@ -368,11 +368,11 @@
   .reflection-container {
     padding: 1rem;
   }
-  
+
   .reflection-read-content {
     padding: 1rem 0;
   }
-  
+
   .reflection-editor {
     min-height: 300px;
   }
