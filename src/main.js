@@ -89,6 +89,14 @@ function renderVisualizations(data) {
   if (winSummaryContainer) {
     renderWinSummary(winSummaryContainer);
   }
+
+  // Show migration prompt if needed (one-time)
+  if (shouldShowMigrationPrompt()) {
+    const promptContainer = document.createElement("div");
+    promptContainer.id = "migration-prompt-container";
+    document.body.appendChild(promptContainer);
+    renderMigrationPrompt(promptContainer);
+  }
 }
 
 /**
