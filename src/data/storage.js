@@ -7,6 +7,12 @@
  */
 
 import { persistence, DataTypes } from "./persistence/manager.js";
+import {
+  migrateDomainSettings,
+  createDomainConfig,
+  DomainType,
+  getDefaultValue,
+} from "./domainTypes.js";
 
 const STORAGE_KEY = "lifelab_data";
 const SETTINGS_KEY = "lifelab_settings";
@@ -211,10 +217,10 @@ export async function loadSettingsAsync() {
 function getDefaultSettings() {
   return {
     domains: {
-      health: true,
-      skills: true,
-      finance: true,
-      academics: true,
+      health: createDomainConfig(DomainType.PERCENTAGE),
+      skills: createDomainConfig(DomainType.PERCENTAGE),
+      finance: createDomainConfig(DomainType.PERCENTAGE),
+      academics: createDomainConfig(DomainType.PERCENTAGE),
     },
     theme: "light",
     firstDayOfWeek: 1, // Monday
@@ -224,15 +230,22 @@ function getDefaultSettings() {
 
 /**
  * Gets enabled domains from settings
- * @returns {Object} Object with enabled domains initialized to 0
+ * @returns {Object} Object with enabled domains initialized to default values
  */
 export function getEnabledDomains() {
   const settings = loadSettings();
   const enabledDomains = {};
 
-  Object.entries(settings.domains).forEach(([domain, enabled]) => {
-    if (enabled) {
-      enabledDomains[domain] = 0;
+  Object.entries(settings.domains).forEach(([domain, config]) => {
+    // Handle both old format (boolean) and new format (object)
+    if (typeof config === "boolean") {
+      if (config) {
+        enabledDomains[domain] = 0; // Default to percentage type
+      }
+    } else if (config && config.enabled) {
+      enabledDomains[domain] = getDefaultValue(
+        config.type || DomainType.PERCENTAGE
+      );
     }
   });
 
@@ -246,8 +259,38 @@ export function getEnabledDomains() {
 export function getEnabledDomainNames() {
   const settings = loadSettings();
   return Object.entries(settings.domains)
-    .filter(([_, enabled]) => enabled)
+    .filter(([_, config]) => {
+      // Handle both old format (boolean) and new format (object)
+      if (typeof config === "boolean") return config;
+      return config && config.enabled;
+    })
     .map(([domain, _]) => domain);
+}
+
+/**
+ * Get domain configuration for a specific domain
+ * @param {string} domain - Domain name
+ * @returns {Object} Domain config {enabled, type}
+ */
+export function getDomainConfig(domain) {
+  const settings = loadSettings();
+  const config = settings.domains[domain];
+
+  // Handle old format (boolean) - migrate on the fly
+  if (typeof config === "boolean") {
+    return createDomainConfig(DomainType.PERCENTAGE);
+  }
+
+  return config || createDomainConfig(DomainType.PERCENTAGE);
+}
+
+/**
+ * Get all domain configurations
+ * @returns {Object} All domain configs
+ */
+export function getAllDomainConfigs() {
+  const settings = loadSettings();
+  return migrateDomainSettings(settings.domains);
 }
 
 /**
