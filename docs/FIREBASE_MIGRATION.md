@@ -1,24 +1,16 @@
-Below is a **clean, end-to-end Firebase integration plan** written exactly the way you asked:
-**phases + prompts**, Markdown-ready, no fluff, no framework bias, and focused on **migrating safely from local browser storage to Firebase**.
-
-You can drop this into your repo as
-`firebase-integration-phases.md`.
-
----
-
 # Firebase Integration & Data Migration Plan
 
-*From local-first to durable persistence*
+_From local-first to durable persistence_
 
 ---
 
 ## Guiding Principles (Lock These)
 
-* Firebase is **persistence**, not logic
-* App must work **without Firebase**
-* Local data is never discarded automatically
-* Migration is **explicit and reversible**
-* Schema is simple, flat, human-readable
+- Firebase is **persistence**, not logic
+- App must work **without Firebase**
+- Local data is never discarded automatically
+- Migration is **explicit and reversible**
+- Schema is simple, flat, human-readable
 
 ---
 
@@ -445,12 +437,12 @@ This is the escape hatch.
 
 Before calling Firebase “done”:
 
-* [ ] App runs fully offline
-* [ ] Firebase failure does not break UI
-* [ ] Migration is explicit and reversible
-* [ ] No Firebase code outside provider
-* [ ] Data can be exported cleanly
-* [ ] Schema versioning exists
+- [ ] App runs fully offline
+- [ ] Firebase failure does not break UI
+- [ ] Migration is explicit and reversible
+- [ ] No Firebase code outside provider
+- [ ] Data can be exported cleanly
+- [ ] Schema versioning exists
 
 ---
 
@@ -458,6 +450,6 @@ Before calling Firebase “done”:
 
 If Firebase disappeared tomorrow:
 
-* You should lose **zero** data
-* You should be able to continue locally
-* You should be able to migrate again later
+- You should lose **zero** data
+- You should be able to continue locally
+- You should be able to migrate again later
