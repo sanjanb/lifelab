@@ -217,7 +217,9 @@ export class FirebaseProvider extends PersistenceProvider {
     const winsRef = collection(this.db, "lifelab_data", this.sharedId, "wins");
 
     // Convert wins object to array format if needed
-    const winsArray = Array.isArray(wins) ? wins : Object.entries(wins).map(([date, win]) => ({ ...win, date }));
+    const winsArray = Array.isArray(wins)
+      ? wins
+      : Object.entries(wins).map(([date, win]) => ({ ...win, date }));
 
     for (const win of winsArray) {
       const winRef = doc(winsRef, win.date);
@@ -249,7 +251,12 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   async _saveEntries(entries) {
-    const entriesRef = collection(this.db, "lifelab_data", this.sharedId, "entries");
+    const entriesRef = collection(
+      this.db,
+      "lifelab_data",
+      this.sharedId,
+      "entries"
+    );
 
     for (const [monthKey, monthData] of Object.entries(entries)) {
       const entryRef = doc(entriesRef, monthKey);
@@ -263,7 +270,12 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   async _fetchEntries(options) {
-    const entriesRef = collection(this.db, "lifelab_data", this.sharedId, "entries");
+    const entriesRef = collection(
+      this.db,
+      "lifelab_data",
+      this.sharedId,
+      "entries"
+    );
     const snapshot = await getDocs(entriesRef);
 
     const entries = {};

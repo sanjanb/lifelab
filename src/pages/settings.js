@@ -103,14 +103,14 @@ function addNewDomain() {
 /**
  * Save domain settings
  */
-function saveDomainSettings() {
+async function saveDomainSettings() {
   const checkboxes = document.querySelectorAll(".domain-checkbox");
   checkboxes.forEach((cb) => {
     const domain = cb.dataset.domain;
     currentSettings.domains[domain] = cb.checked;
   });
 
-  if (saveSettings(currentSettings)) {
+  if (await saveSettings(currentSettings)) {
     alert(
       "Domain settings saved!\n\nYour changes will be reflected in:\n• Quick Entry form\n• Notebook table\n• Grid overview and visualizations\n\nRefresh the page to see the updates."
     );

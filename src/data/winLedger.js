@@ -58,14 +58,14 @@ async function saveWinsToStorage(wins) {
   try {
     // Save to localStorage immediately
     localStorage.setItem(WIN_STORAGE_KEY, JSON.stringify(wins));
-    
+
     // Save to Firebase (synchronous)
     const winsArray = Object.entries(wins).map(([date, win]) => ({
       ...win,
       date,
     }));
     await persistence.save(DataTypes.WINS, winsArray);
-    
+
     return true;
   } catch (error) {
     console.error("Failed to save wins:", error);

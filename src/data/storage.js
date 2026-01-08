@@ -19,10 +19,10 @@ export async function saveToLocalStorage(data) {
   try {
     // Save to localStorage immediately
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    
+
     // Save to Firebase (synchronous)
     await persistence.save(DataTypes.ENTRIES, data);
-    
+
     return true;
   } catch (error) {
     console.error("Failed to save to storage:", error);
@@ -166,10 +166,10 @@ export async function saveSettings(settings) {
   try {
     // Save to localStorage immediately
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-    
+
     // Save to Firebase (synchronous)
     await persistence.save(DataTypes.SETTINGS, settings);
-    
+
     return true;
   } catch (error) {
     console.error("Failed to save settings:", error);
