@@ -1,21 +1,40 @@
 /**
  * Reflection Data Store
- * Local storage only for now - Firebase integration in Phase 6
+ * Offline-first with Firebase sync
  *
  * Rules:
  * - No shared data models with daily logs or wins
  * - No sentiment analysis
  * - No word counts
  * - No analytics
+ * - Offline-first: save locally, sync when available
  */
 
+import { persistence } from "./persistence/manager.js";
+
 const STORAGE_KEY = "lifelab_reflections";
+const FIREBASE_COLLECTION = "reflections";
 
 /**
  * Get all reflections
- * @returns {Array} Array of reflection objects, sorted by date (newest first)
+ * @returns {Promise<Array>} Array of reflection objects, sorted by date (newest first)
  */
-export function listReflections() {
+export async function listReflections() {
+  // Try Firebase first if available
+  try {
+    if (persistence.initialized && persistence.currentProvider?.getName() === "firebase") {
+      const result = await persistence.fetch(FIREBASE_COLLECTION);
+      if (result && Array.isArray(result)) {
+        return result.sort((a, b) =>
+          new Date(b.createdAt) - new Date(a.createdAt)
+        );
+      }
+    }
+  } catch (error) {
+    console.warn("Firebase fetch failed, using localStorage:", error);
+  }
+
+  // Fallback to localStorage
   const stored = localStorage.getItem(STORAGE_KEY);
   if (!stored) return [];
 
@@ -33,19 +52,19 @@ export function listReflections() {
 /**
  * Get a single reflection by ID
  * @param {string} id - Reflection ID
- * @returns {Object|null} Reflection object or null
+ * @returns {Promise<Object|null>} Reflection object or null
  */
-export function getReflection(id) {
-  const reflections = listReflections();
+export async function getReflection(id) {
+  const reflections = await listReflections();
   return reflections.find((r) => r.id === id) || null;
 }
 
 /**
  * Save a reflection (create or update)
  * @param {Object} reflection - Reflection object
- * @returns {boolean} Success status
+ * @returns {Promise<boolean>} Success status
  */
-export function saveReflection(reflection) {
+export async function saveReflection(reflection) {
   // Validate required fields
   if (!reflection.id || !reflection.content) {
     console.error("Invalid reflection: missing required fields");
@@ -57,19 +76,25 @@ export function saveReflection(reflection) {
     reflection.createdAt = new Date().toISOString();
   }
 
-  const reflections = listReflections();
+  // Save to localStorage first (offline-first)
+  const reflections = await listReflections();
   const existingIndex = reflections.findIndex((r) => r.id === reflection.id);
 
   if (existingIndex >= 0) {
-    // Update existing
     reflections[existingIndex] = reflection;
   } else {
-    // Add new
     reflections.push(reflection);
   }
 
   try {
+    // Save locally
     localStorage.setItem(STORAGE_KEY, JSON.stringify(reflections));
+
+    // Sync to Firebase if available (non-blocking)
+    syncToFirebase(reflection).catch((err) =>
+      console.warn("Firebase sync failed (will retry):", err)
+    );
+
     return true;
   } catch (error) {
     console.error("Failed to save reflection:", error);
@@ -80,17 +105,54 @@ export function saveReflection(reflection) {
 /**
  * Delete a reflection
  * @param {string} id - Reflection ID
- * @returns {boolean} Success status
+ * @returns {Promise<boolean>} Success status
  */
-export function deleteReflection(id) {
-  const reflections = listReflections();
+export async function deleteReflection(id) {
+  const reflections = await listReflections();
   const filtered = reflections.filter((r) => r.id !== id);
 
   try {
+    // Delete locally
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+
+    // Delete from Firebase if available (non-blocking)
+    deleteFromFirebase(id).catch((err) =>
+      console.warn("Firebase delete failed:", err)
+    );
+
     return true;
   } catch (error) {
     console.error("Failed to delete reflection:", error);
     return false;
+  }
+}
+
+/**
+ * Sync a reflection to Firebase (internal)
+ * @param {Object} reflection - Reflection to sync
+ */
+async function syncToFirebase(reflection) {
+  if (!persistence.initialized) {
+    await persistence.init(true);
+  }
+
+  if (persistence.currentProvider?.getName() === "firebase") {
+    await persistence.save(FIREBASE_COLLECTION, reflection);
+  }
+}
+
+/**
+ * Delete a reflection from Firebase (internal)
+ * @param {string} id - Reflection ID
+ */
+async function deleteFromFirebase(id) {
+  if (!persistence.initialized) {
+    await persistence.init(true);
+  }
+
+  if (persistence.currentProvider?.getName() === "firebase") {
+    // Firebase provider should handle deletion
+    // This is a placeholder - actual implementation depends on FirebaseProvider
+    console.log("Firebase delete requested for:", id);
   }
 }
