@@ -11,6 +11,7 @@ This document explicitly forbids certain features and patterns that would corrup
 ### ❌ FORBIDDEN FEATURES
 
 #### 1. Streaks
+
 - **DO NOT** track consecutive days of wins
 - **DO NOT** display current streak length
 - **DO NOT** show "best streak" statistics
@@ -22,6 +23,7 @@ This document explicitly forbids certain features and patterns that would corrup
 ---
 
 #### 2. Daily Reminders
+
 - **DO NOT** send notifications to add a win
 - **DO NOT** show prompts like "You haven't added a win today"
 - **DO NOT** schedule push notifications
@@ -33,6 +35,7 @@ This document explicitly forbids certain features and patterns that would corrup
 ---
 
 #### 3. Missed-Day Indicators
+
 - **DO NOT** show blank spaces for days without wins
 - **DO NOT** mark days as "skipped" or "missed"
 - **DO NOT** calculate coverage percentages across time periods
@@ -44,6 +47,7 @@ This document explicitly forbids certain features and patterns that would corrup
 ---
 
 #### 4. Gamification
+
 - **DO NOT** award points or scores
 - **DO NOT** create levels or tiers
 - **DO NOT** show progress bars toward milestones
@@ -56,6 +60,7 @@ This document explicitly forbids certain features and patterns that would corrup
 ---
 
 #### 5. Performance Language
+
 - **DO NOT** use words like: achievement, success, goal, target, performance, improvement
 - **DO NOT** phrase wins as accomplishments
 - **DO NOT** suggest wins measure productivity
@@ -67,6 +72,7 @@ This document explicitly forbids certain features and patterns that would corrup
 ---
 
 #### 6. Win/Loss Comparisons
+
 - **DO NOT** show "best" or "worst" months
 - **DO NOT** rank time periods by win count
 - **DO NOT** highlight periods with more/fewer wins
@@ -78,6 +84,7 @@ This document explicitly forbids certain features and patterns that would corrup
 ---
 
 #### 7. Celebration Animations
+
 - **DO NOT** show confetti or success animations
 - **DO NOT** play sounds on save
 - **DO NOT** display congratulatory messages
@@ -89,6 +96,7 @@ This document explicitly forbids certain features and patterns that would corrup
 ---
 
 #### 8. Social Features
+
 - **DO NOT** add sharing capabilities
 - **DO NOT** create public wins
 - **DO NOT** allow comments or reactions
@@ -100,6 +108,7 @@ This document explicitly forbids certain features and patterns that would corrup
 ---
 
 #### 9. Analytics & Insights
+
 - **DO NOT** generate insights from win text
 - **DO NOT** analyze patterns in acknowledgements
 - **DO NOT** create word clouds or themes
@@ -111,6 +120,7 @@ This document explicitly forbids certain features and patterns that would corrup
 ---
 
 #### 10. Editing & Deletion
+
 - **DO NOT** allow editing wins after saving
 - **DO NOT** provide delete functionality
 - **DO NOT** let users replace a win
@@ -142,15 +152,19 @@ The following are the ONLY features permitted:
 Before adding ANY new feature, it must pass ALL of these tests:
 
 1. **Can I skip days indefinitely without guilt?**
+
    - If no → feature is forbidden
 
 2. **Does adding a win feel optional, not corrective?**
+
    - If no → feature is forbidden
 
 3. **Does the UI avoid dopamine triggers?**
+
    - If no → feature is forbidden
 
 4. **Does accumulation feel archival, not competitive?**
+
    - If no → feature is forbidden
 
 5. **Would this still feel safe after a bad month?**
@@ -161,6 +175,7 @@ Before adding ANY new feature, it must pass ALL of these tests:
 ### 📝 LANGUAGE GUIDELINES
 
 **Use:**
+
 - Acknowledgement
 - Recognition
 - Record
@@ -168,6 +183,7 @@ Before adding ANY new feature, it must pass ALL of these tests:
 - Notice
 
 **Never use:**
+
 - Achievement
 - Success
 - Goal
@@ -189,6 +205,7 @@ Read the core philosophy again:
 > This is **identity reinforcement**, not motivation.
 
 Ask yourself:
+
 - Does this feature create pressure?
 - Does this feature imply judgment?
 - Does this feature measure performance?
