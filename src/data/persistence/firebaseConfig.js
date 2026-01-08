@@ -9,14 +9,15 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+// Load Firebase config from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyCayoYHeuE13Vn1keJ0nDOmxwYvjkeLlvs",
-  authDomain: "lifelab-903c0.firebaseapp.com",
-  projectId: "lifelab-903c0",
-  storageBucket: "lifelab-903c0.firebasestorage.app",
-  messagingSenderId: "725880880514",
-  appId: "1:725880880514:web:b5f12d5006d87e5086a39b",
-  measurementId: "G-VBEQD6XQWM",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 let app = null;
