@@ -73,6 +73,12 @@ function renderVisualizations(data) {
       .map((insight) => renderInsightCard(insight))
       .join("");
   }
+
+  // Win summary (minimal presence)
+  const winSummaryContainer = document.getElementById("win-summary-container");
+  if (winSummaryContainer) {
+    renderWinSummary(winSummaryContainer);
+  }
 }
 
 /**
