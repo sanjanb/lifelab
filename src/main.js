@@ -64,7 +64,16 @@ function renderVisualizations(data) {
   // Line graph
   const lineGraphContainer = document.getElementById("line-graph");
   if (lineGraphContainer) {
-    renderLineGraph(data, lineGraphContainer);
+    try {
+      renderLineGraph(data, lineGraphContainer);
+    } catch (error) {
+      console.error("Line graph error:", error);
+      lineGraphContainer.innerHTML = `
+        <div class="empty-state">
+          <p>Error: ${error.message}</p>
+        </div>
+      `;
+    }
   }
 
   // Heatmap (show current month data with month/year context)
