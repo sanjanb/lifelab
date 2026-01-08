@@ -89,41 +89,57 @@ function renderYearVisualization() {
  */
 function renderYearlyHeatmap(container) {
   const domains = getEnabledDomainNames().sort();
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
   // Calculate average score for each domain in each month
   const monthlyDomainScores = [];
   for (let month = 1; month <= 12; month++) {
-    const monthData = yearData.filter(d => new Date(d.date).getMonth() + 1 === month);
+    const monthData = yearData.filter(
+      (d) => new Date(d.date).getMonth() + 1 === month
+    );
     const monthScores = {};
-    
-    domains.forEach(domain => {
+
+    domains.forEach((domain) => {
       const domainScores = monthData
-        .filter(d => d.domains && d.domains[domain] !== undefined)
-        .map(d => d.domains[domain]);
-      
-      monthScores[domain] = domainScores.length > 0
-        ? domainScores.reduce((sum, s) => sum + s, 0) / domainScores.length
-        : null;
+        .filter((d) => d.domains && d.domains[domain] !== undefined)
+        .map((d) => d.domains[domain]);
+
+      monthScores[domain] =
+        domainScores.length > 0
+          ? domainScores.reduce((sum, s) => sum + s, 0) / domainScores.length
+          : null;
     });
-    
+
     monthlyDomainScores.push(monthScores);
   }
-  
+
   const cellSize = 50;
   const cellGap = 4;
   const labelWidth = 100;
   const labelHeight = 40;
-  
+
   const width = labelWidth + (cellSize + cellGap) * 12 + 20;
   const height = labelHeight + (cellSize + cellGap) * domains.length + 10;
-  
+
   // Create SVG
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
   svg.style.width = "100%";
   svg.style.height = "auto";
-  
+
   // Add border
   const border = document.createElementNS("http://www.w3.org/2000/svg", "rect");
   border.setAttribute("x", labelWidth - 5);
@@ -135,11 +151,17 @@ function renderYearlyHeatmap(container) {
   border.setAttribute("stroke-width", "2");
   border.setAttribute("rx", "6");
   svg.appendChild(border);
-  
+
   // Add month labels at top
   monthNames.forEach((monthName, idx) => {
-    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    label.setAttribute("x", labelWidth + idx * (cellSize + cellGap) + cellSize / 2);
+    const label = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+    label.setAttribute(
+      "x",
+      labelWidth + idx * (cellSize + cellGap) + cellSize / 2
+    );
     label.setAttribute("y", labelHeight - 15);
     label.setAttribute("text-anchor", "middle");
     label.setAttribute("font-size", "12px");
@@ -148,33 +170,42 @@ function renderYearlyHeatmap(container) {
     label.textContent = monthName;
     svg.appendChild(label);
   });
-  
+
   // Add domain labels and cells
   domains.forEach((domain, domainIdx) => {
     // Domain label on left
-    const domainLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    const domainLabel = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
     domainLabel.setAttribute("x", labelWidth - 10);
-    domainLabel.setAttribute("y", labelHeight + domainIdx * (cellSize + cellGap) + cellSize / 2 + 5);
+    domainLabel.setAttribute(
+      "y",
+      labelHeight + domainIdx * (cellSize + cellGap) + cellSize / 2 + 5
+    );
     domainLabel.setAttribute("text-anchor", "end");
     domainLabel.setAttribute("font-size", "13px");
     domainLabel.setAttribute("font-weight", "500");
     domainLabel.setAttribute("fill", "#2d3748");
     domainLabel.textContent = capitalizeFirst(domain);
     svg.appendChild(domainLabel);
-    
+
     // Render cells for each month
     for (let monthIdx = 0; monthIdx < 12; monthIdx++) {
       const score = monthlyDomainScores[monthIdx][domain];
       const x = labelWidth + monthIdx * (cellSize + cellGap);
       const y = labelHeight + domainIdx * (cellSize + cellGap);
-      
-      const cell = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+
+      const cell = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "rect"
+      );
       cell.setAttribute("x", x);
       cell.setAttribute("y", y);
       cell.setAttribute("width", cellSize);
       cell.setAttribute("height", cellSize);
       cell.setAttribute("rx", "4");
-      
+
       if (score === null) {
         cell.setAttribute("fill", "#f7fafc");
         cell.setAttribute("stroke", "#e2e8f0");
@@ -184,12 +215,15 @@ function renderYearlyHeatmap(container) {
         cell.setAttribute("fill", fillColor);
         cell.setAttribute("stroke", "none");
       }
-      
+
       svg.appendChild(cell);
-      
+
       // Add score text if available
       if (score !== null) {
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        const text = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "text"
+        );
         text.setAttribute("x", x + cellSize / 2);
         text.setAttribute("y", y + cellSize / 2 + 5);
         text.setAttribute("text-anchor", "middle");
@@ -201,7 +235,7 @@ function renderYearlyHeatmap(container) {
       }
     }
   });
-  
+
   container.innerHTML = "";
   container.appendChild(svg);
 }
@@ -210,10 +244,10 @@ function renderYearlyHeatmap(container) {
  * Get heatmap color based on score
  */
 function getHeatmapColor(score) {
-  if (score >= 0.75) return "#2d3748";      // Dark
-  if (score >= 0.5) return "#4a5568";       // Medium-dark
-  if (score >= 0.25) return "#a0aec0";      // Medium-light
-  return "#e2e8f0";                         // Light
+  if (score >= 0.75) return "#2d3748"; // Dark
+  if (score >= 0.5) return "#4a5568"; // Medium-dark
+  if (score >= 0.25) return "#a0aec0"; // Medium-light
+  return "#e2e8f0"; // Light
 }
 
 /**
