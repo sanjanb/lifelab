@@ -9,6 +9,7 @@ import "../styles/components.css";
 
 import { getAvailableMonths, loadMonth } from "../data/storage.js";
 import { renderHeatmap } from "../graphs/heatmap.js";
+import { getEnabledDomainNames } from "../data/storage.js";
 import { getAllDomains } from "../data/schema.js";
 
 let currentYear = new Date().getFullYear();
