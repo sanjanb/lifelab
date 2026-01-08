@@ -13,12 +13,22 @@ import { renderHeatmap } from "./graphs/heatmap.js";
 import { generateInsights } from "./insights/analytics.js";
 import { autoMigrate } from "./data/migrate.js";
 import { renderWinSummary } from "./components/winCounter.js";
+import { persistence } from "./data/persistence/manager.js";
+import {
+  renderMigrationPrompt,
+  shouldShowMigrationPrompt,
+} from "./components/migrationPrompt.js";
 
 /**
  * Initialize the application
  */
 async function init() {
   try {
+    // Initialize persistence (non-blocking)
+    persistence.init(true).catch((error) => {
+      console.log("[App] Persistence init failed, using localStorage:", error);
+    });
+
     showLoading();
 
     // Auto-migrate sample data if needed
