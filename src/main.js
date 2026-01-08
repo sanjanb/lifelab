@@ -8,13 +8,15 @@ import "./styles/layout.css";
 import "./styles/components.css";
 import "./styles/mobile.css";
 
-import { loadMonth } from "./data/storage.js";
+import { loadMonth, loadSettings } from "./data/storage.js";
 import { renderLineGraph } from "./graphs/lineGraph.js";
 import { renderHeatmap } from "./graphs/heatmap.js";
 import { generateInsights } from "./insights/analytics.js";
 import { autoMigrate } from "./data/migrate.js";
 import { renderWinSummary } from "./components/winCounter.js";
 import { persistence } from "./data/persistence/manager.js";
+import { getTodaysMemory } from "./data/memoryQuery.js";
+import { renderMemoryCard } from "./components/memoryCard.js";
 
 /**
  * Initialize the application
@@ -38,11 +40,15 @@ async function init() {
 
     if (data.length === 0) {
       showEmptyState();
+      await renderMemoryAid();
       return;
     }
 
     // Render visualizations
     renderVisualizations(data);
+    
+    // Render Memory Aid at the bottom
+    await renderMemoryAid();
   } catch (error) {
     console.error("Failed to initialize:", error);
     showError(error.message);
@@ -176,6 +182,34 @@ function showError(message) {
         <p>Error: ${message}</p>
       </div>
     `;
+  }
+}
+
+/**
+ * Render Memory Aid (if enabled)
+ */
+async function renderMemoryAid() {
+  const container = document.getElementById("memory-aid-container");
+  if (!container) return;
+
+  // Check if feature is enabled
+  const settings = loadSettings();
+  if (!settings.memoryAidsEnabled) {
+    container.innerHTML = "";
+    return;
+  }
+
+  // Fetch today's memory
+  try {
+    const memory = await getTodaysMemory();
+    if (memory) {
+      renderMemoryCard(memory, container);
+    } else {
+      container.innerHTML = "";
+    }
+  } catch (error) {
+    console.warn("Memory aid failed silently:", error);
+    container.innerHTML = "";
   }
 }
 
