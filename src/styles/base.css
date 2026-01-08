@@ -62,6 +62,10 @@
 html {
   font-size: 16px;
   line-height: 1.6;
+  scroll-behavior: smooth;
+  /* Prevent text size adjust on orientation change on mobile */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 }
 
 body {
@@ -74,6 +78,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   animation: fadeIn var(--transition-slow) ease-in;
+  /* Improve scrolling on mobile */
+  -webkit-overflow-scrolling: touch;
+  /* Prevent tap highlight on mobile */
+  -webkit-tap-highlight-color: transparent;
 }
 
 @keyframes fadeIn {
@@ -143,6 +151,70 @@ code {
   background-color: var(--color-heatmap-low);
   padding: 0.2em 0.4em;
   border-radius: 3px;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+
+  body {
+    padding: var(--spacing-md);
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    margin-top: var(--spacing-lg);
+  }
+
+  h3 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+
+  body {
+    padding: var(--spacing-sm);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.125rem;
+  }
+}
+
+/* Touch-friendly interactions */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets for mobile */
+  a, button, .btn, input[type="checkbox"], input[type="radio"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Remove hover effects on touch devices */
+  .nav-links a:hover,
+  .btn:hover {
+    transform: none;
+  }
+
+  /* Add active states for touch feedback */
+  .nav-links a:active,
+  .btn:active {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
 }
 
 /* Print-friendly */

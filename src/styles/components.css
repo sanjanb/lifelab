@@ -2045,3 +2045,215 @@
   color: #991b1b;
   border: 1px solid #fecaca;
 }
+
+/* Mobile Responsive Styles for Components */
+@media (max-width: 768px) {
+  /* SVG Graphs */
+  .svg-graph {
+    height: 250px;
+  }
+
+  .svg-graph text {
+    font-size: 10px;
+  }
+
+  /* Heatmap */
+  .heatmap {
+    padding: var(--spacing-sm);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .heatmap svg {
+    min-width: 600px;
+  }
+
+  /* Tables */
+  .data-table {
+    font-size: 0.875rem;
+    overflow-x: auto;
+    display: block;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table thead {
+    display: none;
+  }
+
+  .data-table tbody {
+    display: block;
+  }
+
+  .data-table tr {
+    display: block;
+    margin-bottom: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm);
+  }
+
+  .data-table td {
+    display: block;
+    text-align: right;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: none;
+  }
+
+  .data-table td:before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  /* Buttons */
+  .btn {
+    padding: var(--spacing-md);
+    font-size: 0.9rem;
+  }
+
+  .btn-icon {
+    padding: var(--spacing-sm);
+  }
+
+  /* Forms */
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: var(--spacing-sm);
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Modal */
+  .modal {
+    width: 95%;
+    max-width: 95%;
+    padding: var(--spacing-lg);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  /* Month/Year Selector */
+  .month-selector,
+  .year-selector {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .month-selector button,
+  .year-selector button {
+    width: 100%;
+  }
+
+  /* Export Import Actions */
+  .export-import-actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .export-import-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Bento Grid */
+  .bento-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .bento-box {
+    padding: var(--spacing-md);
+  }
+
+  /* Win Components */
+  .win-entry-form textarea {
+    min-height: 100px;
+  }
+
+  .win-timeline-item {
+    padding: var(--spacing-md);
+  }
+
+  .win-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  /* SVG Graphs */
+  .svg-graph {
+    height: 200px;
+  }
+
+  .svg-graph text {
+    font-size: 9px;
+  }
+
+  /* Heatmap */
+  .heatmap {
+    padding: var(--spacing-xs);
+  }
+
+  /* Buttons */
+  .btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  /* Forms */
+  .form-group {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .form-group label {
+    font-size: 0.8125rem;
+  }
+
+  /* Modal */
+  .modal {
+    width: 98%;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+  }
+
+  /* Domain Config */
+  .domain-item {
+    padding: var(--spacing-sm);
+  }
+
+  /* Quick Entry */
+  .quick-entry-sliders {
+    gap: var(--spacing-sm);
+  }
+
+  .slider-container {
+    gap: var(--spacing-xs);
+  }
+}
+
+/* Landscape Mobile Optimization */
+@media (max-height: 500px) and (orientation: landscape) {
+  .modal {
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+
+  .header {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+  }
+}
+
+/* High DPI / Retina Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .heatmap-cell,
+  .svg-graph .data-point {
+    stroke-width: 1.5;
+  }
+}

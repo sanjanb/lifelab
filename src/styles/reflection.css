@@ -369,11 +369,279 @@
     padding: 1rem;
   }
 
-  .reflection-read-content {
-    padding: 1rem 0;
+  .reflection-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .reflection-header p {
+    font-size: 0.875rem;
+  }
+
+  .reflection-list-view {
+    margin-top: 1.5rem;
+  }
+
+  .reflection-list-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .reflection-new-btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .reflection-list {
+    gap: 1.25rem;
+  }
+
+  .reflection-item {
+    padding: 1.25rem;
+  }
+
+  .reflection-date {
+    font-size: 0.8125rem;
+  }
+
+  .reflection-title {
+    font-size: 1rem;
+  }
+
+  .reflection-preview {
+    font-size: 0.9rem;
+  }
+
+  .reflection-write-header,
+  .reflection-read-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .reflection-read-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .reflection-back-btn,
+  .reflection-save-btn,
+  .reflection-edit-btn,
+  .reflection-delete-btn {
+    flex: 1;
+    text-align: center;
+  }
+
+  .reflection-prompt-container {
+    margin-bottom: 1.5rem;
+    padding: 0.875rem;
+  }
+
+  .reflection-prompt-text {
+    font-size: 0.9rem;
+  }
+
+  .reflection-title-input {
+    padding: 0.625rem;
+    font-size: 1.1rem;
   }
 
   .reflection-editor {
     min-height: 300px;
+    padding: 0.875rem;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .reflection-read-content {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .reflection-read-content .reflection-title {
+    font-size: 1.5rem;
+  }
+
+  .reflection-body {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .reflection-modal {
+    width: 92%;
+    padding: 1.5rem;
+    max-height: 85vh;
+  }
+
+  .reflection-modal h3 {
+    font-size: 1.125rem;
+  }
+
+  .reflection-prompt-list {
+    gap: 0.625rem;
+  }
+
+  .reflection-prompt-option {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .reflection-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .reflection-header p {
+    font-size: 0.8125rem;
+  }
+
+  .reflection-new-btn {
+    width: 100%;
+    padding: 0.75rem;
+  }
+
+  .reflection-list {
+    gap: 1rem;
+  }
+
+  .reflection-item {
+    padding: 1rem;
+  }
+
+  .reflection-title {
+    font-size: 0.95rem;
+  }
+
+  .reflection-preview {
+    font-size: 0.875rem;
+  }
+
+  .reflection-write-header,
+  .reflection-read-header {
+    gap: 0.5rem;
+  }
+
+  .reflection-back-btn,
+  .reflection-save-btn,
+  .reflection-edit-btn,
+  .reflection-delete-btn {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .reflection-prompt-container {
+    padding: 0.75rem;
+  }
+
+  .reflection-prompt-text {
+    font-size: 0.875rem;
+  }
+
+  .reflection-title-input {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .reflection-editor {
+    min-height: 250px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .reflection-choose-prompt-btn {
+    width: 100%;
+    padding: 0.625rem;
+    font-size: 0.875rem;
+  }
+
+  .reflection-read-content {
+    padding: 1rem 0;
+  }
+
+  .reflection-read-content .reflection-date {
+    margin-bottom: 0.75rem;
+  }
+
+  .reflection-read-content .reflection-title {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .reflection-body {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .reflection-modal {
+    width: 95%;
+    padding: 1.25rem;
+    max-height: 90vh;
+    border-radius: 6px;
+  }
+
+  .reflection-modal h3 {
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .reflection-prompt-list {
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .reflection-prompt-option {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .reflection-modal-close {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .reflection-new-btn,
+  .reflection-back-btn,
+  .reflection-save-btn,
+  .reflection-edit-btn,
+  .reflection-delete-btn,
+  .reflection-choose-prompt-btn,
+  .reflection-prompt-option,
+  .reflection-modal-close {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .reflection-item {
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .reflection-item:active {
+    opacity: 0.7;
+    transform: scale(0.99);
+  }
+
+  .reflection-editor {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  .reflection-title-input {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+}
+
+/* Landscape Mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .reflection-editor {
+    min-height: 200px;
+  }
+
+  .reflection-modal {
+    max-height: 95vh;
+  }
+
+  .reflection-prompt-container {
+    margin-bottom: 1rem;
   }
 }

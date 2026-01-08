@@ -217,3 +217,91 @@
   color: var(--color-text-secondary);
   font-weight: 500;
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .header {
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+  }
+
+  .header p {
+    font-size: 1rem;
+  }
+
+  .section {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .nav-links {
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+  }
+
+  .nav-links a {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.9rem;
+    flex: 1 1 auto;
+    text-align: center;
+    min-width: calc(50% - var(--spacing-sm) / 2);
+  }
+
+  .graph-container {
+    padding: var(--spacing-md);
+  }
+
+  .insights-list {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .empty-state {
+    padding: var(--spacing-xl);
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+  }
+
+  .section {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .nav-links a {
+    width: 100%;
+    min-width: 100%;
+    padding: var(--spacing-md);
+  }
+
+  .graph-container {
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+  }
+
+  .insight-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .insight-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .insight-message {
+    font-size: 0.875rem;
+  }
+
+  .empty-state {
+    padding: var(--spacing-lg);
+  }
+}
