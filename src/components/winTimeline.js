@@ -1,6 +1,6 @@
 /**
  * Win Timeline Component
- * 
+ *
  * Chronological archive (oldest to newest).
  * Optional filters for visibility only - no analysis or insights.
  */
@@ -13,10 +13,11 @@ import { getAllWins, getWinsFiltered } from "../data/winLedger.js";
  * @param {Object} filters - Optional filters {year, month}
  */
 export function renderWinTimeline(container, filters = {}) {
-  const wins = filters.year || filters.month 
-    ? getWinsFiltered(filters.year, filters.month)
-    : getAllWins();
-  
+  const wins =
+    filters.year || filters.month
+      ? getWinsFiltered(filters.year, filters.month)
+      : getAllWins();
+
   if (wins.length === 0) {
     container.innerHTML = `
       <div class="win-timeline-empty">
@@ -25,10 +26,10 @@ export function renderWinTimeline(container, filters = {}) {
     `;
     return;
   }
-  
+
   container.innerHTML = `
     <div class="win-timeline">
-      ${wins.map(win => renderWinTimelineEntry(win)).join("")}
+      ${wins.map((win) => renderWinTimelineEntry(win)).join("")}
     </div>
   `;
 }
@@ -42,9 +43,9 @@ function renderWinTimelineEntry(win) {
     weekday: "short",
     year: "numeric",
     month: "short",
-    day: "numeric"
+    day: "numeric",
   });
-  
+
   return `
     <div class="win-timeline-entry">
       <div class="win-timeline-date">${dateDisplay}</div>
@@ -64,50 +65,60 @@ export function renderWinFilters(container, onFilterChange) {
   for (let y = currentYear; y >= currentYear - 5; y--) {
     years.push(y);
   }
-  
+
   const months = [
     "All months",
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
-  
+
   container.innerHTML = `
     <div class="win-filters">
       <div class="win-filter-group">
         <label for="win-filter-year">Year</label>
         <select id="win-filter-year" class="win-filter-select">
           <option value="">All years</option>
-          ${years.map(y => `<option value="${y}">${y}</option>`).join("")}
+          ${years.map((y) => `<option value="${y}">${y}</option>`).join("")}
         </select>
       </div>
       
       <div class="win-filter-group">
         <label for="win-filter-month">Month</label>
         <select id="win-filter-month" class="win-filter-select">
-          ${months.map((m, i) => 
-            `<option value="${i || ''}">${m}</option>`
-          ).join("")}
+          ${months
+            .map((m, i) => `<option value="${i || ""}">${m}</option>`)
+            .join("")}
         </select>
       </div>
       
       <button id="win-filter-clear" class="btn-secondary btn-small">Clear filters</button>
     </div>
   `;
-  
+
   // Attach event listeners
   const yearSelect = container.querySelector("#win-filter-year");
   const monthSelect = container.querySelector("#win-filter-month");
   const clearBtn = container.querySelector("#win-filter-clear");
-  
+
   const applyFilters = () => {
     const year = yearSelect.value ? parseInt(yearSelect.value) : null;
     const month = monthSelect.value ? parseInt(monthSelect.value) : null;
     onFilterChange({ year, month });
   };
-  
+
   yearSelect.addEventListener("change", applyFilters);
   monthSelect.addEventListener("change", applyFilters);
-  
+
   clearBtn.addEventListener("click", () => {
     yearSelect.value = "";
     monthSelect.value = "";

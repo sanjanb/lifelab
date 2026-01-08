@@ -1755,3 +1755,91 @@
 .win-summary-link:hover {
   color: var(--color-accent-hover);
 }
+
+/* ============================================
+   WIN TIMELINE
+   Quiet archive - chronological, no analysis
+   ============================================ */
+
+.win-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.win-timeline-entry {
+  padding: var(--spacing-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-base);
+}
+
+.win-timeline-entry:hover {
+  border-color: var(--color-border);
+}
+
+.win-timeline-date {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+}
+
+.win-timeline-text {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.win-timeline-empty {
+  padding: var(--spacing-2xl);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/* Timeline filters (visibility only, no judgment) */
+.win-filters {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: flex-end;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background: #f7fafc;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-light);
+}
+
+.win-filter-group {
+  flex: 1;
+}
+
+.win-filter-group label {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-xs);
+  text-transform: capitalize;
+}
+
+.win-filter-select {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.win-filter-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.btn-small {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.875rem;
+}
