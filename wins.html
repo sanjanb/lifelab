@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Win Ledger — LifeLab</title>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>Win Ledger</h1>
+        <p>Acknowledgements over time</p>
+        <nav class="nav-links">
+          <a href="./index.html">← Home</a>
+          <a href="./notebook.html">Notebook</a>
+          <a href="./settings.html">Settings</a>
+        </nav>
+      </header>
+
+      <main>
+        <!-- Win Entry (Today) -->
+        <section class="section">
+          <div id="win-entry-container"></div>
+        </section>
+
+        <!-- Win Stats -->
+        <section class="section">
+          <div id="win-stats-container"></div>
+        </section>
+
+        <!-- Win Timeline -->
+        <section class="section">
+          <h2 class="section-title">Archive</h2>
+          <div id="win-filters-container"></div>
+          <div id="win-timeline-container"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/pages/wins.js"></script>
+  </body>
+</html>
