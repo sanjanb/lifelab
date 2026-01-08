@@ -39,7 +39,9 @@ export function renderMemoryCard(memory, container) {
       
       ${
         memory.prompt
-          ? `<div class="memory-prompt">Prompt: ${escapeHtml(memory.prompt)}</div>`
+          ? `<div class="memory-prompt">Prompt: ${escapeHtml(
+              memory.prompt
+            )}</div>`
           : ""
       }
       
