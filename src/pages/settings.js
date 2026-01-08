@@ -209,6 +209,18 @@ function renderPreferences() {
           }>Monday</option>
         </select>
       </div>
+      
+      <div class="preference-item">
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            id="memory-aids-toggle"
+            ${currentSettings.memoryAidsEnabled ? "checked" : ""}
+          />
+          <span>Enable Memory Aids</span>
+        </label>
+        <p class="preference-description">Show past entries from the same date or month. Optional and dismissible.</p>
+      </div>
     </div>
     
     <button class="btn-primary" id="save-preferences">Save Changes</button>
@@ -218,6 +230,9 @@ function renderPreferences() {
     currentSettings.firstDayOfWeek = parseInt(
       document.getElementById("first-day-select").value
     );
+    currentSettings.memoryAidsEnabled = document.getElementById(
+      "memory-aids-toggle"
+    ).checked;
 
     if (saveSettings(currentSettings)) {
       alert("Preferences saved!");
