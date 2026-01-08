@@ -46,7 +46,7 @@ async function init() {
 
     // Render visualizations
     renderVisualizations(data);
-    
+
     // Render Memory Aid at the bottom
     await renderMemoryAid();
   } catch (error) {
