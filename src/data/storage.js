@@ -168,13 +168,13 @@ function getDefaultSettings() {
 export function getEnabledDomains() {
   const settings = loadSettings();
   const enabledDomains = {};
-  
+
   Object.entries(settings.domains).forEach(([domain, enabled]) => {
     if (enabled) {
       enabledDomains[domain] = 0;
     }
   });
-  
+
   return enabledDomains;
 }
 

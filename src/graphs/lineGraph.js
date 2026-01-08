@@ -171,12 +171,12 @@ export function renderLineGraph(data, container, options = {}) {
  */
 function calculateScore(day) {
   if (!day.domains) return 0;
-  
+
   const enabledDomains = getEnabledDomainNames();
   const scores = enabledDomains
-    .map(domain => day.domains[domain])
-    .filter(score => typeof score === 'number');
-  
+    .map((domain) => day.domains[domain])
+    .filter((score) => typeof score === "number");
+
   if (scores.length === 0) return 0;
   return scores.reduce((sum, score) => sum + score, 0) / scores.length;
 }

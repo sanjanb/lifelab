@@ -109,7 +109,9 @@ function saveDomainSettings() {
   });
 
   if (saveSettings(currentSettings)) {
-    alert("Domain settings saved!\n\nYour changes will be reflected in:\n• Quick Entry form\n• Notebook table\n• Grid overview and visualizations\n\nRefresh the page to see the updates.");
+    alert(
+      "Domain settings saved!\n\nYour changes will be reflected in:\n• Quick Entry form\n• Notebook table\n• Grid overview and visualizations\n\nRefresh the page to see the updates."
+    );
   } else {
     alert("Failed to save settings");
   }

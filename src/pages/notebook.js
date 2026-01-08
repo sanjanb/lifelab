@@ -7,7 +7,12 @@ import "../styles/base.css";
 import "../styles/layout.css";
 import "../styles/components.css";
 
-import { loadMonth, saveDayEntry, deleteDayEntry, getEnabledDomainNames } from "../data/storage.js";
+import {
+  loadMonth,
+  saveDayEntry,
+  deleteDayEntry,
+  getEnabledDomainNames,
+} from "../data/storage.js";
 import { renderQuickEntry, renderDataEntryForm } from "../data/entry.js";
 import {
   renderImportExportUI,
