@@ -1,9 +1,9 @@
 /**
  * Persistence Interface
- * 
+ *
  * Abstraction layer for storage providers.
  * Firebase is persistence, NOT logic.
- * 
+ *
  * CRITICAL: No provider-specific code outside this module.
  */
 

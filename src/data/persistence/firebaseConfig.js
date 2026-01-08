@@ -1,6 +1,6 @@
 /**
  * Firebase Configuration
- * 
+ *
  * CRITICAL: Firebase is persistence only.
  * No business logic here.
  */

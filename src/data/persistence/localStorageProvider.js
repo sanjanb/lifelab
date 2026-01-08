@@ -1,15 +1,11 @@
 /**
  * LocalStorage Persistence Provider
- * 
+ *
  * Implements persistence interface using browser localStorage.
  * This is the default, fallback provider.
  */
 
-import {
-  PersistenceProvider,
-  DataTypes,
-  SCHEMA_VERSION,
-} from "./interface.js";
+import { PersistenceProvider, DataTypes, SCHEMA_VERSION } from "./interface.js";
 
 export class LocalStorageProvider extends PersistenceProvider {
   constructor() {
