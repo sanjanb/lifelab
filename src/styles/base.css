@@ -198,7 +198,11 @@ code {
 /* Touch-friendly interactions */
 @media (hover: none) and (pointer: coarse) {
   /* Larger touch targets for mobile */
-  a, button, .btn, input[type="checkbox"], input[type="radio"] {
+  a,
+  button,
+  .btn,
+  input[type="checkbox"],
+  input[type="radio"] {
     min-height: 44px;
     min-width: 44px;
   }
