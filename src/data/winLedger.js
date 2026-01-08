@@ -1,10 +1,10 @@
 /**
  * Win Ledger - Storage and Data Operations
- * 
+ *
  * CRITICAL PHILOSOPHY:
  * Wins are ACKNOWLEDGEMENTS, not achievements.
  * This is identity reinforcement, not performance tracking.
- * 
+ *
  * ANTI-PATTERNS (DO NOT ADD):
  * ❌ Streaks
  * ❌ Missed day indicators
@@ -77,9 +77,9 @@ export function saveWin(date, text) {
 
   // Prevent more than one win per day
   if (wins[date]) {
-    return { 
-      success: false, 
-      error: "A win already exists for this date" 
+    return {
+      success: false,
+      error: "A win already exists for this date",
     };
   }
 
@@ -94,10 +94,10 @@ export function saveWin(date, text) {
   wins[date] = win;
 
   const saved = saveWinsToStorage(wins);
-  return { 
-    success: saved, 
+  return {
+    success: saved,
     error: saved ? null : "Failed to save win to storage",
-    win: saved ? win : null
+    win: saved ? win : null,
   };
 }
 
@@ -137,24 +137,26 @@ export function getAllWins() {
 export function getWinStats() {
   const wins = loadWins();
   const allWins = Object.values(wins);
-  
+
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth() + 1;
-  
+
   // Count wins for current month
-  const thisMonthWins = allWins.filter(win => {
+  const thisMonthWins = allWins.filter((win) => {
     const winDate = new Date(win.date);
-    return winDate.getFullYear() === currentYear && 
-           winDate.getMonth() + 1 === currentMonth;
+    return (
+      winDate.getFullYear() === currentYear &&
+      winDate.getMonth() + 1 === currentMonth
+    );
   }).length;
-  
+
   // Count wins for current year
-  const thisYearWins = allWins.filter(win => {
+  const thisYearWins = allWins.filter((win) => {
     const winDate = new Date(win.date);
     return winDate.getFullYear() === currentYear;
   }).length;
-  
+
   return {
     total: allWins.length,
     thisMonth: thisMonthWins,
@@ -170,18 +172,18 @@ export function getWinStats() {
  */
 export function getWinsFiltered(year = null, month = null) {
   const allWins = getAllWins();
-  
-  return allWins.filter(win => {
+
+  return allWins.filter((win) => {
     const winDate = new Date(win.date);
-    
+
     if (year !== null && winDate.getFullYear() !== year) {
       return false;
     }
-    
+
     if (month !== null && winDate.getMonth() + 1 !== month) {
       return false;
     }
-    
+
     return true;
   });
 }

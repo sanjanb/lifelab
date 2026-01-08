@@ -1559,3 +1559,115 @@
   width: 100%;
   margin-top: var(--spacing-sm);
 }
+
+/* ============================================
+   WIN ENTRY COMPONENT
+   Neutral, calm, collapsed by default
+   ============================================ */
+
+.win-entry-component {
+  margin: var(--spacing-lg) 0;
+}
+
+/* Collapsed state - invitation to engage */
+.win-entry-collapsed {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.win-entry-collapsed:hover {
+  border-color: var(--color-border);
+  background: #f7fafc;
+}
+
+.win-entry-prompt {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+/* Expanded state - input form */
+.win-entry-expanded {
+  padding: var(--spacing-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+}
+
+.win-entry-label {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: var(--spacing-sm);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.win-entry-textarea {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-surface);
+  resize: vertical;
+  transition: border-color var(--transition-base);
+}
+
+.win-entry-textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.win-entry-textarea::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.win-entry-expanded .btn-secondary {
+  margin-top: var(--spacing-md);
+}
+
+/* Read-only state - existing win */
+.win-entry-readonly {
+  padding: var(--spacing-lg);
+  background: #f7fafc;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+}
+
+.win-entry-readonly-label {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.win-entry-readonly-text {
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Error message (should rarely appear) */
+.win-entry-error {
+  color: #e53e3e;
+  font-size: 0.875rem;
+  margin-top: var(--spacing-sm);
+}
+
+/* Date header for dedicated wins page */
+.win-entry-date {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: var(--spacing-md);
+}

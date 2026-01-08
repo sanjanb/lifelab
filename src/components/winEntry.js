@@ -1,9 +1,9 @@
 /**
  * Win Entry Component
- * 
+ *
  * Collapsed by default - user must choose to engage.
  * Neutral, calm, no celebration.
- * 
+ *
  * ONE WIN PER DAY - visible constraint, not punitive.
  */
 
@@ -17,13 +17,13 @@ import { saveWin, getWinByDate, hasWinForDate } from "../data/winLedger.js";
 export function renderWinEntry(container, onSaved = null) {
   const today = new Date().toISOString().split("T")[0];
   const existingWin = getWinByDate(today);
-  
+
   container.innerHTML = `
     <div class="win-entry-component">
       ${existingWin ? renderExistingWin(existingWin) : renderNewWinEntry(today)}
     </div>
   `;
-  
+
   if (!existingWin) {
     attachEventListeners(container, today, onSaved);
   }
@@ -73,38 +73,40 @@ function attachEventListeners(container, today, onSaved) {
   const form = container.querySelector("#win-entry-form");
   const textarea = container.querySelector("#win-text");
   const saveBtn = container.querySelector("#save-win-btn");
-  
+
   // Expand on click
   toggle.addEventListener("click", () => {
     toggle.style.display = "none";
     form.style.display = "block";
     textarea.focus();
   });
-  
+
   // Show save button when text is entered
   textarea.addEventListener("input", () => {
     const hasText = textarea.value.trim().length > 0;
     saveBtn.style.display = hasText ? "block" : "none";
   });
-  
+
   // Save win
   saveBtn.addEventListener("click", () => {
     const text = textarea.value.trim();
-    
+
     if (!text) return;
-    
+
     const result = saveWin(today, text);
-    
+
     if (result.success) {
       // Silent success - just re-render to show read-only view
       renderWinEntry(container, onSaved);
       if (onSaved) onSaved(result.win);
     } else {
       // Neutral error message (should not happen in normal flow)
-      container.querySelector("#win-entry-form").insertAdjacentHTML(
-        "beforeend",
-        `<div class="win-entry-error">${result.error}</div>`
-      );
+      container
+        .querySelector("#win-entry-form")
+        .insertAdjacentHTML(
+          "beforeend",
+          `<div class="win-entry-error">${result.error}</div>`
+        );
     }
   });
 }
@@ -121,16 +123,16 @@ export function renderWinEntryForDate(container, date, onSaved = null) {
     weekday: "long",
     month: "long",
     day: "numeric",
-    year: "numeric"
+    year: "numeric",
   });
-  
+
   container.innerHTML = `
     <div class="win-entry-component">
       <h3 class="win-entry-date">${dateDisplay}</h3>
       ${existingWin ? renderExistingWin(existingWin) : renderNewWinEntry(date)}
     </div>
   `;
-  
+
   if (!existingWin) {
     attachEventListeners(container, date, onSaved);
   }
