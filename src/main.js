@@ -12,6 +12,7 @@ import { renderLineGraph } from "./graphs/lineGraph.js";
 import { renderHeatmap } from "./graphs/heatmap.js";
 import { generateInsights } from "./insights/analytics.js";
 import { autoMigrate } from "./data/migrate.js";
+import { renderWinSummary } from "./components/winCounter.js";
 
 /**
  * Initialize the application
