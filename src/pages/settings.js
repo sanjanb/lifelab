@@ -18,6 +18,11 @@ import { renderImportExportUI, exportFullBackup } from "../data/export.js";
 import { mergeImportedData } from "../data/storage.js";
 import { renderExportImportUI } from "../data/exportImport.js";
 import { persistence } from "../data/persistence/manager.js";
+import {
+  DomainType,
+  createDomainConfig,
+  migrateDomainSettings,
+} from "../data/domainTypes.js";
 
 let currentSettings = {};
 
@@ -39,20 +44,33 @@ async function init() {
 function renderDomainConfig() {
   const container = document.getElementById("domain-config");
 
+  // Migrate domains if needed
+  currentSettings.domains = migrateDomainSettings(currentSettings.domains);
+
   container.innerHTML = `
     <div class="domain-list">
       ${Object.entries(currentSettings.domains)
         .map(
-          ([domain, enabled]) => `
-        <label class="domain-item">
-          <input 
-            type="checkbox" 
-            class="domain-checkbox" 
-            data-domain="${domain}" 
-            ${enabled ? "checked" : ""}
-          />
-          <span>${capitalizeFirst(domain)}</span>
-        </label>
+          ([domain, config]) => `
+        <div class="domain-item-row">
+          <label class="domain-item">
+            <input 
+              type="checkbox" 
+              class="domain-checkbox" 
+              data-domain="${domain}" 
+              ${config.enabled ? "checked" : ""}
+            />
+            <span>${capitalizeFirst(domain)}</span>
+          </label>
+          <select class="domain-type-select" data-domain="${domain}">
+            <option value="${DomainType.PERCENTAGE}" ${
+            config.type === DomainType.PERCENTAGE ? "selected" : ""
+          }>Percentage (0-100%)</option>
+            <option value="${DomainType.CHECKBOX}" ${
+            config.type === DomainType.CHECKBOX ? "selected" : ""
+          }>Checkbox (Done/Not Done)</option>
+          </select>
+        </div>
       `
         )
         .join("")}
@@ -64,6 +82,10 @@ function renderDomainConfig() {
         id="new-domain-name" 
         placeholder="Add new domain" 
       />
+      <select id="new-domain-type">
+        <option value="${DomainType.PERCENTAGE}">Percentage</option>
+        <option value="${DomainType.CHECKBOX}">Checkbox</option>
+      </select>
       <button class="btn-secondary" id="add-domain-btn">Add</button>
     </div>
     
@@ -84,7 +106,9 @@ function renderDomainConfig() {
  */
 function addNewDomain() {
   const input = document.getElementById("new-domain-name");
+  const typeSelect = document.getElementById("new-domain-type");
   const domainName = input.value.trim().toLowerCase();
+  const domainType = typeSelect.value;
 
   if (!domainName) {
     alert("Please enter a domain name");
@@ -96,7 +120,7 @@ function addNewDomain() {
     return;
   }
 
-  currentSettings.domains[domainName] = true;
+  currentSettings.domains[domainName] = createDomainConfig(domainType);
   input.value = "";
   renderDomainConfig();
 }
@@ -106,9 +130,22 @@ function addNewDomain() {
  */
 async function saveDomainSettings() {
   const checkboxes = document.querySelectorAll(".domain-checkbox");
+  const typeSelects = document.querySelectorAll(".domain-type-select");
+
+  // Update enabled status
   checkboxes.forEach((cb) => {
     const domain = cb.dataset.domain;
-    currentSettings.domains[domain] = cb.checked;
+    if (currentSettings.domains[domain]) {
+      currentSettings.domains[domain].enabled = cb.checked;
+    }
+  });
+
+  // Update domain types
+  typeSelects.forEach((select) => {
+    const domain = select.dataset.domain;
+    if (currentSettings.domains[domain]) {
+      currentSettings.domains[domain].type = select.value;
+    }
   });
 
   if (await saveSettings(currentSettings)) {

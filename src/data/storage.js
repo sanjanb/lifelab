@@ -185,12 +185,20 @@ export async function saveSettings(settings) {
 
 /**
  * Loads settings
+ * Automatically migrates old domain format to new format
  * @returns {Object} Settings object
  */
 export function loadSettings() {
   try {
     const settings = localStorage.getItem(SETTINGS_KEY);
-    return settings ? JSON.parse(settings) : getDefaultSettings();
+    const parsed = settings ? JSON.parse(settings) : getDefaultSettings();
+
+    // Auto-migrate domains if needed
+    if (parsed.domains) {
+      parsed.domains = migrateDomainSettings(parsed.domains);
+    }
+
+    return parsed;
   } catch (error) {
     console.error("Failed to load settings:", error);
     return getDefaultSettings();
