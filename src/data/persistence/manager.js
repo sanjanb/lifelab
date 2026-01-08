@@ -1,8 +1,8 @@
 /**
  * Persistence Manager
- * 
+ *
  * Manages storage provider selection and switching.
- * 
+ *
  * RULES:
  * - Default to localStorage
  * - Switch to Firebase only after successful auth
@@ -46,7 +46,9 @@ class PersistenceManager {
         console.log("[Persistence] Using Firebase");
         return "firebase";
       }
-      console.log("[Persistence] Firebase not available, falling back to localStorage");
+      console.log(
+        "[Persistence] Firebase not available, falling back to localStorage"
+      );
     }
 
     // Fallback to localStorage

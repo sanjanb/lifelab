@@ -1843,3 +1843,144 @@
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: 0.875rem;
 }
+
+/* ============================================
+   MIGRATION PROMPT
+   Plain language, no pressure
+   ============================================ */
+
+.migration-prompt {
+  max-width: 600px;
+  margin: var(--spacing-2xl) auto;
+  padding: var(--spacing-2xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.migration-header h3 {
+  color: var(--color-text);
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.migration-header p {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.migration-explanation {
+  margin: var(--spacing-xl) 0;
+  padding: var(--spacing-lg);
+  background: #f7fafc;
+  border-radius: var(--radius-md);
+}
+
+.migration-explanation h4 {
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.migration-explanation ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.migration-explanation li {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  padding-left: var(--spacing-lg);
+  position: relative;
+}
+
+.migration-explanation li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-accent);
+}
+
+.migration-summary {
+  margin: var(--spacing-xl) 0;
+}
+
+.migration-summary h4 {
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+}
+
+.migration-counts {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.count-item {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.count-item span {
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-right: var(--spacing-xs);
+}
+
+.migration-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+}
+
+.migration-actions button {
+  flex: 1;
+}
+
+.migration-status {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+}
+
+.migration-progress {
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.migration-success {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  color: #166534;
+}
+
+.migration-success p {
+  margin: var(--spacing-xs) 0;
+}
+
+.migration-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  color: #991b1b;
+}
+
+.migration-error p {
+  margin: var(--spacing-xs) 0;
+}

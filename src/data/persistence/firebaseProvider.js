@@ -1,8 +1,8 @@
 /**
  * Firebase Persistence Provider
- * 
+ *
  * Implements persistence interface using Firebase Firestore.
- * 
+ *
  * Schema:
  * users/{uid}/
  *   ├─ wins/{date}
@@ -22,11 +22,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
-import {
-  PersistenceProvider,
-  DataTypes,
-  SCHEMA_VERSION,
-} from "./interface.js";
+import { PersistenceProvider, DataTypes, SCHEMA_VERSION } from "./interface.js";
 import {
   initFirebase,
   getFirebaseInstances,
@@ -261,10 +257,8 @@ export class FirebaseProvider extends PersistenceProvider {
       // Convert Firestore timestamps to ISO strings
       wins[doc.id] = {
         ...data,
-        createdAt:
-          data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
-        updatedAt:
-          data.updatedAt?.toDate?.()?.toISOString() || data.updatedAt,
+        createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
+        updatedAt: data.updatedAt?.toDate?.()?.toISOString() || data.updatedAt,
       };
     });
 

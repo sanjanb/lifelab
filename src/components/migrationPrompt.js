@@ -1,8 +1,8 @@
 /**
  * Firebase Migration UI Component
- * 
+ *
  * One-time migration from localStorage to Firebase.
- * 
+ *
  * RULES:
  * - Plain language explanation
  * - Show item counts
@@ -51,9 +51,21 @@ export async function renderMigrationPrompt(container, onComplete = null) {
       <div class="migration-summary">
         <h4>Data to sync:</h4>
         <div class="migration-counts">
-          ${counts.wins > 0 ? `<div class="count-item"><span>${counts.wins}</span> acknowledgements</div>` : ""}
-          ${counts.entries > 0 ? `<div class="count-item"><span>${counts.entries}</span> journal entries</div>` : ""}
-          ${counts.settings ? `<div class="count-item"><span>1</span> settings profile</div>` : ""}
+          ${
+            counts.wins > 0
+              ? `<div class="count-item"><span>${counts.wins}</span> acknowledgements</div>`
+              : ""
+          }
+          ${
+            counts.entries > 0
+              ? `<div class="count-item"><span>${counts.entries}</span> journal entries</div>`
+              : ""
+          }
+          ${
+            counts.settings
+              ? `<div class="count-item"><span>1</span> settings profile</div>`
+              : ""
+          }
         </div>
       </div>
       
