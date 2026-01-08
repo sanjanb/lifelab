@@ -1,6 +1,6 @@
 /**
  * Win Ledger Page
- * 
+ *
  * Dedicated page for win entry and timeline viewing.
  * Calm, neutral, archival feel.
  */
@@ -11,7 +11,10 @@ import "../styles/components.css";
 
 import { renderWinEntry } from "../components/winEntry.js";
 import { renderWinStats } from "../components/winCounter.js";
-import { renderWinTimeline, renderWinFilters } from "../components/winTimeline.js";
+import {
+  renderWinTimeline,
+  renderWinFilters,
+} from "../components/winTimeline.js";
 
 /**
  * Initialize wins page
@@ -27,7 +30,7 @@ async function init() {
  */
 function renderWinEntrySection() {
   const container = document.getElementById("win-entry-container");
-  
+
   renderWinEntry(container, () => {
     // On save, refresh stats and timeline
     renderStatsSection();
@@ -49,12 +52,12 @@ function renderStatsSection() {
 function renderTimelineSection() {
   const filtersContainer = document.getElementById("win-filters-container");
   const timelineContainer = document.getElementById("win-timeline-container");
-  
+
   // Render filters
   renderWinFilters(filtersContainer, (filters) => {
     renderWinTimeline(timelineContainer, filters);
   });
-  
+
   // Initial timeline render
   renderWinTimeline(timelineContainer);
 }
