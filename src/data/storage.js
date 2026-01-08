@@ -218,6 +218,7 @@ function getDefaultSettings() {
     },
     theme: "light",
     firstDayOfWeek: 1, // Monday
+    memoryAidsEnabled: false, // Memory Aids OFF by default
   };
 }
 
