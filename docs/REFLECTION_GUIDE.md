@@ -63,12 +63,14 @@ Prompts are completely optional thinking starters:
 - "What assumption am I making?"
 
 **You can:**
+
 - Ignore them completely
 - Dismiss them while writing
 - Use them as inspiration
 - Create your own (future feature)
 
 **Prompts never:**
+
 - Appear automatically
 - Require an answer
 - Judge your writing
@@ -80,6 +82,7 @@ Prompts are completely optional thinking starters:
 This is **thinking space**, not a performance tool.
 
 **What you WON'T find here:**
+
 - No word counts
 - No writing streaks
 - No emotional analysis
@@ -88,6 +91,7 @@ This is **thinking space**, not a performance tool.
 - No pressure to be consistent
 
 **What IS allowed:**
+
 - Writing whenever you want
 - Empty weeks
 - Unfinished thoughts
@@ -99,11 +103,13 @@ This is **thinking space**, not a performance tool.
 ## Technical Details
 
 **Storage:**
+
 - Saves locally first (works offline)
 - Syncs to Firebase when available (if configured)
 - No sync status shown (it just works)
 
 **Privacy:**
+
 - Completely private
 - No sharing features
 - No external access
@@ -114,18 +120,21 @@ This is **thinking space**, not a performance tool.
 ## Design Intentions
 
 **The editor:**
+
 - Uses a serif font (Georgia) for comfortable reading
 - Has generous line height (1.8) for clarity
 - No formatting tools to distract
 - Feels like writing in a notebook
 
 **The save button:**
+
 - Explicit, not automatic
 - Gives you control over when thoughts are "complete"
 - Shows brief "Saved" confirmation
 - No anxiety-inducing sync indicators
 
 **The reading view:**
+
 - Wide margins for focus
 - Clean typography
 - No metrics or metadata clutter
@@ -170,6 +179,7 @@ A: Future feature, but yes—your data is yours.
 ## Protected Philosophy
 
 This feature will **never** have:
+
 - Sentiment analysis
 - Writing streaks
 - Performance metrics
@@ -179,13 +189,14 @@ This feature will **never** have:
 - Forced structure
 - Automatic prompts
 
-*See `docs/REFLECTION_NON_GOALS.md` for the complete list.*
+_See `docs/REFLECTION_NON_GOALS.md` for the complete list._
 
 ---
 
 ## If Something Feels Wrong
 
 The Reflection Journal should feel:
+
 - **Calm** (not urgent)
 - **Private** (not observed)
 - **Optional** (not required)
@@ -196,4 +207,4 @@ If it doesn't feel this way, that's a bug worth reporting.
 
 ---
 
-*Your first thought awaits.*
+_Your first thought awaits._
