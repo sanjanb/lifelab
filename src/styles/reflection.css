@@ -1,0 +1,379 @@
+/**
+ * Reflection Styles
+ * Calm, quiet, notebook-like design
+ * No numbers, no metrics, no performance indicators
+ */
+
+/* Reflection Container */
+.reflection-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.reflection-header {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.reflection-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.reflection-header p {
+  font-size: 0.95rem;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* List View */
+.reflection-list-view {
+  margin-top: 2rem;
+}
+
+.reflection-list-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.reflection-new-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary-color, #333);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.reflection-new-btn:hover {
+  opacity: 0.9;
+}
+
+.reflection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.reflection-item {
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.reflection-item:hover {
+  border-color: #999;
+}
+
+.reflection-date {
+  display: block;
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.reflection-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.reflection-preview {
+  margin: 0;
+  color: #555;
+  line-height: 1.6;
+}
+
+.reflection-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #999;
+  font-style: italic;
+}
+
+/* Write View */
+.reflection-write-view {
+  margin-top: 2rem;
+}
+
+.reflection-write-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.reflection-back-btn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.reflection-back-btn:hover {
+  background: #f5f5f5;
+}
+
+.reflection-save-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary-color, #333);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.reflection-save-btn:hover {
+  opacity: 0.9;
+}
+
+.reflection-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Prompt Container */
+.reflection-prompt-container {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-left: 3px solid #999;
+  border-radius: 4px;
+}
+
+.reflection-prompt-text {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #555;
+  font-style: italic;
+}
+
+.reflection-dismiss-prompt {
+  padding: 0.25rem 0.75rem;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.reflection-dismiss-prompt:hover {
+  background: #fff;
+}
+
+/* Editor */
+.reflection-editor-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reflection-title-input {
+  padding: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  outline: none;
+  font-family: inherit;
+}
+
+.reflection-title-input:focus {
+  border-bottom-color: #999;
+}
+
+.reflection-editor {
+  min-height: 400px;
+  padding: 1rem;
+  font-family: 'Georgia', serif;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  outline: none;
+  resize: vertical;
+}
+
+.reflection-editor:focus {
+  border-color: #999;
+}
+
+.reflection-prompt-selector {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.reflection-choose-prompt-btn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.reflection-choose-prompt-btn:hover {
+  border-color: #999;
+  color: #333;
+}
+
+/* Read View */
+.reflection-read-view {
+  margin-top: 2rem;
+}
+
+.reflection-read-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.reflection-read-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.reflection-edit-btn,
+.reflection-delete-btn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.reflection-edit-btn:hover {
+  background: #f5f5f5;
+}
+
+.reflection-delete-btn {
+  color: #c33;
+  border-color: #fdd;
+}
+
+.reflection-delete-btn:hover {
+  background: #fff5f5;
+  border-color: #fcc;
+}
+
+.reflection-read-content {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.reflection-read-content .reflection-date {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.reflection-read-content .reflection-title {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin: 0 0 2rem 0;
+  line-height: 1.3;
+}
+
+.reflection-body {
+  font-family: 'Georgia', serif;
+  font-size: 1.1rem;
+  line-height: 1.9;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+/* Modal for Prompt Selection */
+.reflection-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.reflection-modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.reflection-modal h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.reflection-prompt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.reflection-prompt-option {
+  padding: 1rem;
+  text-align: left;
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.reflection-prompt-option:hover {
+  background: #f0f0f0;
+  border-color: #ccc;
+}
+
+.reflection-modal-close {
+  padding: 0.75rem 1.5rem;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+.reflection-modal-close:hover {
+  background: #eee;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .reflection-container {
+    padding: 1rem;
+  }
+  
+  .reflection-read-content {
+    padding: 1rem 0;
+  }
+  
+  .reflection-editor {
+    min-height: 300px;
+  }
+}

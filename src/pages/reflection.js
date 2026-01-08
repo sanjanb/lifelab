@@ -1,7 +1,7 @@
 /**
  * Reflection Journal Page
  * Long-form thinking without performance metrics
- * 
+ *
  * Philosophy:
  * - Thinking space, not emotional discharge
  * - No scores, streaks, sentiment, or insights
@@ -14,11 +14,11 @@ import "../styles/layout.css";
 import "../styles/components.css";
 import "../styles/reflection.css";
 
-import { 
-  listReflections, 
-  saveReflection, 
+import {
+  listReflections,
+  saveReflection,
   getReflection,
-  deleteReflection 
+  deleteReflection,
 } from "../data/reflectionStore.js";
 import { getPrompts } from "../data/reflectionPrompts.js";
 
@@ -39,9 +39,9 @@ async function init() {
 async function renderListView() {
   currentView = "list";
   const main = document.getElementById("reflection-main");
-  
+
   const reflections = await listReflections();
-  
+
   main.innerHTML = `
     <div class="reflection-list-view">
       <div class="reflection-list-header">
@@ -49,25 +49,37 @@ async function renderListView() {
       </div>
       
       <div class="reflection-list">
-        ${reflections.length === 0 
-          ? `<p class="reflection-empty-state">No reflections yet. Your first thought awaits.</p>`
-          : reflections.map(r => `
+        ${
+          reflections.length === 0
+            ? `<p class="reflection-empty-state">No reflections yet. Your first thought awaits.</p>`
+            : reflections
+                .map(
+                  (r) => `
             <article class="reflection-item" data-id="${r.id}">
               <time class="reflection-date">${formatDate(r.createdAt)}</time>
-              ${r.title ? `<h3 class="reflection-title">${escapeHtml(r.title)}</h3>` : ''}
+              ${
+                r.title
+                  ? `<h3 class="reflection-title">${escapeHtml(r.title)}</h3>`
+                  : ""
+              }
               <p class="reflection-preview">${getPreview(r.content)}</p>
             </article>
-          `).join('')}
+          `
+                )
+                .join("")
+        }
       </div>
     </div>
   `;
-  
+
   // Event listeners
-  document.getElementById("new-reflection-btn").addEventListener("click", () => {
-    renderWriteView();
-  });
-  
-  document.querySelectorAll(".reflection-item").forEach(item => {
+  document
+    .getElementById("new-reflection-btn")
+    .addEventListener("click", () => {
+      renderWriteView();
+    });
+
+  document.querySelectorAll(".reflection-item").forEach((item) => {
     item.addEventListener("click", () => {
       const id = item.dataset.id;
       renderReadView(id);
@@ -82,13 +94,13 @@ function renderWriteView(reflectionId = null) {
   currentView = "write";
   currentReflectionId = reflectionId;
   const main = document.getElementById("reflection-main");
-  
+
   // Load existing reflection if editing
   let existingData = { title: "", content: "", promptId: null };
   if (reflectionId) {
     existingData = getReflection(reflectionId) || existingData;
   }
-  
+
   main.innerHTML = `
     <div class="reflection-write-view">
       <div class="reflection-write-header">
@@ -107,14 +119,14 @@ function renderWriteView(reflectionId = null) {
           id="reflection-title" 
           class="reflection-title-input" 
           placeholder="Title (optional)"
-          value="${escapeHtml(existingData.title || '')}"
+          value="${escapeHtml(existingData.title || "")}"
         />
         
         <textarea 
           id="reflection-content" 
           class="reflection-editor"
           placeholder="Begin writing..."
-        >${escapeHtml(existingData.content || '')}</textarea>
+        >${escapeHtml(existingData.content || "")}</textarea>
         
         <div class="reflection-prompt-selector">
           <button id="choose-prompt-btn" class="reflection-choose-prompt-btn">Choose a prompt</button>
@@ -122,12 +134,18 @@ function renderWriteView(reflectionId = null) {
       </div>
     </div>
   `;
-  
+
   // Event listeners
-  document.getElementById("back-to-list").addEventListener("click", renderListView);
-  document.getElementById("save-reflection-btn").addEventListener("click", handleSave);
-  document.getElementById("choose-prompt-btn").addEventListener("click", showPromptSelector);
-  
+  document
+    .getElementById("back-to-list")
+    .addEventListener("click", renderListView);
+  document
+    .getElementById("save-reflection-btn")
+    .addEventListener("click", handleSave);
+  document
+    .getElementById("choose-prompt-btn")
+    .addEventListener("click", showPromptSelector);
+
   const dismissBtn = document.getElementById("dismiss-prompt");
   if (dismissBtn) {
     dismissBtn.addEventListener("click", () => {
@@ -135,7 +153,7 @@ function renderWriteView(reflectionId = null) {
       selectedPrompt = null;
     });
   }
-  
+
   // Focus editor
   document.getElementById("reflection-content").focus();
 }
@@ -147,14 +165,14 @@ async function renderReadView(reflectionId) {
   currentView = "read";
   currentReflectionId = reflectionId;
   const main = document.getElementById("reflection-main");
-  
+
   const reflection = await getReflection(reflectionId);
-  
+
   if (!reflection) {
     renderListView();
     return;
   }
-  
+
   main.innerHTML = `
     <div class="reflection-read-view">
       <div class="reflection-read-header">
@@ -167,22 +185,34 @@ async function renderReadView(reflectionId) {
       
       <article class="reflection-read-content">
         <time class="reflection-date">${formatDate(reflection.createdAt)}</time>
-        ${reflection.title ? `<h2 class="reflection-title">${escapeHtml(reflection.title)}</h2>` : ''}
+        ${
+          reflection.title
+            ? `<h2 class="reflection-title">${escapeHtml(
+                reflection.title
+              )}</h2>`
+            : ""
+        }
         <div class="reflection-body">
-          ${escapeHtml(reflection.content).replace(/\n/g, '<br>')}
+          ${escapeHtml(reflection.content).replace(/\n/g, "<br>")}
         </div>
       </article>
     </div>
   `;
-  
+
   // Event listeners
-  document.getElementById("back-to-list").addEventListener("click", renderListView);
-  document.getElementById("edit-reflection-btn").addEventListener("click", () => {
-    renderWriteView(reflectionId);
-  });
-  document.getElementById("delete-reflection-btn").addEventListener("click", () => {
-    handleDelete(reflectionId);
-  });
+  document
+    .getElementById("back-to-list")
+    .addEventListener("click", renderListView);
+  document
+    .getElementById("edit-reflection-btn")
+    .addEventListener("click", () => {
+      renderWriteView(reflectionId);
+    });
+  document
+    .getElementById("delete-reflection-btn")
+    .addEventListener("click", () => {
+      handleDelete(reflectionId);
+    });
 }
 
 /**
@@ -190,34 +220,40 @@ async function renderReadView(reflectionId) {
  */
 function showPromptSelector() {
   const prompts = getPrompts();
-  
+
   const overlay = document.createElement("div");
   overlay.className = "reflection-modal-overlay";
   overlay.innerHTML = `
     <div class="reflection-modal">
       <h3>Choose a prompt</h3>
       <div class="reflection-prompt-list">
-        ${prompts.map(p => `
+        ${prompts
+          .map(
+            (p) => `
           <button class="reflection-prompt-option" data-id="${p.promptId}">
             ${escapeHtml(p.text)}
           </button>
-        `).join('')}
+        `
+          )
+          .join("")}
       </div>
       <button class="reflection-modal-close">Cancel</button>
     </div>
   `;
-  
+
   document.body.appendChild(overlay);
-  
+
   // Event listeners
-  overlay.querySelector(".reflection-modal-close").addEventListener("click", () => {
-    overlay.remove();
-  });
-  
-  overlay.querySelectorAll(".reflection-prompt-option").forEach(btn => {
+  overlay
+    .querySelector(".reflection-modal-close")
+    .addEventListener("click", () => {
+      overlay.remove();
+    });
+
+  overlay.querySelectorAll(".reflection-prompt-option").forEach((btn) => {
     btn.addEventListener("click", () => {
       const promptId = btn.dataset.id;
-      const prompt = prompts.find(p => p.promptId === promptId);
+      const prompt = prompts.find((p) => p.promptId === promptId);
       if (prompt) {
         selectedPrompt = prompt;
         document.getElementById("prompt-text").textContent = prompt.text;
@@ -227,7 +263,7 @@ function showPromptSelector() {
       overlay.remove();
     });
   });
-  
+
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) {
       overlay.remove();
@@ -241,30 +277,31 @@ function showPromptSelector() {
 async function handleSave() {
   const title = document.getElementById("reflection-title").value.trim();
   const content = document.getElementById("reflection-content").value.trim();
-  
+
   if (!content) {
     alert("Reflection content cannot be empty");
     return;
   }
-  
+
   const reflection = {
     id: currentReflectionId || generateId(),
     title: title || null,
     content,
     promptId: selectedPrompt ? selectedPrompt.promptId : null,
-    createdAt: currentReflectionId 
-      ? (await getReflection(currentReflectionId))?.createdAt || new Date().toISOString()
-      : new Date().toISOString()
+    createdAt: currentReflectionId
+      ? (await getReflection(currentReflectionId))?.createdAt ||
+        new Date().toISOString()
+      : new Date().toISOString(),
   };
-  
+
   await saveReflection(reflection);
-  
+
   // Show subtle confirmation
   const saveBtn = document.getElementById("save-reflection-btn");
   const originalText = saveBtn.textContent;
   saveBtn.textContent = "Saved";
   saveBtn.disabled = true;
-  
+
   setTimeout(() => {
     renderListView();
   }, 800);
@@ -277,7 +314,7 @@ async function handleDelete(reflectionId) {
   if (!confirm("Delete this reflection? This cannot be undone.")) {
     return;
   }
-  
+
   await deleteReflection(reflectionId);
   renderListView();
 }
@@ -287,10 +324,10 @@ async function handleDelete(reflectionId) {
  */
 function formatDate(isoString) {
   const date = new Date(isoString);
-  return date.toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
@@ -298,16 +335,16 @@ function formatDate(isoString) {
  * Get preview text (first ~2 lines)
  */
 function getPreview(content) {
-  const lines = content.split('\n').filter(l => l.trim());
-  const preview = lines.slice(0, 2).join(' ');
-  return preview.length > 150 ? preview.slice(0, 150) + '...' : preview;
+  const lines = content.split("\n").filter((l) => l.trim());
+  const preview = lines.slice(0, 2).join(" ");
+  return preview.length > 150 ? preview.slice(0, 150) + "..." : preview;
 }
 
 /**
  * Escape HTML
  */
 function escapeHtml(text) {
-  const div = document.createElement('div');
+  const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
