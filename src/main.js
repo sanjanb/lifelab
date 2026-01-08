@@ -14,20 +14,14 @@ import { generateInsights } from "./insights/analytics.js";
 import { autoMigrate } from "./data/migrate.js";
 import { renderWinSummary } from "./components/winCounter.js";
 import { persistence } from "./data/persistence/manager.js";
-import {
-  renderMigrationPrompt,
-  shouldShowMigrationPrompt,
-} from "./components/migrationPrompt.js";
 
 /**
  * Initialize the application
  */
 async function init() {
   try {
-    // Initialize persistence (non-blocking)
-    persistence.init(true).catch((error) => {
-      console.log("[App] Persistence init failed, using localStorage:", error);
-    });
+    // Initialize Firebase persistence (must wait for it)
+    await persistence.init(true);
 
     showLoading();
 
@@ -88,14 +82,6 @@ function renderVisualizations(data) {
   const winSummaryContainer = document.getElementById("win-summary-container");
   if (winSummaryContainer) {
     renderWinSummary(winSummaryContainer);
-  }
-
-  // Show migration prompt if needed (one-time)
-  if (shouldShowMigrationPrompt()) {
-    const promptContainer = document.createElement("div");
-    promptContainer.id = "migration-prompt-container";
-    document.body.appendChild(promptContainer);
-    renderMigrationPrompt(promptContainer);
   }
 }
 

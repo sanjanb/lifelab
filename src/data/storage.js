@@ -12,15 +12,20 @@ const STORAGE_KEY = "lifelab_data";
 const SETTINGS_KEY = "lifelab_settings";
 
 /**
- * Saves data to localStorage
+ * Saves data to localStorage and Firebase
  * @param {Object} data - Data object mapping months to day arrays
  */
-export function saveToLocalStorage(data) {
+export async function saveToLocalStorage(data) {
   try {
+    // Save to localStorage immediately
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    
+    // Save to Firebase (synchronous)
+    await persistence.save(DataTypes.ENTRIES, data);
+    
     return true;
   } catch (error) {
-    console.error("Failed to save to localStorage:", error);
+    console.error("Failed to save to storage:", error);
     return false;
   }
 }
@@ -59,11 +64,11 @@ export async function loadAllData() {
  * @param {number} month - Month (1-12)
  * @param {Array} monthData - Array of day records
  */
-export function saveMonth(year, month, monthData) {
+export async function saveMonth(year, month, monthData) {
   const allData = loadFromLocalStorage();
   const key = `${year}-${String(month).padStart(2, "0")}`;
   allData[key] = monthData;
-  return saveToLocalStorage(allData);
+  return await saveToLocalStorage(allData);
 }
 
 /**
@@ -79,11 +84,28 @@ export function loadMonth(year, month) {
 }
 
 /**
+ * Loads data for a specific month from Firebase first
+ * @param {number} year - Year
+ * @param {number} month - Month (1-12)
+ * @returns {Promise<Array>} Array of day records
+ */
+export async function loadMonthFromFirebase(year, month) {
+  try {
+    const allData = await persistence.fetch(DataTypes.ENTRIES);
+    const key = `${year}-${String(month).padStart(2, "0")}`;
+    return (allData && allData[key]) || loadMonth(year, month);
+  } catch (error) {
+    console.error("Failed to load from Firebase:", error);
+    return loadMonth(year, month);
+  }
+}
+
+/**
  * Adds or updates a single day entry
  * @param {Object} dayData - Day record
  * @returns {boolean} Success status
  */
-export function saveDayEntry(dayData) {
+export async function saveDayEntry(dayData) {
   const date = new Date(dayData.date);
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -99,7 +121,7 @@ export function saveDayEntry(dayData) {
   // Sort by date
   monthData.sort((a, b) => a.date.localeCompare(b.date));
 
-  return saveMonth(year, month, monthData);
+  return await saveMonth(year, month, monthData);
 }
 
 /**
@@ -140,13 +162,14 @@ export function getAvailableMonths() {
  * Saves settings
  * @param {Object} settings - Settings object
  */
-export function saveSettings(settings) {
+export async function saveSettings(settings) {
   try {
+    // Save to localStorage immediately
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-    // Also save to persistence layer (async, non-blocking)
-    persistence.save(DataTypes.SETTINGS, settings).catch((err) => {
-      console.log("[Storage] Background persistence save failed:", err);
-    });
+    
+    // Save to Firebase (synchronous)
+    await persistence.save(DataTypes.SETTINGS, settings);
+    
     return true;
   } catch (error) {
     console.error("Failed to save settings:", error);

@@ -3,12 +3,12 @@
  *
  * Implements persistence interface using Firebase Firestore.
  *
- * Schema:
- * users/{uid}/
- *   ├─ wins/{date}
- *   ├─ entries/{monthKey}
- *   ├─ settings/config
- *   └─ meta/info
+ * Schema (Shared - No Authentication):
+ * lifelab_data/
+ *   ├─ shared_data/wins (collection)
+ *   ├─ shared_data/entries (collection)
+ *   ├─ shared_data/settings (document)
+ *   └─ shared_data/meta (document)
  */
 
 import {
@@ -17,8 +17,6 @@ import {
   getDoc,
   setDoc,
   getDocs,
-  query,
-  where,
   serverTimestamp,
 } from "firebase/firestore";
 
@@ -29,48 +27,31 @@ import {
   MigrationState,
   validateData,
 } from "./interface.js";
-import {
-  initFirebase,
-  getFirebaseInstances,
-  getCurrentUserId,
-} from "./firebaseConfig.js";
+import { initFirebase, getSharedDocId } from "./firebaseConfig.js";
 
 export class FirebaseProvider extends PersistenceProvider {
   constructor() {
     super();
     this.ready = false;
     this.db = null;
-    this.uid = null;
+    this.sharedId = null;
   }
 
   async init() {
     try {
-      // Initialize Firebase (non-blocking)
-      const { db, auth } = await initFirebase();
+      // Initialize Firebase (no auth required)
+      const { db } = await initFirebase();
 
-      if (!db || !auth) {
+      if (!db) {
         console.error("[Firebase] Failed to initialize");
         return false;
       }
 
       this.db = db;
-
-      // Wait for auth state
-      return new Promise((resolve) => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-          unsubscribe();
-          if (user) {
-            this.uid = user.uid;
-            this.ready = true;
-            console.log("[Firebase] Provider ready for user:", this.uid);
-            this._ensureUserRoot();
-            resolve(true);
-          } else {
-            console.log("[Firebase] No authenticated user");
-            resolve(false);
-          }
-        });
-      });
+      this.sharedId = getSharedDocId();
+      this.ready = true;
+      console.log("[Firebase] Provider ready (no auth)");
+      return true;
     } catch (error) {
       console.error("[Firebase] Initialization failed:", error);
       return false;
@@ -78,7 +59,7 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   async save(type, data) {
-    if (!this.ready || !this.uid) {
+    if (!this.ready) {
       console.error("[Firebase] Provider not ready");
       return false;
     }
@@ -115,7 +96,7 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   async fetch(type, options = {}) {
-    if (!this.ready || !this.uid) {
+    if (!this.ready) {
       console.error("[Firebase] Provider not ready");
       return null;
     }
@@ -194,7 +175,7 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   async export() {
-    if (!this.ready || !this.uid) {
+    if (!this.ready) {
       console.error("[Firebase] Provider not ready");
       return null;
     }
@@ -204,7 +185,6 @@ export class FirebaseProvider extends PersistenceProvider {
         schemaVersion: SCHEMA_VERSION,
         exportedAt: new Date().toISOString(),
         provider: this.getName(),
-        uid: this.uid,
         data: {},
       };
 
@@ -228,33 +208,19 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   isReady() {
-    return this.ready && this.uid !== null;
+    return this.ready && this.db !== null;
   }
 
   // Private helper methods
 
-  async _ensureUserRoot() {
-    try {
-      const userRef = doc(this.db, "users", this.uid);
-      const userDoc = await getDoc(userRef);
-
-      if (!userDoc.exists()) {
-        await setDoc(userRef, {
-          createdAt: serverTimestamp(),
-          schemaVersion: SCHEMA_VERSION,
-        });
-        console.log("[Firebase] Created user root");
-      }
-    } catch (error) {
-      console.error("[Firebase] Failed to ensure user root:", error);
-    }
-  }
-
   async _saveWins(wins) {
-    const winsRef = collection(this.db, "users", this.uid, "wins");
+    const winsRef = collection(this.db, "lifelab_data", this.sharedId, "wins");
 
-    for (const [date, win] of Object.entries(wins)) {
-      const winRef = doc(winsRef, date);
+    // Convert wins object to array format if needed
+    const winsArray = Array.isArray(wins) ? wins : Object.entries(wins).map(([date, win]) => ({ ...win, date }));
+
+    for (const win of winsArray) {
+      const winRef = doc(winsRef, win.date);
       await setDoc(winRef, {
         ...win,
         updatedAt: serverTimestamp(),
@@ -265,7 +231,7 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   async _fetchWins(options) {
-    const winsRef = collection(this.db, "users", this.uid, "wins");
+    const winsRef = collection(this.db, "lifelab_data", this.sharedId, "wins");
     const snapshot = await getDocs(winsRef);
 
     const wins = {};
@@ -283,7 +249,7 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   async _saveEntries(entries) {
-    const entriesRef = collection(this.db, "users", this.uid, "entries");
+    const entriesRef = collection(this.db, "lifelab_data", this.sharedId, "entries");
 
     for (const [monthKey, monthData] of Object.entries(entries)) {
       const entryRef = doc(entriesRef, monthKey);
@@ -297,7 +263,7 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   async _fetchEntries(options) {
-    const entriesRef = collection(this.db, "users", this.uid, "entries");
+    const entriesRef = collection(this.db, "lifelab_data", this.sharedId, "entries");
     const snapshot = await getDocs(entriesRef);
 
     const entries = {};
@@ -309,7 +275,7 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   async _saveSettings(settings) {
-    const settingsRef = doc(this.db, "users", this.uid, "settings", "config");
+    const settingsRef = doc(this.db, "lifelab_data", this.sharedId, "settings");
     await setDoc(settingsRef, {
       ...settings,
       updatedAt: serverTimestamp(),
@@ -318,13 +284,13 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   async _fetchSettings() {
-    const settingsRef = doc(this.db, "users", this.uid, "settings", "config");
+    const settingsRef = doc(this.db, "lifelab_data", this.sharedId, "settings");
     const settingsDoc = await getDoc(settingsRef);
     return settingsDoc.exists() ? settingsDoc.data() : null;
   }
 
   async _saveMeta(meta) {
-    const metaRef = doc(this.db, "users", this.uid, "meta", "info");
+    const metaRef = doc(this.db, "lifelab_data", this.sharedId, "meta");
     await setDoc(metaRef, {
       ...meta,
       updatedAt: serverTimestamp(),
@@ -333,7 +299,7 @@ export class FirebaseProvider extends PersistenceProvider {
   }
 
   async _fetchMeta() {
-    const metaRef = doc(this.db, "users", this.uid, "meta", "info");
+    const metaRef = doc(this.db, "lifelab_data", this.sharedId, "meta");
     const metaDoc = await getDoc(metaRef);
     return metaDoc.exists() ? metaDoc.data() : null;
   }

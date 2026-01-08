@@ -50,21 +50,22 @@ function loadWins() {
 }
 
 /**
- * Save wins to localStorage
+ * Save wins to localStorage and Firebase
  * @param {Object} wins - Object mapping dates to win entries
- * @returns {boolean} Success status
+ * @returns {Promise<boolean>} Success status
  */
-function saveWinsToStorage(wins) {
+async function saveWinsToStorage(wins) {
   try {
+    // Save to localStorage immediately
     localStorage.setItem(WIN_STORAGE_KEY, JSON.stringify(wins));
-    // Also save to persistence layer (async, non-blocking)
+    
+    // Save to Firebase (synchronous)
     const winsArray = Object.entries(wins).map(([date, win]) => ({
       ...win,
       date,
     }));
-    persistence.save(DataTypes.WINS, winsArray).catch((err) => {
-      console.log("[WinLedger] Background persistence save failed:", err);
-    });
+    await persistence.save(DataTypes.WINS, winsArray);
+    
     return true;
   } catch (error) {
     console.error("Failed to save wins:", error);

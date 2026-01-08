@@ -226,8 +226,8 @@ function showEditForm(date, existingData) {
     formContainer.querySelector("#edit-form"),
     date,
     existingData,
-    (data) => {
-      saveDayEntry(data);
+    async (data) => {
+      await saveDayEntry(data);
       loadMonthData();
       formContainer.remove();
     }
@@ -246,8 +246,8 @@ function showEditForm(date, existingData) {
  */
 function renderQuickEntryWidget() {
   const container = document.getElementById("quick-entry-container");
-  renderQuickEntry(container, (data) => {
-    saveDayEntry(data);
+  renderQuickEntry(container, async (data) => {
+    await saveDayEntry(data);
     loadMonthData();
     alert("Entry saved!");
   });

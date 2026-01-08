@@ -3,10 +3,10 @@
  *
  * CRITICAL: Firebase is persistence only.
  * No business logic here.
+ * No authentication - uses shared collection for cross-device sync
  */
 
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // Load Firebase config from environment variables
@@ -21,8 +21,10 @@ const firebaseConfig = {
 };
 
 let app = null;
-let auth = null;
 let db = null;
+
+// Shared collection ID for all data (no user separation)
+const SHARED_DOC_ID = "shared_data";
 
 /**
  * Initialize Firebase (non-blocking)
@@ -32,31 +34,27 @@ export async function initFirebase() {
   try {
     if (!app) {
       app = initializeApp(firebaseConfig);
-      auth = getAuth(app);
       db = getFirestore(app);
-      console.log("[Firebase] Initialized");
+      console.log("[Firebase] Initialized without auth");
     }
-    return { app, auth, db };
+    return { app, db };
   } catch (error) {
     console.error("[Firebase] Initialization failed:", error);
-    return { app: null, auth: null, db: null };
+    return { app: null, db: null };
   }
 }
 
 /**
- * Get Firebase instances (must call initFirebase first)
+ * Get Firebase instances
  */
 export function getFirebaseInstances() {
-  return { app, auth, db };
+  return { app, db };
 }
 
 /**
- * Get current user ID (if authenticated)
- * @returns {string|null} User ID or null
+ * Get shared document ID
+ * @returns {string} Shared document ID
  */
-export function getCurrentUserId() {
-  if (!auth || !auth.currentUser) {
-    return null;
-  }
-  return auth.currentUser.uid;
+export function getSharedDocId() {
+  return SHARED_DOC_ID;
 }
