@@ -5,6 +5,41 @@
 .container {
   width: 100%;
   margin: 0 auto;
+  position: relative;
+}
+
+/* Settings Icon - Top Right */
+.settings-icon {
+  position: fixed;
+  top: var(--spacing-xl);
+  right: var(--spacing-xl);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  transition: all var(--transition-base);
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-sm);
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.settings-icon:hover {
+  background: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+  transform: rotate(90deg);
+  box-shadow: var(--shadow-md);
+}
+
+.settings-icon svg {
+  width: 20px;
+  height: 20px;
+  transition: inherit;
 }
 
 .header {
@@ -303,5 +338,18 @@
 
   .empty-state {
     padding: var(--spacing-lg);
+  }
+
+  /* Settings Icon Mobile */
+  .settings-icon {
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 40px;
+    height: 40px;
+  }
+
+  .settings-icon svg {
+    width: 18px;
+    height: 18px;
   }
 }
