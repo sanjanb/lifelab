@@ -6,6 +6,7 @@
 import "../styles/base.css";
 import "../styles/layout.css";
 import "../styles/components.css";
+import "../styles/mobile.css";
 
 import { getAvailableMonths, loadMonth } from "../data/storage.js";
 import { renderHeatmap } from "../graphs/heatmap.js";

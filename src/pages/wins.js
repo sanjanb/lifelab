@@ -8,6 +8,7 @@
 import "../styles/base.css";
 import "../styles/layout.css";
 import "../styles/components.css";
+import "../styles/mobile.css";
 
 import { renderWinEntry } from "../components/winEntry.js";
 import { renderWinStats } from "../components/winCounter.js";
