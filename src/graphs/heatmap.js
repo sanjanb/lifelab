@@ -3,6 +3,8 @@
  * Shows domains as rows, days as columns
  */
 
+import { getEnabledDomainNames } from "../data/storage.js";
+
 /**
  * Renders a monthly heatmap visualization
  * @param {Array} data - Array of day records for the month
@@ -26,14 +28,8 @@ export function renderHeatmap(data, container, options = {}) {
     return;
   }
 
-  // Get all unique domains from the data
-  const domainsSet = new Set();
-  data.forEach((day) => {
-    if (day.domains) {
-      Object.keys(day.domains).forEach((domain) => domainsSet.add(domain));
-    }
-  });
-  const domains = Array.from(domainsSet).sort();
+  // Get enabled domains from settings
+  const domains = getEnabledDomainNames().sort();
 
   // Get number of days in month
   const daysInMonth = new Date(year, month, 0).getDate();

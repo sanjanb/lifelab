@@ -3,6 +3,8 @@
  * Shows monthly trends with clean, readable output
  */
 
+import { getEnabledDomainNames } from "../data/storage.js";
+
 /**
  * Creates an SVG line graph from daily data
  * @param {Array} data - Array of day records with scores
@@ -163,13 +165,18 @@ export function renderLineGraph(data, container, options = {}) {
 }
 
 /**
- * Calculate average score for a day
+ * Calculate average score for a day (only enabled domains)
  * @param {Object} day - Day record
  * @returns {number} Average score (0-1)
  */
 function calculateScore(day) {
   if (!day.domains) return 0;
-  const scores = Object.values(day.domains);
+  
+  const enabledDomains = getEnabledDomainNames();
+  const scores = enabledDomains
+    .map(domain => day.domains[domain])
+    .filter(score => typeof score === 'number');
+  
   if (scores.length === 0) return 0;
   return scores.reduce((sum, score) => sum + score, 0) / scores.length;
 }

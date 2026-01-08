@@ -7,7 +7,7 @@ import "../styles/base.css";
 import "../styles/layout.css";
 import "../styles/components.css";
 
-import { loadMonth, saveDayEntry, deleteDayEntry } from "../data/storage.js";
+import { loadMonth, saveDayEntry, deleteDayEntry, getEnabledDomainNames } from "../data/storage.js";
 import { renderQuickEntry, renderDataEntryForm } from "../data/entry.js";
 import {
   renderImportExportUI,
@@ -91,14 +91,8 @@ function renderNotebookTable() {
     return;
   }
 
-  // Get all unique domains
-  const domains = new Set();
-  currentData.forEach((day) => {
-    if (day.domains) {
-      Object.keys(day.domains).forEach((d) => domains.add(d));
-    }
-  });
-  const domainList = Array.from(domains).sort();
+  // Get enabled domains from settings
+  const domainList = getEnabledDomainNames().sort();
 
   const table = `
     <table class="data-table">

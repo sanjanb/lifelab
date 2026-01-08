@@ -4,6 +4,7 @@
  */
 
 import { createDayRecord, DEFAULT_DOMAINS } from "./schema.js";
+import { getEnabledDomains } from "./storage.js";
 
 /**
  * Renders a data entry form for a specific date
@@ -18,7 +19,8 @@ export function renderDataEntryForm(
   existingData = null,
   onSave = null
 ) {
-  const data = existingData || createDayRecord(date, { ...DEFAULT_DOMAINS });
+  const enabledDomains = getEnabledDomains();
+  const data = existingData || createDayRecord(date, { ...enabledDomains });
 
   container.innerHTML = `
     <div class="data-entry-form">
@@ -66,7 +68,8 @@ export function renderDataEntryForm(
  * Renders domain input fields
  */
 function renderDomainInputs(domains) {
-  return Object.entries(domains || DEFAULT_DOMAINS)
+  const enabledDomains = getEnabledDomains();
+  return Object.entries(domains || enabledDomains)
     .map(
       ([domain, value]) => `
       <div class="domain-input">
@@ -106,6 +109,7 @@ function collectFormData() {
  */
 export function renderQuickEntry(container, onSave) {
   const today = new Date().toISOString().split("T")[0];
+  const enabledDomains = getEnabledDomains();
 
   container.innerHTML = `
     <div class="quick-entry">
@@ -114,7 +118,7 @@ export function renderQuickEntry(container, onSave) {
         <span class="quick-entry-date">${formatDate(today)}</span>
       </div>
       <div class="quick-domains">
-        ${Object.keys(DEFAULT_DOMAINS)
+        ${Object.keys(enabledDomains)
           .map(
             (domain) => `
           <div class="quick-domain-slider">

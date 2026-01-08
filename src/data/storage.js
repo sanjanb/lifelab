@@ -162,6 +162,34 @@ function getDefaultSettings() {
 }
 
 /**
+ * Gets enabled domains from settings
+ * @returns {Object} Object with enabled domains initialized to 0
+ */
+export function getEnabledDomains() {
+  const settings = loadSettings();
+  const enabledDomains = {};
+  
+  Object.entries(settings.domains).forEach(([domain, enabled]) => {
+    if (enabled) {
+      enabledDomains[domain] = 0;
+    }
+  });
+  
+  return enabledDomains;
+}
+
+/**
+ * Gets list of enabled domain names
+ * @returns {Array} Array of enabled domain names
+ */
+export function getEnabledDomainNames() {
+  const settings = loadSettings();
+  return Object.entries(settings.domains)
+    .filter(([_, enabled]) => enabled)
+    .map(([domain, _]) => domain);
+}
+
+/**
  * Clears all data (with confirmation)
  * @returns {boolean} Success status
  */
