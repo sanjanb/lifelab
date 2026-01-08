@@ -14,6 +14,8 @@
  * ❌ Daily reminders
  */
 
+import { persistence, DataTypes } from "./persistence/manager.js";
+
 const WIN_STORAGE_KEY = "lifelab_wins";
 
 /**
@@ -55,6 +57,14 @@ function loadWins() {
 function saveWinsToStorage(wins) {
   try {
     localStorage.setItem(WIN_STORAGE_KEY, JSON.stringify(wins));
+    // Also save to persistence layer (async, non-blocking)
+    const winsArray = Object.entries(wins).map(([date, win]) => ({
+      ...win,
+      date,
+    }));
+    persistence.save(DataTypes.WINS, winsArray).catch((err) => {
+      console.log("[WinLedger] Background persistence save failed:", err);
+    });
     return true;
   } catch (error) {
     console.error("Failed to save wins:", error);

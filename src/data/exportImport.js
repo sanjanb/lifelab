@@ -13,7 +13,7 @@ import { persistence } from "../data/persistence/manager.js";
 export async function exportToFile() {
   try {
     const exportData = await persistence.export();
-    
+
     if (!exportData) {
       throw new Error("Failed to export data");
     }
@@ -22,12 +22,14 @@ export async function exportToFile() {
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
       type: "application/json",
     });
-    
+
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `lifelab-export-${new Date().toISOString().split("T")[0]}.json`;
-    
+    link.download = `lifelab-export-${
+      new Date().toISOString().split("T")[0]
+    }.json`;
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -156,7 +158,7 @@ export function renderExportImportUI(container) {
     if (result.success) {
       statusEl.textContent = result.message;
       statusEl.className = "status-message status-success";
-      
+
       // Reload page after successful import
       setTimeout(() => {
         window.location.reload();
