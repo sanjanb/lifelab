@@ -204,4 +204,4 @@ If they think about features, analytics, or performance, something went wrong.
 
 ---
 
-*This document is as important as the code. Protect it.*
+_This document is as important as the code. Protect it._

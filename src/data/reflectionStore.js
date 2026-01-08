@@ -22,11 +22,14 @@ const FIREBASE_COLLECTION = "reflections";
 export async function listReflections() {
   // Try Firebase first if available
   try {
-    if (persistence.initialized && persistence.currentProvider?.getName() === "firebase") {
+    if (
+      persistence.initialized &&
+      persistence.currentProvider?.getName() === "firebase"
+    ) {
       const result = await persistence.fetch(FIREBASE_COLLECTION);
       if (result && Array.isArray(result)) {
-        return result.sort((a, b) =>
-          new Date(b.createdAt) - new Date(a.createdAt)
+        return result.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
       }
     }
