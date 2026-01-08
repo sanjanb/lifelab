@@ -4,7 +4,12 @@
  */
 
 import { createDayRecord, DEFAULT_DOMAINS } from "./schema.js";
-import { getEnabledDomains } from "./storage.js";
+import {
+  getEnabledDomains,
+  getDomainConfig,
+  getAllDomainConfigs,
+} from "./storage.js";
+import { DomainType, getDefaultValue } from "./domainTypes.js";
 
 /**
  * Renders a data entry form for a specific date
@@ -65,13 +70,36 @@ export function renderDataEntryForm(
 }
 
 /**
- * Renders domain input fields
+ * Renders domain input fields (percentage or checkbox based on type)
  */
 function renderDomainInputs(domains) {
   const enabledDomains = getEnabledDomains();
+  const domainConfigs = getAllDomainConfigs();
+
   return Object.entries(domains || enabledDomains)
-    .map(
-      ([domain, value]) => `
+    .map(([domain, value]) => {
+      const config = domainConfigs[domain] || {
+        type: DomainType.PERCENTAGE,
+        enabled: true,
+      };
+
+      if (config.type === DomainType.CHECKBOX) {
+        return `
+      <div class="domain-input">
+        <label for="domain-${domain}" class="checkbox-label">
+          <input 
+            type="checkbox" 
+            id="domain-${domain}" 
+            name="${domain}"
+            ${value === true ? "checked" : ""}
+          />
+          <span>${capitalizeFirst(domain)}</span>
+        </label>
+      </div>
+    `;
+      } else {
+        // Percentage type
+        return `
       <div class="domain-input">
         <label for="domain-${domain}">${capitalizeFirst(domain)}</label>
         <input 
@@ -81,11 +109,12 @@ function renderDomainInputs(domains) {
           min="0" 
           max="1" 
           step="0.1" 
-          value="${value}"
+          value="${typeof value === "number" ? value : 0}"
         />
       </div>
-    `
-    )
+    `;
+      }
+    })
     .join("");
 }
 
@@ -95,10 +124,18 @@ function renderDomainInputs(domains) {
 function collectFormData() {
   const date = document.getElementById("entry-date").value;
   const notes = document.getElementById("entry-notes").value;
+  const domainConfigs = getAllDomainConfigs();
 
   const domains = {};
-  document.querySelectorAll(".domain-input input").forEach((input) => {
-    domains[input.name] = parseFloat(input.value) || 0;
+  document.querySelectorAll(".domain-input input[name]").forEach((input) => {
+    const domain = input.name;
+    const config = domainConfigs[domain] || { type: DomainType.PERCENTAGE };
+
+    if (config.type === DomainType.CHECKBOX) {
+      domains[domain] = input.checked;
+    } else {
+      domains[domain] = parseFloat(input.value) || 0;
+    }
   });
 
   return createDayRecord(date, domains, notes);
@@ -110,6 +147,7 @@ function collectFormData() {
 export function renderQuickEntry(container, onSave) {
   const today = new Date().toISOString().split("T")[0];
   const enabledDomains = getEnabledDomains();
+  const domainConfigs = getAllDomainConfigs();
 
   container.innerHTML = `
     <div class="quick-entry">
@@ -119,8 +157,22 @@ export function renderQuickEntry(container, onSave) {
       </div>
       <div class="quick-domains">
         ${Object.keys(enabledDomains)
-          .map(
-            (domain) => `
+          .map((domain) => {
+            const config = domainConfigs[domain] || {
+              type: DomainType.PERCENTAGE,
+            };
+
+            if (config.type === DomainType.CHECKBOX) {
+              return `
+          <div class="quick-domain-checkbox">
+            <label class="checkbox-label-large">
+              <input type="checkbox" id="quick-${domain}" />
+              <span>${capitalizeFirst(domain)}</span>
+            </label>
+          </div>
+        `;
+            } else {
+              return `
           <div class="quick-domain-slider">
             <div class="slider-label">
               <label>${capitalizeFirst(domain)}</label>
@@ -137,8 +189,9 @@ export function renderQuickEntry(container, onSave) {
               <input type="range" id="quick-${domain}" min="0" max="100" step="5" value="50" list="markers" />
             </div>
           </div>
-        `
-          )
+        `;
+            }
+          })
           .join("")}
       </div>
       <button class="btn-primary" id="quick-save">
@@ -157,7 +210,9 @@ export function renderQuickEntry(container, onSave) {
     const updateValue = (value) => {
       const domain = slider.id.replace("quick-", "");
       const valueSpan = document.getElementById(`value-${domain}`);
-      valueSpan.textContent = `${value}%`;
+      if (valueSpan) {
+        valueSpan.textContent = `${value}%`;
+      }
 
       // Visual feedback for value ranges
       slider.style.setProperty("--slider-value", value);
@@ -181,10 +236,23 @@ export function renderQuickEntry(container, onSave) {
   // Save handler
   container.querySelector("#quick-save").addEventListener("click", () => {
     const domains = {};
-    container.querySelectorAll('input[type="range"]').forEach((slider) => {
-      const domain = slider.id.replace("quick-", "");
-      domains[domain] = parseFloat(slider.value) / 100;
-    });
+    const domainConfigs = getAllDomainConfigs();
+
+    // Collect checkbox domains
+    container
+      .querySelectorAll('.quick-domain-checkbox input[type="checkbox"]')
+      .forEach((checkbox) => {
+        const domain = checkbox.id.replace("quick-", "");
+        domains[domain] = checkbox.checked;
+      });
+
+    // Collect percentage domains
+    container
+      .querySelectorAll('.quick-domain-slider input[type="range"]')
+      .forEach((slider) => {
+        const domain = slider.id.replace("quick-", "");
+        domains[domain] = parseFloat(slider.value) / 100;
+      });
 
     const entry = createDayRecord(today, domains, "");
     if (onSave) onSave(entry);

@@ -14,6 +14,7 @@ import {
   deleteDayEntry,
   getEnabledDomainNames,
   loadSettings,
+  getAllDomainConfigs,
 } from "../data/storage.js";
 import { renderQuickEntry, renderDataEntryForm } from "../data/entry.js";
 import {
@@ -23,6 +24,7 @@ import {
 } from "../data/export.js";
 import { getTodaysMemory } from "../data/memoryQuery.js";
 import { renderMemoryCard } from "../components/memoryCard.js";
+import { formatValue, DomainType } from "../data/domainTypes.js";
 
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth() + 1;
@@ -147,7 +149,14 @@ function renderNotebookTable() {
  * Render a single table row
  */
 function renderTableRow(day, domainList) {
-  const scores = domainList.map((d) => day.domains[d] || "—");
+  const domainConfigs = getAllDomainConfigs();
+
+  const scores = domainList.map((d) => {
+    const value = day.domains[d];
+    const config = domainConfigs[d] || { type: DomainType.PERCENTAGE };
+    if (value === undefined || value === null) return "—";
+    return formatValue(value, config.type);
+  });
   const avg = calculateAverage(day);
   const formattedDate = new Date(day.date + "T00:00:00").toLocaleDateString(
     "en-US",
@@ -161,14 +170,7 @@ function renderTableRow(day, domainList) {
   return `
     <tr>
       <td><strong>${formattedDate}</strong></td>
-      ${scores
-        .map(
-          (s) =>
-            `<td class="score-cell">${
-              typeof s === "number" ? s.toFixed(2) : s
-            }</td>`
-        )
-        .join("")}
+      ${scores.map((s) => `<td class="score-cell">${s}</td>`).join("")}
       <td class="avg-cell"><strong>${
         avg !== null ? avg.toFixed(2) : "—"
       }</strong></td>

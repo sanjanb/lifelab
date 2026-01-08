@@ -1,9 +1,14 @@
 /**
  * Heatmap Visualization - Monthly domain overview
  * Shows domains as rows, days as columns
+ * Handles both percentage (0-1) and checkbox (boolean) domains
  */
 
-import { getEnabledDomainNames } from "../data/storage.js";
+import {
+  getEnabledDomainNames,
+  getAllDomainConfigs,
+} from "../data/storage.js";
+import { normalizeValue, DomainType } from "../data/domainTypes.js";
 
 /**
  * Renders a monthly heatmap visualization
@@ -87,7 +92,11 @@ export function renderHeatmap(data, container, options = {}) {
   }
 
   // Add domain labels on left and render cells
+  const domainConfigs = getAllDomainConfigs();
+
   domains.forEach((domain, domainIdx) => {
+    const config = domainConfigs[domain] || { type: DomainType.PERCENTAGE };
+
     // Domain label
     const domainLabel = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -127,10 +136,14 @@ export function renderHeatmap(data, container, options = {}) {
 
       // Get score for this domain on this day
       const dayData = dataByDate.get(day);
-      const score =
-        (dayData && dayData.domains && dayData.domains[domain]) || 0;
+      const rawValue =
+        (dayData && dayData.domains && dayData.domains[domain]) ?? null;
 
-      const color = getHeatmapColor(score);
+      // Normalize value for color (handles both percentage and checkbox)
+      const normalizedScore =
+        rawValue !== null ? normalizeValue(rawValue, config.type) : 0;
+
+      const color = getHeatmapColor(normalizedScore);
       rect.setAttribute("fill", color);
 
       // Add subtle animation delay

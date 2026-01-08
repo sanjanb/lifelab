@@ -2396,3 +2396,37 @@
   font-size: 0.9rem;
   cursor: pointer;
 }
+
+/* Quick Entry Checkbox Styles */
+.quick-domain-checkbox {
+  padding: var(--spacing-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-sm);
+  transition: all var(--transition-fast);
+}
+
+.quick-domain-checkbox:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border);
+}
+
+.checkbox-label-large {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.checkbox-label-large input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.checkbox-label-large span {
+  user-select: none;
+}

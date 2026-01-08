@@ -1,9 +1,14 @@
 /**
  * Line Graph Renderer - Pure SVG, no libraries
  * Shows monthly trends with clean, readable output
+ * Handles both percentage (0-1) and checkbox (boolean) domains
  */
 
-import { getEnabledDomainNames } from "../data/storage.js";
+import {
+  getEnabledDomainNames,
+  getAllDomainConfigs,
+} from "../data/storage.js";
+import { normalizeValue, DomainType } from "../data/domainTypes.js";
 
 /**
  * Creates an SVG line graph from daily data
@@ -166,6 +171,7 @@ export function renderLineGraph(data, container, options = {}) {
 
 /**
  * Calculate average score for a day (only enabled domains)
+ * Normalizes checkbox values (true=1, false=0) for averaging
  * @param {Object} day - Day record
  * @returns {number} Average score (0-1)
  */
@@ -173,10 +179,21 @@ function calculateScore(day) {
   if (!day.domains) return 0;
 
   const enabledDomains = getEnabledDomainNames();
-  const scores = enabledDomains
-    .map((domain) => day.domains[domain])
-    .filter((score) => typeof score === "number");
+  const domainConfigs = getAllDomainConfigs();
+
+  const scores = [];
+
+  enabledDomains.forEach((domain) => {
+    const rawValue = day.domains[domain];
+    if (rawValue !== undefined && rawValue !== null) {
+      const config = domainConfigs[domain] || { type: DomainType.PERCENTAGE };
+      // Normalize to 0-1 range (handles both percentage and checkbox)
+      scores.push(normalizeValue(rawValue, config.type));
+    }
+  });
 
   if (scores.length === 0) return 0;
-  return scores.reduce((sum, score) => sum + score, 0) / scores.length;
+
+  const sum = scores.reduce((acc, score) => acc + score, 0);
+  return sum / scores.length;
 }
