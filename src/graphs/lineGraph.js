@@ -4,10 +4,7 @@
  * Handles both percentage (0-1) and checkbox (boolean) domains
  */
 
-import {
-  getEnabledDomainNames,
-  getAllDomainConfigs,
-} from "../data/storage.js";
+import { getEnabledDomainNames, getAllDomainConfigs } from "../data/storage.js";
 import { normalizeValue, DomainType } from "../data/domainTypes.js";
 
 /**
