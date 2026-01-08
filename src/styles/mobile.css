@@ -26,12 +26,23 @@
     padding-bottom: max(var(--spacing-xl), env(safe-area-inset-bottom));
   }
 
+  /* Settings icon safe area */
+  .settings-icon {
+    top: max(var(--spacing-xl), env(safe-area-inset-top));
+    right: max(var(--spacing-xl), env(safe-area-inset-right));
+  }
+
   @media (max-width: 768px) {
     body {
       padding-left: max(var(--spacing-md), env(safe-area-inset-left));
       padding-right: max(var(--spacing-md), env(safe-area-inset-right));
       padding-top: max(var(--spacing-md), env(safe-area-inset-top));
       padding-bottom: max(var(--spacing-md), env(safe-area-inset-bottom));
+    }
+
+    .settings-icon {
+      top: max(var(--spacing-md), env(safe-area-inset-top));
+      right: max(var(--spacing-md), env(safe-area-inset-right));
     }
   }
 
@@ -41,6 +52,11 @@
       padding-right: max(var(--spacing-sm), env(safe-area-inset-right));
       padding-top: max(var(--spacing-sm), env(safe-area-inset-top));
       padding-bottom: max(var(--spacing-sm), env(safe-area-inset-bottom));
+    }
+
+    .settings-icon {
+      top: max(var(--spacing-sm), env(safe-area-inset-top));
+      right: max(var(--spacing-sm), env(safe-area-inset-right));
     }
   }
 }
