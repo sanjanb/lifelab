@@ -22,7 +22,13 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
-import { PersistenceProvider, DataTypes, SCHEMA_VERSION } from "./interface.js";
+import {
+  PersistenceProvider,
+  DataTypes,
+  SCHEMA_VERSION,
+  MigrationState,
+  validateData,
+} from "./interface.js";
 import {
   initFirebase,
   getFirebaseInstances,
@@ -74,6 +80,17 @@ export class FirebaseProvider extends PersistenceProvider {
   async save(type, data) {
     if (!this.ready || !this.uid) {
       console.error("[Firebase] Provider not ready");
+      return false;
+    }
+
+    // Validate data shape
+    const validation = validateData(type, data);
+    if (!validation.valid) {
+      console.error(
+        `[Firebase] Validation failed for ${type}:`,
+        validation.errors
+      );
+      // Fail hard on Firebase writes - we control the schema
       return false;
     }
 

@@ -88,3 +88,77 @@ export const DataTypes = {
  * Schema version
  */
 export const SCHEMA_VERSION = 1;
+
+/**
+ * Migration state constants
+ */
+export const MigrationState = {
+  NOT_MIGRATED: "not_migrated",
+  MIGRATING: "migrating",
+  MIGRATED: "migrated",
+  ARCHIVED: "archived",
+};
+
+/**
+ * Validate data shape before persistence
+ * @param {string} type - Data type
+ * @param {Object} data - Data to validate
+ * @returns {Object} { valid: boolean, errors: string[] }
+ */
+export function validateData(type, data) {
+  const errors = [];
+
+  if (!data) {
+    errors.push("Data is null or undefined");
+    return { valid: false, errors };
+  }
+
+  switch (type) {
+    case DataTypes.WINS:
+      if (!Array.isArray(data)) {
+        errors.push("Wins must be an array");
+      } else {
+        data.forEach((win, idx) => {
+          if (!win.date || typeof win.date !== "string") {
+            errors.push(`Win ${idx}: missing or invalid date`);
+          }
+          if (!win.text || typeof win.text !== "string") {
+            errors.push(`Win ${idx}: missing or invalid text`);
+          }
+        });
+      }
+      break;
+
+    case DataTypes.ENTRIES:
+      if (typeof data !== "object") {
+        errors.push("Entries must be an object");
+      } else {
+        Object.entries(data).forEach(([key, entries]) => {
+          if (!Array.isArray(entries)) {
+            errors.push(`Entries[${key}]: must be an array`);
+          }
+        });
+      }
+      break;
+
+    case DataTypes.SETTINGS:
+      if (typeof data !== "object") {
+        errors.push("Settings must be an object");
+      }
+      break;
+
+    case DataTypes.META:
+      if (typeof data !== "object") {
+        errors.push("Meta must be an object");
+      }
+      break;
+
+    default:
+      errors.push(`Unknown data type: ${type}`);
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}

@@ -15,6 +15,8 @@ import {
 } from "../data/storage.js";
 import { renderImportExportUI, exportFullBackup } from "../data/export.js";
 import { mergeImportedData } from "../data/storage.js";
+import { renderExportImportUI } from "../data/exportImport.js";
+import { persistence } from "../data/persistence/manager.js";
 
 let currentSettings = {};
 
@@ -150,27 +152,8 @@ function renderDataStats() {
 function renderExportImport() {
   const container = document.getElementById("export-import");
 
-  const allData = loadFromLocalStorage();
-
-  container.innerHTML = `
-    <div id="import-export-ui"></div>
-    <button class="btn-secondary" id="full-backup">Full Backup</button>
-  `;
-
-  // Render import/export UI
-  renderImportExportUI(
-    container.querySelector("#import-export-ui"),
-    Object.values(allData).flat(),
-    (importedData) => {
-      mergeImportedData(importedData);
-      renderDataStats();
-    }
-  );
-
-  // Full backup
-  container.querySelector("#full-backup").addEventListener("click", () => {
-    exportFullBackup(allData);
-  });
+  // Render new persistence-based export/import UI
+  renderExportImportUI(container);
 }
 
 /**

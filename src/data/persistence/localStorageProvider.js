@@ -5,7 +5,13 @@
  * This is the default, fallback provider.
  */
 
-import { PersistenceProvider, DataTypes, SCHEMA_VERSION } from "./interface.js";
+import {
+  PersistenceProvider,
+  DataTypes,
+  SCHEMA_VERSION,
+  MigrationState,
+  validateData,
+} from "./interface.js";
 
 export class LocalStorageProvider extends PersistenceProvider {
   constructor() {
@@ -32,6 +38,16 @@ export class LocalStorageProvider extends PersistenceProvider {
     if (!this.ready) {
       console.error("[LocalStorage] Provider not ready");
       return false;
+    }
+
+    // Validate data shape
+    const validation = validateData(type, data);
+    if (!validation.valid) {
+      console.error(
+        `[LocalStorage] Validation failed for ${type}:`,
+        validation.errors
+      );
+      // Log but don't block save for backward compatibility
     }
 
     try {
@@ -108,5 +124,69 @@ export class LocalStorageProvider extends PersistenceProvider {
 
   _getKey(type) {
     return `lifelab_${type}`;
+  }
+
+  /**
+   * Get migration state
+   * @returns {Promise<string>} Migration state
+   */
+  async getMigrationState() {
+    try {
+      const state = localStorage.getItem("lifelab_migration_state");
+      return state || MigrationState.NOT_MIGRATED;
+    } catch (error) {
+      console.error("[LocalStorage] Failed to get migration state:", error);
+      return MigrationState.NOT_MIGRATED;
+    }
+  }
+
+  /**
+   * Set migration state
+   * @param {string} state - Migration state
+   * @returns {Promise<boolean>} Success status
+   */
+  async setMigrationState(state) {
+    try {
+      localStorage.setItem("lifelab_migration_state", state);
+      if (state === MigrationState.MIGRATED) {
+        localStorage.setItem(
+          "lifelab_migration_timestamp",
+          new Date().toISOString()
+        );
+      }
+      return true;
+    } catch (error) {
+      console.error("[LocalStorage] Failed to set migration state:", error);
+      return false;
+    }
+  }
+
+  /**
+   * Get schema version
+   * @returns {Promise<number>} Schema version
+   */
+  async getSchemaVersion() {
+    try {
+      const version = localStorage.getItem("lifelab_schema_version");
+      return version ? parseInt(version, 10) : SCHEMA_VERSION;
+    } catch (error) {
+      console.error("[LocalStorage] Failed to get schema version:", error);
+      return SCHEMA_VERSION;
+    }
+  }
+
+  /**
+   * Set schema version
+   * @param {number} version - Schema version
+   * @returns {Promise<boolean>} Success status
+   */
+  async setSchemaVersion(version) {
+    try {
+      localStorage.setItem("lifelab_schema_version", version.toString());
+      return true;
+    } catch (error) {
+      console.error("[LocalStorage] Failed to set schema version:", error);
+      return false;
+    }
   }
 }

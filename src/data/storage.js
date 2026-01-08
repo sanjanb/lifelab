@@ -1,7 +1,12 @@
 /**
  * LocalStorage Data Persistence
  * Simple local storage for data that persists across sessions
+ *
+ * NOTE: Gradually migrating to persistence layer (manager.js)
+ * Direct localStorage calls will be phased out
  */
+
+import { persistence, DataTypes } from "./persistence/manager.js";
 
 const STORAGE_KEY = "lifelab_data";
 const SETTINGS_KEY = "lifelab_settings";
@@ -31,6 +36,20 @@ export function loadFromLocalStorage() {
   } catch (error) {
     console.error("Failed to load from localStorage:", error);
     return {};
+  }
+}
+
+/**
+ * Loads all data from persistence layer (async)
+ * @returns {Promise<Object>} Data object or empty object
+ */
+export async function loadAllData() {
+  try {
+    const entries = await persistence.fetch(DataTypes.ENTRIES);
+    return entries || {};
+  } catch (error) {
+    console.error("Failed to load from persistence:", error);
+    return loadFromLocalStorage(); // Fallback
   }
 }
 
@@ -124,6 +143,10 @@ export function getAvailableMonths() {
 export function saveSettings(settings) {
   try {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    // Also save to persistence layer (async, non-blocking)
+    persistence.save(DataTypes.SETTINGS, settings).catch((err) => {
+      console.log("[Storage] Background persistence save failed:", err);
+    });
     return true;
   } catch (error) {
     console.error("Failed to save settings:", error);
@@ -142,6 +165,20 @@ export function loadSettings() {
   } catch (error) {
     console.error("Failed to load settings:", error);
     return getDefaultSettings();
+  }
+}
+
+/**
+ * Loads settings from persistence layer (async)
+ * @returns {Promise<Object>} Settings object or defaults
+ */
+export async function loadSettingsAsync() {
+  try {
+    const settings = await persistence.fetch(DataTypes.SETTINGS);
+    return settings || loadSettings(); // Fallback to localStorage
+  } catch (error) {
+    console.error("Failed to load settings from persistence:", error);
+    return loadSettings();
   }
 }
 

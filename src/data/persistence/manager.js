@@ -12,7 +12,7 @@
 
 import { LocalStorageProvider } from "./localStorageProvider.js";
 import { FirebaseProvider } from "./firebaseProvider.js";
-import { DataTypes } from "./interface.js";
+import { DataTypes, MigrationState, validateData } from "./interface.js";
 
 class PersistenceManager {
   constructor() {
@@ -112,8 +112,26 @@ class PersistenceManager {
       };
     }
 
+    // Check migration state
+    const migrationState =
+      await this.providers.localStorage.getMigrationState();
+    if (migrationState === MigrationState.MIGRATED) {
+      return {
+        success: false,
+        error: "Data already migrated",
+      };
+    }
+
+    // Mark as migrating
+    await this.providers.localStorage.setMigrationState(
+      MigrationState.MIGRATING
+    );
+
     const localData = await this.providers.localStorage.export();
     if (!localData || !localData.data) {
+      await this.providers.localStorage.setMigrationState(
+        MigrationState.NOT_MIGRATED
+      );
       return {
         success: false,
         error: "No local data to migrate",
@@ -124,9 +142,19 @@ class PersistenceManager {
     const result = await this.providers.firebase.migrate(localData.data);
 
     if (result.success) {
+      // Mark as migrated
+      await this.providers.localStorage.setMigrationState(
+        MigrationState.MIGRATED
+      );
+
       // Switch to Firebase provider
       this.currentProvider = this.providers.firebase;
       console.log("[Persistence] Switched to Firebase after migration");
+    } else {
+      // Revert migration state on failure
+      await this.providers.localStorage.setMigrationState(
+        MigrationState.NOT_MIGRATED
+      );
     }
 
     return result;
@@ -174,6 +202,13 @@ class PersistenceManager {
       return false;
     }
 
+    // Check migration state
+    const migrationState =
+      await this.providers.localStorage.getMigrationState();
+    if (migrationState === MigrationState.MIGRATED) {
+      return false;
+    }
+
     const localExport = await this.providers.localStorage.export();
     const hasLocalData =
       localExport &&
@@ -184,6 +219,91 @@ class PersistenceManager {
     const firebaseReady = await this.providers.firebase.init();
 
     return hasLocalData && firebaseReady;
+  }
+
+  /**
+   * Restore data from export (always to localStorage)
+   * @param {Object} exportData - Export data object
+   * @returns {Promise<Object>} Restore result
+   */
+  async restore(exportData) {
+    if (!exportData || !exportData.data) {
+      return {
+        success: false,
+        error: "Invalid export data",
+      };
+    }
+
+    // Validate schema version
+    const currentVersion = await this.providers.localStorage.getSchemaVersion();
+    if (exportData.schemaVersion > currentVersion) {
+      return {
+        success: false,
+        error: `Schema version mismatch: export is v${exportData.schemaVersion}, current is v${currentVersion}`,
+      };
+    }
+
+    // Restore to localStorage only (safety measure)
+    const localReady = await this.providers.localStorage.init();
+    if (!localReady) {
+      return {
+        success: false,
+        error: "Cannot access localStorage",
+      };
+    }
+
+    try {
+      let itemsRestored = 0;
+
+      // Restore each data type
+      for (const [type, data] of Object.entries(exportData.data)) {
+        // Validate before restoring
+        const validation = validateData(type, data);
+        if (!validation.valid) {
+          console.warn(
+            `[Persistence] Skipping invalid ${type}:`,
+            validation.errors
+          );
+          continue;
+        }
+
+        const success = await this.providers.localStorage.save(type, data);
+        if (success) {
+          itemsRestored++;
+        }
+      }
+
+      // Update schema version
+      await this.providers.localStorage.setSchemaVersion(
+        exportData.schemaVersion
+      );
+
+      return {
+        success: true,
+        itemsRestored,
+      };
+    } catch (error) {
+      console.error("[Persistence] Restore failed:", error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
+
+  /**
+   * Archive local data (mark as backed up)
+   * @returns {Promise<boolean>} Success status
+   */
+  async archiveLocalData() {
+    const localReady = await this.providers.localStorage.init();
+    if (!localReady) {
+      return false;
+    }
+
+    return await this.providers.localStorage.setMigrationState(
+      MigrationState.ARCHIVED
+    );
   }
 }
 
