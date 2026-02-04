@@ -2,7 +2,7 @@
  * Visualization Board - Page Logic
  * A calm, manual, non-performative visualization space
  *
- * Phase 7: Edit & Delete (non-destructive)
+ * Phase 8: Optional Starter Template
  *
  * @see docs/VISUALIZATION_BOARD_PHILOSOPHY.md
  * @see src/data/boardConstraints.js
@@ -21,6 +21,8 @@ import {
   loadCards,
   deleteCard,
   updateCardPosition,
+  getStarterDismissed,
+  saveStarterDismissed,
 } from "../data/boardStore.js";
 
 // State management
@@ -32,7 +34,7 @@ let dragOffset = { x: 0, y: 0 };
  * Initialize the Visualization Board
  */
 async function init() {
-  console.log("Visualization Board - Phase 7: Edit & Delete initialized");
+  console.log("Visualization Board - Phase 8: Optional Starter Template initialized");
   console.log("Constraints active:", BOARD_CONSTRAINTS);
   console.log("Supported card types:", CARD_TYPES);
 
@@ -44,6 +46,9 @@ async function init() {
   // Initialize Firebase and load existing cards
   await initBoardStore();
   await loadExistingCards();
+  
+  // Check if we should show starter template
+  await checkAndShowStarterTemplate();
 }
 
 /**
@@ -852,6 +857,125 @@ async function handleDragEnd(e) {
   // Clear drag state
   draggedCard = null;
   dragOffset = { x: 0, y: 0 };
+}
+
+/**
+ * Check if starter template should be shown
+ * Shows 2-3 neutral placeholder cards for new users
+ */
+async function checkAndShowStarterTemplate() {
+  const workspace = document.querySelector(".board-canvas-workspace");
+  const existingCards = workspace.querySelectorAll(".board-card");
+
+  // Only show if no cards exist
+  if (existingCards.length > 0) return;
+
+  // Check if user has dismissed the template
+  const dismissed = await getStarterDismissed();
+  if (dismissed) return;
+
+  // Show starter cards
+  showStarterCards();
+}
+
+/**
+ * Show starter template cards
+ * Creates 2-3 neutral placeholder cards with a dismiss banner
+ */
+function showStarterCards() {
+  const workspace = document.querySelector(".board-canvas-workspace");
+
+  // Create starter cards (not saved to Firebase)
+  const starterCards = [
+    {
+      id: "starter-1",
+      type: CARD_TYPES.TEXT,
+      content: "A moment you want to remember",
+      position: { x: 100, y: 100 },
+      isStarter: true,
+    },
+    {
+      id: "starter-2",
+      type: CARD_TYPES.COLOR,
+      content: "#e8f4f8",
+      position: { x: 350, y: 150 },
+      isStarter: true,
+    },
+    {
+      id: "starter-3",
+      type: CARD_TYPES.TEXT,
+      content: "Something that made you smile",
+      position: { x: 600, y: 120 },
+      isStarter: true,
+    },
+  ];
+
+  // Render each starter card
+  starterCards.forEach((card) => {
+    const cardElement = renderCard(card);
+    cardElement.classList.add("starter-card");
+    workspace.appendChild(cardElement);
+  });
+
+  // Hide empty state
+  const emptyState = workspace.querySelector(".board-empty-state");
+  if (emptyState) {
+    emptyState.style.display = "none";
+  }
+
+  // Show dismiss banner
+  showStarterDismissBanner();
+}
+
+/**
+ * Show banner to dismiss starter template
+ */
+function showStarterDismissBanner() {
+  const canvas = document.querySelector(".board-canvas");
+
+  const banner = document.createElement("div");
+  banner.className = "starter-dismiss-banner";
+  banner.setAttribute("role", "status");
+  banner.setAttribute("aria-live", "polite");
+
+  const message = document.createElement("span");
+  message.textContent = "Starter cards — dismiss when ready";
+
+  const dismissButton = document.createElement("button");
+  dismissButton.className = "starter-dismiss-button";
+  dismissButton.textContent = "Dismiss";
+  dismissButton.setAttribute("aria-label", "Dismiss starter cards");
+  dismissButton.addEventListener("click", dismissStarterTemplate);
+
+  banner.appendChild(message);
+  banner.appendChild(dismissButton);
+  canvas.appendChild(banner);
+}
+
+/**
+ * Dismiss starter template permanently
+ */
+async function dismissStarterTemplate() {
+  const workspace = document.querySelector(".board-canvas-workspace");
+  const banner = document.querySelector(".starter-dismiss-banner");
+
+  // Remove all starter cards
+  const starterCards = workspace.querySelectorAll(".starter-card");
+  starterCards.forEach((card) => card.remove());
+
+  // Remove banner
+  if (banner) {
+    banner.remove();
+  }
+
+  // Save dismissal state to Firebase
+  await saveStarterDismissed();
+
+  // Show empty state again
+  const emptyState = workspace.querySelector(".board-empty-state");
+  if (emptyState) {
+    emptyState.style.display = "block";
+  }
 }
 
 // Initialize on page load
