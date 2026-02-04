@@ -175,6 +175,74 @@ export async function deleteCard(cardId) {
 }
 
 /**
+ * Check if starter template was dismissed
+ * @returns {Promise<boolean>} True if dismissed
+ */
+export async function getStarterDismissed() {
+  if (!initialized) {
+    await initBoardStore();
+  }
+
+  if (!db) {
+    return false;
+  }
+
+  try {
+    const sharedId = getSharedDocId();
+    const settingsRef = doc(
+      db,
+      "lifelab_data",
+      sharedId,
+      "board_settings",
+      "starter_template"
+    );
+    const settingsDoc = await getDoc(settingsRef);
+
+    return settingsDoc.exists() ? settingsDoc.data().dismissed === true : false;
+  } catch (error) {
+    console.error("[Board Store] Error checking starter dismissal:", error);
+    return false;
+  }
+}
+
+/**
+ * Save starter template dismissal state
+ * @returns {Promise<boolean>} Success status
+ */
+export async function saveStarterDismissed() {
+  if (!initialized) {
+    await initBoardStore();
+  }
+
+  if (!db) {
+    console.warn("[Board Store] Not initialized, cannot save dismissal state");
+    return false;
+  }
+
+  try {
+    const sharedId = getSharedDocId();
+    const settingsRef = doc(
+      db,
+      "lifelab_data",
+      sharedId,
+      "board_settings",
+      "starter_template"
+    );
+
+    await setDoc(settingsRef, {
+      dismissed: true,
+      dismissedAt: serverTimestamp(),
+    });
+
+    console.log("[Board Store] Starter template dismissed");
+    return true;
+  } catch (error) {
+    console.error("[Board Store] Error saving dismissal state:", error);
+    return false;
+  }
+}
+
+/**
  * Update card position
  * Called only when drag ends (not during drag)
  *
