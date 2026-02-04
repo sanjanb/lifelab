@@ -418,9 +418,11 @@ async function handleDeleteAccount() {
     // Delete user's Firestore data first
     console.log("Deleting user data from Firestore...");
     const dataResult = await deleteUserData();
-    
+
     if (dataResult.success) {
-      console.log(`Deleted ${dataResult.deletedCount} documents from Firestore`);
+      console.log(
+        `Deleted ${dataResult.deletedCount} documents from Firestore`,
+      );
     } else {
       console.warn("Some data may not have been deleted:", dataResult.errors);
     }

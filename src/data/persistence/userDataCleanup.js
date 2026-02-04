@@ -1,16 +1,16 @@
 /**
  * User Data Cleanup
- * 
+ *
  * Handles deletion of user data from Firestore when account is deleted.
- * 
+ *
  * IMPORTANT:
  * ==========
  * This function deletes ALL user data from Firestore under users/{uid}/.
  * Only call this when the user has explicitly confirmed account deletion.
- * 
+ *
  * NOTE: In production, this should be handled by a Cloud Function triggered
  * by the Authentication user deletion event. For now, we handle it client-side.
- * 
+ *
  * @see docs/AUTHENTICATION.md - Phase 8
  */
 
@@ -26,7 +26,7 @@ import { getCurrentUserId } from "./authState.js";
 export async function deleteUserData(uid = null) {
   try {
     const userId = uid || getCurrentUserId();
-    
+
     if (!userId) {
       return {
         success: false,
@@ -35,7 +35,7 @@ export async function deleteUserData(uid = null) {
     }
 
     const { db } = await initFirebase();
-    
+
     if (!db) {
       return {
         success: false,
@@ -53,7 +53,7 @@ export async function deleteUserData(uid = null) {
       "board_cards",
       "board_settings",
       "settings",
-      "profile"
+      "profile",
     ];
 
     let deletedCount = 0;
@@ -64,19 +64,24 @@ export async function deleteUserData(uid = null) {
       try {
         const collectionRef = collection(db, "users", userId, collectionName);
         const snapshot = await getDocs(collectionRef);
-        
+
         // Delete all documents in collection
         const deletePromises = [];
         snapshot.forEach((docSnapshot) => {
           deletePromises.push(deleteDoc(docSnapshot.ref));
         });
-        
+
         await Promise.all(deletePromises);
         deletedCount += snapshot.size;
-        
-        console.log(`[User Data Cleanup] Deleted ${snapshot.size} documents from ${collectionName}`);
+
+        console.log(
+          `[User Data Cleanup] Deleted ${snapshot.size} documents from ${collectionName}`,
+        );
       } catch (error) {
-        console.error(`[User Data Cleanup] Error deleting ${collectionName}:`, error);
+        console.error(
+          `[User Data Cleanup] Error deleting ${collectionName}:`,
+          error,
+        );
         errors.push(`${collectionName}: ${error.message}`);
       }
     }
@@ -88,7 +93,9 @@ export async function deleteUserData(uid = null) {
       console.log(`[User Data Cleanup] Deleted user root document`);
     } catch (error) {
       // User root doc might not exist, that's okay
-      console.log(`[User Data Cleanup] User root document does not exist (this is okay)`);
+      console.log(
+        `[User Data Cleanup] User root document does not exist (this is okay)`,
+      );
     }
 
     if (errors.length > 0) {
@@ -99,8 +106,10 @@ export async function deleteUserData(uid = null) {
       };
     }
 
-    console.log(`[User Data Cleanup] Successfully deleted ${deletedCount} documents`);
-    
+    console.log(
+      `[User Data Cleanup] Successfully deleted ${deletedCount} documents`,
+    );
+
     return {
       success: true,
       deletedCount,
@@ -122,13 +131,13 @@ export async function deleteUserData(uid = null) {
 export async function checkUserHasData(uid = null) {
   try {
     const userId = uid || getCurrentUserId();
-    
+
     if (!userId) {
       return { hasData: false, count: 0 };
     }
 
     const { db } = await initFirebase();
-    
+
     if (!db) {
       return { hasData: false, count: 0 };
     }
@@ -139,7 +148,7 @@ export async function checkUserHasData(uid = null) {
       "reflections",
       "board_cards",
       "board_settings",
-      "settings"
+      "settings",
     ];
 
     let totalCount = 0;
@@ -150,7 +159,10 @@ export async function checkUserHasData(uid = null) {
         const snapshot = await getDocs(collectionRef);
         totalCount += snapshot.size;
       } catch (error) {
-        console.warn(`[User Data Cleanup] Error checking ${collectionName}:`, error);
+        console.warn(
+          `[User Data Cleanup] Error checking ${collectionName}:`,
+          error,
+        );
       }
     }
 

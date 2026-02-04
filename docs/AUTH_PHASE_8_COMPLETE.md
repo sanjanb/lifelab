@@ -3,9 +3,11 @@
 ## ✅ Implementation Complete
 
 ### Goal
+
 Keep account management invisible unless needed, but provide essential account controls in settings.
 
 ### Actions Implemented
+
 1. ✅ **Sign Out** - Already implemented in Phase 3
 2. ✅ **Export Data** - Download all user data as JSON
 3. ✅ **Delete Account** - Permanently delete account and all cloud data
@@ -17,12 +19,14 @@ Keep account management invisible unless needed, but provide essential account c
 ### 1. Settings Page (`src/pages/settings.js`)
 
 **Added Imports**:
+
 - `deleteUser` from Firebase Auth
 - `exportToFile` from data/exportImport.js
 - `deleteUserData` from persistence/userDataCleanup.js
 - `getCurrentUserId` from authState.js
 
 **Updated Danger Zone UI**:
+
 ```javascript
 // For authenticated users:
 - Export My Data button
@@ -32,10 +36,12 @@ Keep account management invisible unless needed, but provide essential account c
 ```
 
 **New Functions**:
+
 1. `handleExportData()` - Exports all user data to JSON file
 2. `handleDeleteAccount()` - Two-step confirmation, deletes Firestore data then auth account
 
 **User Flow**:
+
 ```
 Danger Zone (authenticated):
 ├── Account Section
@@ -56,9 +62,11 @@ Danger Zone (authenticated):
 **Functions**:
 
 #### `deleteUserData(uid)`
+
 Deletes all user data from Firestore under `users/{uid}/`.
 
 **Collections deleted**:
+
 - `wins` - All win entries
 - `journal` - All journal entries
 - `reflections` - All reflection entries
@@ -67,7 +75,8 @@ Deletes all user data from Firestore under `users/{uid}/`.
 - `settings` - User preferences
 - `profile` - User profile (if exists)
 
-**Returns**: 
+**Returns**:
+
 ```javascript
 {
   success: boolean,
@@ -77,9 +86,11 @@ Deletes all user data from Firestore under `users/{uid}/`.
 ```
 
 #### `checkUserHasData(uid)`
+
 Checks if user has any data in Firestore.
 
 **Returns**:
+
 ```javascript
 {
   hasData: boolean,
@@ -88,6 +99,7 @@ Checks if user has any data in Firestore.
 ```
 
 **Implementation Notes**:
+
 - Deletes all documents in each collection
 - Handles errors gracefully (continues if one collection fails)
 - Logs progress for debugging
@@ -98,6 +110,7 @@ Checks if user has any data in Firestore.
 ### 3. CSS Styling (`src/styles/components.css`)
 
 **Added `.danger-actions` class**:
+
 ```css
 .danger-actions {
   display: flex;
@@ -124,6 +137,7 @@ Allows Export and Sign Out buttons to sit side-by-side with proper spacing.
 4. Success alert shown
 
 **Exported Data Includes**:
+
 - All wins (with dates and text)
 - All journal entries
 - All reflections
@@ -153,6 +167,7 @@ Allows Export and Sign Out buttons to sit side-by-side with proper spacing.
    - Redirect to auth.html
 
 **Error Handling**:
+
 - Re-authentication required: Alert user to sign in again
 - Other errors: Show error message, re-enable button
 
@@ -161,20 +176,24 @@ Allows Export and Sign Out buttons to sit side-by-side with proper spacing.
 ## Security & Privacy
 
 ### ✅ Data Ownership
+
 - Users can only delete their own data (enforced by Firestore rules)
 - No cross-user deletion possible
 
 ### ✅ Confirmation Steps
+
 - Two confirmations required for account deletion
 - Clear warnings about permanent data loss
 - Typing "DELETE" prevents accidental clicks
 
 ### ✅ Data Export Before Delete
+
 - Export button prominently placed above delete
 - Alerts mention exporting data first
 - Export always available before deletion
 
 ### ✅ Complete Cleanup
+
 - Firestore data deleted first
 - Auth account deleted second
 - Local storage cleared last
@@ -185,9 +204,11 @@ Allows Export and Sign Out buttons to sit side-by-side with proper spacing.
 ## Edge Cases Handled
 
 ### Re-authentication Required
+
 Firebase requires recent login for sensitive operations like account deletion.
 
 **If error occurs**:
+
 ```
 "For security, you need to sign in again before deleting your account.
 
@@ -195,14 +216,18 @@ Please sign out and sign in again, then try deleting your account."
 ```
 
 ### Partial Deletion Failure
+
 If some Firestore collections fail to delete:
+
 - Logs errors for debugging
 - Continues with remaining collections
 - Still deletes auth account
 - Returns error details in result
 
 ### No User Signed In
+
 If somehow the delete button is clicked when no user is signed in:
+
 - Alert: "No user signed in."
 - Function exits early
 
@@ -211,6 +236,7 @@ If somehow the delete button is clicked when no user is signed in:
 ## Testing Recommendations
 
 ### Test Case 1: Export Data
+
 1. Sign in with account that has data
 2. Go to Settings → Danger Zone
 3. Click "Export My Data"
@@ -218,6 +244,7 @@ If somehow the delete button is clicked when no user is signed in:
 5. Open JSON - verify all collections present
 
 ### Test Case 2: Delete Account (Happy Path)
+
 1. Sign in
 2. Go to Settings → Danger Zone
 3. Click "Delete Account & Data"
@@ -231,6 +258,7 @@ If somehow the delete button is clicked when no user is signed in:
    - Cannot sign in with same credentials
 
 ### Test Case 3: Delete Account Cancellation
+
 1. Click "Delete Account & Data"
 2. Click Cancel on first confirmation
 3. Verify nothing deleted
@@ -238,6 +266,7 @@ If somehow the delete button is clicked when no user is signed in:
 5. Verify cancellation message, nothing deleted
 
 ### Test Case 4: Re-authentication Required
+
 1. Sign in and wait 10+ minutes (or use Firebase emulator with short token expiry)
 2. Try to delete account
 3. Should see re-authentication error
@@ -254,17 +283,19 @@ If somehow the delete button is clicked when no user is signed in:
 **Recommended**: Cloud Function triggered by Auth user deletion
 
 **Why Cloud Function is better**:
+
 - Guaranteed execution (client might close browser mid-deletion)
 - Cannot be bypassed by malicious client
 - Runs with admin privileges (faster, more reliable)
 - Handles orphaned data if client deletion fails
 
 **Cloud Function Example**:
+
 ```javascript
 exports.deleteUserData = functions.auth.user().onDelete(async (user) => {
   const uid = user.uid;
   const db = admin.firestore();
-  
+
   // Delete all collections under users/{uid}/
   // Use batch deletes for efficiency
 });
@@ -277,21 +308,25 @@ exports.deleteUserData = functions.auth.user().onDelete(async (user) => {
 ## UI/UX Principles
 
 ### ✅ Minimal & Hidden
+
 - Account actions hidden in Settings (not on every page)
 - Danger zone at bottom of settings
 - No prominent "Delete Account" branding
 
 ### ✅ Clear Consequences
+
 - Warnings explain what will be deleted
 - Two-step confirmation prevents accidents
 - "This cannot be undone" messaging
 
 ### ✅ Export Escape Hatch
+
 - Export button easily accessible
 - Placed before delete button
 - Alerts remind users to export first
 
 ### ✅ Calm Interactions
+
 - No animations or dramatic UI
 - Simple confirmation dialogs
 - Progress messages for transparency
@@ -318,19 +353,21 @@ exports.deleteUserData = functions.auth.user().onDelete(async (user) => {
 ✅ **"Minimal UI"** - Simple buttons, no complex forms  
 ✅ **"User control"** - Export data anytime, delete account anytime  
 ✅ **"Privacy first"** - Complete data deletion, no orphaned data  
-✅ **"Calm design"** - No dramatic UI, straightforward confirmations  
+✅ **"Calm design"** - No dramatic UI, straightforward confirmations
 
 ---
 
 ## Next Phases
 
 ### Phase 9: Offline Handling & Retry Logic
+
 - Queue writes when offline
 - Retry failed operations on reconnect
 - Display offline indicator
 - Handle conflicts gracefully
 
 ### Phase 10: Final Integrity Review
+
 - Audit all auth-related code
 - Remove unnecessary metadata
 - Ensure philosophy compliance
