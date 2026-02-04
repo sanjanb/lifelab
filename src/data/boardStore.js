@@ -194,7 +194,7 @@ export async function getStarterDismissed() {
       "lifelab_data",
       sharedId,
       "board_settings",
-      "starter_template"
+      "starter_template",
     );
     const settingsDoc = await getDoc(settingsRef);
 
@@ -226,7 +226,7 @@ export async function saveStarterDismissed() {
       "lifelab_data",
       sharedId,
       "board_settings",
-      "starter_template"
+      "starter_template",
     );
 
     await setDoc(settingsRef, {
