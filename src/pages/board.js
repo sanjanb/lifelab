@@ -2,7 +2,7 @@
  * Visualization Board - Page Logic
  * A calm, manual, non-performative visualization space
  *
- * Phase 6: Firebase persistence
+ * Phase 7: Edit & Delete (non-destructive)
  *
  * @see docs/VISUALIZATION_BOARD_PHILOSOPHY.md
  * @see src/data/boardConstraints.js
@@ -131,6 +131,9 @@ function renderCard(card) {
     default:
       console.warn(`Unknown card type: ${type}`);
   }
+
+  // Add action buttons (edit/delete)
+  addCardActions(cardElement, { id, type, content });
 
   // Enable dragging for this card
   makeDraggable(cardElement);

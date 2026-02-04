@@ -175,6 +175,124 @@
   outline-offset: 2px;
 }
 
+/* Card Actions (Edit/Delete) */
+.card-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: none;
+  gap: 0.25rem;
+  z-index: 10;
+}
+
+.board-card:hover .card-actions,
+.board-card:focus-within .card-actions {
+  display: flex;
+}
+
+.card-action-button {
+  width: 24px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--text-color, #2d3748);
+  transition: background-color 0.2s ease;
+  padding: 0;
+}
+
+.card-action-button:hover {
+  background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.card-action-button.delete-button {
+  color: #c53030;
+}
+
+.card-action-button:focus-visible {
+  outline: 2px solid rgba(66, 153, 225, 0.6);
+  outline-offset: 1px;
+}
+
+/* Delete Confirmation Modal */
+.delete-confirmation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.delete-confirmation-content {
+  background-color: #ffffff;
+  border-radius: 6px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.delete-confirmation-content h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-color, #2d3748);
+}
+
+.delete-confirmation-content p {
+  margin: 0 0 1.5rem 0;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 0.95rem;
+}
+
+.delete-confirmation-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.delete-cancel-button,
+.delete-confirm-button {
+  padding: 0.625rem 1.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  border: none;
+  transition: background-color 0.2s ease;
+}
+
+.delete-cancel-button {
+  background-color: transparent;
+  color: var(--text-color, #2d3748);
+  opacity: 0.7;
+}
+
+.delete-cancel-button:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.delete-confirm-button {
+  background-color: #c53030;
+  color: #ffffff;
+}
+
+.delete-confirm-button:hover {
+  background-color: #9b2c2c;
+}
+
 /* Add Card Button */
 .add-card-button {
   position: fixed;
