@@ -15,6 +15,7 @@ import "../styles/layout.css";
 import "../styles/components.css";
 import "../styles/mobile.css";
 import "../styles/auth.css";
+import "../styles/migration.css";
 
 import {
   signInWithEmailAndPassword,
@@ -22,6 +23,13 @@ import {
 } from "firebase/auth";
 import { getFirebaseAuth } from "../data/persistence/firebaseConfig.js";
 import { waitForAuthReady } from "../data/persistence/authState.js";
+import {
+  shouldShowMigrationPrompt,
+  detectLocalData,
+  migrateToFirebase,
+  dismissMigration,
+  clearLocalData,
+} from "../data/persistence/migration.js";
 
 // Auth mode state
 let isSignUpMode = false;
@@ -85,8 +93,14 @@ async function handleSubmit(e) {
       console.log("Signed in successfully");
     }
 
-    // Redirect to dashboard
-    window.location.href = "./index.html";
+    // Check for migration after sign-in
+    if (shouldShowMigrationPrompt()) {
+      console.log("Local data detected, showing migration prompt");
+      showMigrationPrompt();
+    } else {
+      // Redirect to dashboard if no migration needed
+      window.location.href = "./index.html";
+    }
   } catch (error) {
     console.error("Auth error:", error);
     showError(getErrorMessage(error.code));

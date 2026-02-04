@@ -1,0 +1,282 @@
+/**
+ * Migration Prompt Styles
+ * Calm, respectful UI for data migration
+ */
+
+/* Migration Modal Overlay */
+.migration-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fade-in 0.2s ease;
+}
+
+/* Migration Modal Content */
+.migration-modal-content {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: slide-up 0.3s ease;
+}
+
+.migration-modal-content h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: var(--text-color, #2d3748);
+}
+
+.migration-modal-content p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #718096);
+  margin-bottom: 1rem;
+}
+
+/* Migration Stats */
+.migration-stats {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+}
+
+.migration-stats-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color, #2d3748);
+  margin-bottom: 0.5rem;
+}
+
+.migration-stats-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.migration-stats-list li {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #718096);
+  padding: 0.25rem 0;
+}
+
+/* Migration Actions */
+.migration-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.migration-action-primary,
+.migration-action-secondary {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.migration-action-primary {
+  background: #2d3748;
+  color: #ffffff;
+}
+
+.migration-action-primary:hover {
+  background: #1a202c;
+}
+
+.migration-action-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.migration-action-secondary {
+  background: transparent;
+  color: var(--text-secondary, #718096);
+  border: 1px solid #e2e8f0;
+}
+
+.migration-action-secondary:hover {
+  background: #f7fafc;
+}
+
+/* Migration Progress */
+.migration-progress {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.migration-progress-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #2d3748;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+.migration-progress-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary, #718096);
+}
+
+/* Migration Success */
+.migration-success {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.migration-success-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1rem;
+  background: #d1fae5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.migration-success-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-color, #2d3748);
+  margin-bottom: 0.5rem;
+}
+
+.migration-success-message {
+  font-size: 0.95rem;
+  color: var(--text-secondary, #718096);
+  margin-bottom: 1.5rem;
+}
+
+/* Delete Local Data Section */
+.migration-delete-section {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+}
+
+.migration-delete-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #991b1b;
+  margin-bottom: 0.5rem;
+}
+
+.migration-delete-message {
+  font-size: 0.875rem;
+  color: #991b1b;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.migration-delete-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.migration-delete-btn {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.migration-delete-btn-danger {
+  background: #991b1b;
+  color: #ffffff;
+}
+
+.migration-delete-btn-danger:hover {
+  background: #7f1d1d;
+}
+
+.migration-delete-btn-keep {
+  background: transparent;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.migration-delete-btn-keep:hover {
+  background: #fef2f2;
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .migration-modal,
+  .migration-modal-content,
+  .migration-action-primary,
+  .migration-action-secondary {
+    animation: none;
+    transition: none;
+  }
+
+  .migration-progress-spinner {
+    animation: none;
+    border-top-color: transparent;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .migration-modal-content {
+    padding: 1.5rem;
+  }
+
+  .migration-modal-content h2 {
+    font-size: 1.25rem;
+  }
+
+  .migration-actions {
+    flex-direction: column;
+  }
+}
