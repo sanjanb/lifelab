@@ -1,0 +1,129 @@
+/**
+ * Firebase Security Rules
+ * 
+ * PHILOSOPHY:
+ * ===========
+ * Guarantee privacy at the database level.
+ * A user can only read/write their own data.
+ * No cross-user visibility. Ever.
+ * 
+ * CORE PRINCIPLES:
+ * ================
+ * 1. Users can only access their own UID subtree (users/{uid}/...)
+ * 2. All access denied when unauthenticated
+ * 3. No list access across users
+ * 4. No shared collections for user-generated content
+ * 
+ * @see docs/AUTHENTICATION.md - Phase 5
+ * @see src/data/persistence/authPhilosophy.js
+ * @see src/data/persistence/userDataNamespace.js
+ */
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    /**
+     * Helper function: Check if user is authenticated
+     */
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    /**
+     * Helper function: Check if user owns the resource
+     * @param uid - The user ID from the path
+     */
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+    
+    /**
+     * USER DATA NAMESPACE
+     * All user data nested under users/{uid}/
+     * Users can only access their own subtree
+     */
+    match /users/{uid} {
+      // Deny access to user root document
+      // (prevents listing all users)
+      allow read, write: if false;
+      
+      /**
+       * User Profile
+       * users/{uid}/profile/{document}
+       */
+      match /profile/{document=**} {
+        allow read, write: if isOwner(uid);
+      }
+      
+      /**
+       * Win Ledger
+       * users/{uid}/wins/{winId}
+       */
+      match /wins/{winId} {
+        allow read, write: if isOwner(uid);
+      }
+      
+      /**
+       * Journal Entries
+       * users/{uid}/journal/{entryId}
+       */
+      match /journal/{entryId} {
+        allow read, write: if isOwner(uid);
+      }
+      
+      /**
+       * Reflections
+       * users/{uid}/reflections/{reflectionId}
+       */
+      match /reflections/{reflectionId} {
+        allow read, write: if isOwner(uid);
+      }
+      
+      /**
+       * Visualization Board
+       * users/{uid}/board/cards/{cardId}
+       * users/{uid}/board/settings/{document}
+       */
+      match /board/cards/{cardId} {
+        allow read, write: if isOwner(uid);
+      }
+      
+      match /board/settings/{document=**} {
+        allow read, write: if isOwner(uid);
+      }
+      
+      /**
+       * Settings
+       * users/{uid}/settings/{document}
+       */
+      match /settings/{document=**} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+    
+    /**
+     * SHARED COLLECTION (DEPRECATED)
+     * Temporary backward compatibility for Phase 6 migration
+     * 
+     * WARNING: This is NOT secure and will be removed after migration.
+     * Do NOT use for new features.
+     * 
+     * lifelab_data/shared_data/*
+     */
+    match /lifelab_data/shared_data/{document=**} {
+      // Allow read/write for backward compatibility
+      // This will be removed in Phase 6
+      allow read, write: if true;
+    }
+    
+    /**
+     * DENY ALL OTHER ACCESS
+     * Any path not explicitly allowed above is denied
+     */
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
