@@ -14,9 +14,9 @@ import { saveWin, getWinByDate, hasWinForDate } from "../data/winLedger.js";
  * @param {HTMLElement} container - Container element
  * @param {Function} onSaved - Optional callback after win is saved
  */
-export function renderWinEntry(container, onSaved = null) {
+export async function renderWinEntry(container, onSaved = null) {
   const today = new Date().toISOString().split("T")[0];
-  const existingWin = getWinByDate(today);
+  const existingWin = await getWinByDate(today);
 
   container.innerHTML = `
     <div class="win-entry-component">
@@ -105,7 +105,7 @@ function attachEventListeners(container, today, onSaved) {
         .querySelector("#win-entry-form")
         .insertAdjacentHTML(
           "beforeend",
-          `<div class="win-entry-error">${result.error}</div>`
+          `<div class="win-entry-error">${result.error}</div>`,
         );
     }
   });
@@ -117,8 +117,8 @@ function attachEventListeners(container, today, onSaved) {
  * @param {string} date - ISO date string
  * @param {Function} onSaved - Optional callback after win is saved
  */
-export function renderWinEntryForDate(container, date, onSaved = null) {
-  const existingWin = getWinByDate(date);
+export async function renderWinEntryForDate(container, date, onSaved = null) {
+  const existingWin = await getWinByDate(date);
   const dateDisplay = new Date(date + "T00:00:00").toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",

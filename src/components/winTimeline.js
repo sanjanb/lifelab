@@ -12,11 +12,11 @@ import { getAllWins, getWinsFiltered } from "../data/winLedger.js";
  * @param {HTMLElement} container - Container element
  * @param {Object} filters - Optional filters {year, month}
  */
-export function renderWinTimeline(container, filters = {}) {
+export async function renderWinTimeline(container, filters = {}) {
   const wins =
     filters.year || filters.month
-      ? getWinsFiltered(filters.year, filters.month)
-      : getAllWins();
+      ? await getWinsFiltered(filters.year, filters.month)
+      : await getAllWins();
 
   if (wins.length === 0) {
     container.innerHTML = `

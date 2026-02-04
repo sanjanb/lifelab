@@ -11,8 +11,8 @@ import { getWinStats } from "../data/winLedger.js";
  * Render lifetime win counter (simple, archival)
  * @param {HTMLElement} container - Container element
  */
-export function renderWinCounter(container) {
-  const stats = getWinStats();
+export async function renderWinCounter(container) {
+  const stats = await getWinStats();
 
   container.innerHTML = `
     <div class="win-counter">
@@ -26,8 +26,8 @@ export function renderWinCounter(container) {
  * Render time-based aggregation (neutral counts, no comparison)
  * @param {HTMLElement} container - Container element
  */
-export function renderWinStats(container) {
-  const stats = getWinStats();
+export async function renderWinStats(container) {
+  const stats = await getWinStats();
 
   container.innerHTML = `
     <div class="win-stats">
@@ -51,8 +51,8 @@ export function renderWinStats(container) {
  * Render minimal counter for home page
  * @param {HTMLElement} container - Container element
  */
-export function renderWinSummary(container) {
-  const stats = getWinStats();
+export async function renderWinSummary(container) {
+  const stats = await getWinStats();
 
   container.innerHTML = `
     <div class="win-summary">
