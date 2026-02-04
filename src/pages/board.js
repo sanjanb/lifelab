@@ -203,6 +203,252 @@ function addCardToWorkspace(card) {
 }
 
 /**
+ * Add action buttons (edit/delete) to a card
+ * @param {HTMLElement} cardElement - The card element
+ * @param {Object} cardData - Card data {id, type, content}
+ */
+function addCardActions(cardElement, cardData) {
+  const actionsContainer = document.createElement("div");
+  actionsContainer.className = "card-actions";
+
+  // Edit button
+  const editButton = document.createElement("button");
+  editButton.className = "card-action-button edit-button";
+  editButton.innerHTML = "✎";
+  editButton.setAttribute("aria-label", "Edit card");
+  editButton.setAttribute("title", "Edit");
+  editButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showEditModal(cardData);
+  });
+
+  // Delete button
+  const deleteButton = document.createElement("button");
+  deleteButton.className = "card-action-button delete-button";
+  deleteButton.innerHTML = "×";
+  deleteButton.setAttribute("aria-label", "Delete card");
+  deleteButton.setAttribute("title", "Delete");
+  deleteButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showDeleteConfirmation(cardData.id);
+  });
+
+  actionsContainer.appendChild(editButton);
+  actionsContainer.appendChild(deleteButton);
+  cardElement.appendChild(actionsContainer);
+}
+
+/**
+ * Show edit modal for a card
+ * @param {Object} cardData - Card data {id, type, content}
+ */
+function showEditModal(cardData) {
+  const { id, type, content } = cardData;
+
+  const modal = document.createElement("div");
+  modal.className = "card-input-modal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-labelledby", "edit-card-title");
+
+  const modalContent = document.createElement("div");
+  modalContent.className = "card-input-modal-content";
+
+  const title = document.createElement("h3");
+  title.id = "edit-card-title";
+  title.textContent = `Edit ${type} card`;
+
+  const inputGroup = document.createElement("div");
+  inputGroup.className = "card-input-group";
+
+  let input;
+
+  if (type === CARD_TYPES.TEXT) {
+    const label = document.createElement("label");
+    label.textContent = "Your text";
+    input = document.createElement("textarea");
+    input.value = content;
+    inputGroup.appendChild(label);
+    inputGroup.appendChild(input);
+  } else if (type === CARD_TYPES.IMAGE) {
+    const label = document.createElement("label");
+    label.textContent = "Image URL";
+    input = document.createElement("input");
+    input.type = "text";
+    input.value = content;
+    inputGroup.appendChild(label);
+    inputGroup.appendChild(input);
+  } else if (type === CARD_TYPES.COLOR) {
+    const label = document.createElement("label");
+    label.textContent = "Choose a color";
+    input = document.createElement("input");
+    input.type = "color";
+    input.value = content;
+    inputGroup.appendChild(label);
+    inputGroup.appendChild(input);
+  }
+
+  const actions = document.createElement("div");
+  actions.className = "card-input-actions";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.className = "card-input-cancel";
+  cancelButton.textContent = "Cancel";
+  cancelButton.addEventListener("click", () => closeModal(modal));
+
+  const saveButton = document.createElement("button");
+  saveButton.className = "card-input-save";
+  saveButton.textContent = "Save Changes";
+  saveButton.addEventListener("click", async () => {
+    const newContent = input.value.trim();
+    if (newContent || type === CARD_TYPES.COLOR) {
+      await updateCard(id, type, input.value);
+      closeModal(modal);
+    }
+  });
+
+  if (type !== CARD_TYPES.COLOR) {
+    input.addEventListener("input", () => {
+      saveButton.disabled = !input.value.trim();
+    });
+    saveButton.disabled = !input.value.trim();
+  }
+
+  actions.appendChild(cancelButton);
+  actions.appendChild(saveButton);
+
+  modalContent.appendChild(title);
+  modalContent.appendChild(inputGroup);
+  modalContent.appendChild(actions);
+
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+
+  setTimeout(() => input.focus(), 100);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal(modal);
+  });
+
+  const escapeHandler = (e) => {
+    if (e.key === "Escape") {
+      closeModal(modal);
+      document.removeEventListener("keydown", escapeHandler);
+    }
+  };
+  document.addEventListener("keydown", escapeHandler);
+}
+
+/**
+ * Update a card's content
+ * @param {string} cardId - Card ID
+ * @param {string} cardType - Card type
+ * @param {string} newContent - New content
+ */
+async function updateCard(cardId, cardType, newContent) {
+  const cardElement = document.querySelector(`[data-card-id="${cardId}"]`);
+  if (!cardElement) return;
+
+  const position = {
+    x: parseInt(cardElement.style.left),
+    y: parseInt(cardElement.style.top),
+  };
+
+  const updatedCard = {
+    id: cardId,
+    type: cardType,
+    content: newContent,
+    position,
+  };
+
+  cardElement.remove();
+  addCardToWorkspace(updatedCard);
+  await saveCard(updatedCard);
+}
+
+/**
+ * Show delete confirmation modal
+ * @param {string} cardId - Card ID to delete
+ */
+function showDeleteConfirmation(cardId) {
+  const modal = document.createElement("div");
+  modal.className = "delete-confirmation-modal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-labelledby", "delete-title");
+
+  const modalContent = document.createElement("div");
+  modalContent.className = "delete-confirmation-content";
+
+  const title = document.createElement("h3");
+  title.id = "delete-title";
+  title.textContent = "Delete card?";
+
+  const message = document.createElement("p");
+  message.textContent =
+    "This card will be permanently removed. This action cannot be undone.";
+
+  const actions = document.createElement("div");
+  actions.className = "delete-confirmation-actions";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.className = "delete-cancel-button";
+  cancelButton.textContent = "Cancel";
+  cancelButton.addEventListener("click", () => closeModal(modal));
+
+  const confirmButton = document.createElement("button");
+  confirmButton.className = "delete-confirm-button";
+  confirmButton.textContent = "Delete";
+  confirmButton.addEventListener("click", async () => {
+    await deleteCardById(cardId);
+    closeModal(modal);
+  });
+
+  actions.appendChild(cancelButton);
+  actions.appendChild(confirmButton);
+
+  modalContent.appendChild(title);
+  modalContent.appendChild(message);
+  modalContent.appendChild(actions);
+
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+
+  setTimeout(() => confirmButton.focus(), 100);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal(modal);
+  });
+
+  const escapeHandler = (e) => {
+    if (e.key === "Escape") {
+      closeModal(modal);
+      document.removeEventListener("keydown", escapeHandler);
+    }
+  };
+  document.addEventListener("keydown", escapeHandler);
+}
+
+/**
+ * Delete a card by ID
+ * @param {string} cardId - Card ID to delete
+ */
+async function deleteCardById(cardId) {
+  const cardElement = document.querySelector(`[data-card-id="${cardId}"]`);
+  if (cardElement) {
+    cardElement.remove();
+  }
+
+  await deleteCard(cardId);
+
+  const workspace = document.querySelector(".board-canvas-workspace");
+  const remainingCards = workspace.querySelectorAll(".board-card");
+  const emptyState = workspace.querySelector(".board-empty-state");
+
+  if (remainingCards.length === 0 && emptyState) {
+    emptyState.style.display = "block";
+  }
+}
+
+/**
  * Show modal to select card type
  * User explicitly chooses what type of card to create
  */
