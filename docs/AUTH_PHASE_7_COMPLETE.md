@@ -3,9 +3,11 @@
 ## ✅ Implementation Complete
 
 ### Goal
+
 Features degrade gracefully without authentication.
 
 ### Behavior Implemented
+
 - **Logged out**: Uses localStorage for all data operations
 - **Logged in**: Uses Firebase for persistence
 - **Auto-sync**: When user logs in, local data syncs automatically to Firebase
@@ -15,6 +17,7 @@ Features degrade gracefully without authentication.
 ## Changes Made
 
 ### 1. Persistence Manager (`src/data/persistence/manager.js`)
+
 **Made auth-aware with automatic provider switching:**
 
 - **Imports**: Added auth state functions (`isAuthenticated`, `onAuthStateChange`, `getCurrentUserId`)
@@ -28,6 +31,7 @@ Features degrade gracefully without authentication.
 - **Cleanup**: `cleanup()` method to unsubscribe from auth listener
 
 **Key Features**:
+
 - No manual `preferFirebase` parameter needed - auth-aware by default
 - Prevents concurrent syncs with `isSyncing` flag
 - Syncs localStorage to Firebase automatically on login
@@ -36,6 +40,7 @@ Features degrade gracefully without authentication.
 ---
 
 ### 2. Main App Entry (`src/main.js`)
+
 **Updated initialization sequence:**
 
 ```javascript
@@ -52,6 +57,7 @@ await persistence.init();
 ---
 
 ### 3. Reflection Store (`src/data/reflectionStore.js`)
+
 **Simplified to rely on persistence manager:**
 
 - Removed manual localStorage fallbacks
@@ -60,6 +66,7 @@ await persistence.init();
 - Persistence manager handles provider selection based on auth
 
 **Before**:
+
 ```javascript
 // Manual Firebase check
 if (persistence.currentProvider?.getName() === "firebase") {
@@ -70,6 +77,7 @@ const stored = localStorage.getItem(STORAGE_KEY);
 ```
 
 **After**:
+
 ```javascript
 // Persistence manager handles it
 const result = await persistence.fetch(FIREBASE_COLLECTION);
@@ -78,6 +86,7 @@ const result = await persistence.fetch(FIREBASE_COLLECTION);
 ---
 
 ### 4. Board Store (`src/data/boardStore.js`)
+
 **Refactored from direct Firestore calls to persistence manager:**
 
 - Removed direct Firebase imports (`collection`, `doc`, `setDoc`, etc.)
@@ -86,6 +95,7 @@ const result = await persistence.fetch(FIREBASE_COLLECTION);
 - All CRUD operations now use persistence manager
 
 **Key Changes**:
+
 - `saveCard()` - Loads all cards, updates/adds one, saves array
 - `loadCards()` - Fetches card array from persistence
 - `deleteCard()` - Filters out card, saves updated array
@@ -98,6 +108,7 @@ const result = await persistence.fetch(FIREBASE_COLLECTION);
 ---
 
 ### 5. Win Ledger (`src/data/winLedger.js`)
+
 **Made fully async and auth-aware:**
 
 - **Removed**: Direct localStorage access
@@ -106,6 +117,7 @@ const result = await persistence.fetch(FIREBASE_COLLECTION);
 - **Conversion**: Converts between array format (persistence) and object format (internal logic)
 
 **Before**:
+
 ```javascript
 function loadWins() {
   const data = localStorage.getItem(WIN_STORAGE_KEY);
@@ -114,6 +126,7 @@ function loadWins() {
 ```
 
 **After**:
+
 ```javascript
 async function loadWins() {
   const winsArray = await persistence.fetch(DataTypes.WINS);
@@ -125,6 +138,7 @@ async function loadWins() {
 ---
 
 ### 6. Win Components
+
 **Updated to handle async data fetching:**
 
 - `renderWinTimeline()` - Now async, awaits `getAllWins()` / `getWinsFiltered()`
@@ -135,6 +149,7 @@ async function loadWins() {
 - `renderWinSummary()` - Now async, awaits `getWinStats()`
 
 **Callers must now await these functions**:
+
 ```javascript
 await renderWinSummary(container);
 await renderWinTimeline(container, filters);
@@ -170,16 +185,19 @@ await renderWinTimeline(container, filters);
 ### Data Flow
 
 **Authenticated**:
+
 ```
 User Action → Feature Module → persistence.save() → Firebase
 ```
 
 **Unauthenticated**:
+
 ```
 User Action → Feature Module → persistence.save() → localStorage
 ```
 
 **Login Transition**:
+
 ```
 localStorage data → syncLocalToFirebase() → Firebase (users/{uid}/...)
 ```
@@ -189,24 +207,28 @@ localStorage data → syncLocalToFirebase() → Firebase (users/{uid}/...)
 ## Testing Recommendations
 
 ### Test Case 1: Works Without Auth
+
 1. Clear all data and sign out
 2. Create wins, reflections, board cards
 3. Verify data persists in localStorage
 4. Refresh page - data should load
 
 ### Test Case 2: Auto-Sync on Login
+
 1. While signed out, create data in localStorage
 2. Sign in
 3. Verify data appears in Firebase (under `users/{uid}/`)
 4. Verify local data still in localStorage
 
 ### Test Case 3: Firebase While Authenticated
+
 1. Sign in
 2. Create wins, reflections, board cards
 3. Verify saves go to Firebase
 4. Refresh page - data loads from Firebase
 
 ### Test Case 4: Fallback on Logout
+
 1. Sign in with data
 2. Sign out
 3. Create new data
@@ -217,21 +239,25 @@ localStorage data → syncLocalToFirebase() → Firebase (users/{uid}/...)
 ## Architecture Principles
 
 ### ✅ Graceful Degradation
+
 - App works WITHOUT authentication
 - Features don't break when Firebase unavailable
 - No user-facing errors for missing auth
 
 ### ✅ Transparent Provider Switching
+
 - Feature modules don't know about auth state
 - Persistence manager handles all switching
 - Single source of truth for provider selection
 
 ### ✅ Data Continuity
+
 - Login syncs local data automatically
 - Logout preserves local data
 - No data loss during transitions
 
 ### ✅ Privacy First
+
 - Firebase data stays in cloud when user logs out
 - Local data only on user's device
 - No automatic download of cloud data to local
@@ -241,16 +267,19 @@ localStorage data → syncLocalToFirebase() → Firebase (users/{uid}/...)
 ## Next Phases
 
 ### Phase 8: Settings & Account Actions
+
 - Sign out ✅ (already implemented)
 - Delete account (with confirmation)
 - Export user data
 
 ### Phase 9: Offline Handling
+
 - Queue writes when offline
 - Retry on reconnect
 - Display offline indicator
 
 ### Phase 10: Integrity Review
+
 - Remove unnecessary metadata
 - Audit data access code
 - Ensure philosophy compliance
@@ -276,7 +305,7 @@ localStorage data → syncLocalToFirebase() → Firebase (users/{uid}/...)
 ✅ **"Works WITHOUT auth"** - Full feature set available unauthenticated  
 ✅ **"Graceful degradation"** - Features adapt, don't break  
 ✅ **"Respect user data"** - Auto-sync on login, preserve on logout  
-✅ **"Privacy first"** - Cloud data stays in cloud unless explicitly exported  
+✅ **"Privacy first"** - Cloud data stays in cloud unless explicitly exported
 
 ---
 
