@@ -40,19 +40,19 @@ function generateId() {
 async function loadWins() {
   try {
     const winsArray = await persistence.fetch(DataTypes.WINS);
-    
+
     if (!winsArray || !Array.isArray(winsArray)) {
       return {};
     }
-    
+
     // Convert array to date-keyed object
     const wins = {};
-    winsArray.forEach(win => {
+    winsArray.forEach((win) => {
       if (win.date) {
         wins[win.date] = win;
       }
     });
-    
+
     return wins;
   } catch (error) {
     console.error("Failed to load wins:", error);
@@ -72,7 +72,7 @@ async function saveWinsToStorage(wins) {
       ...win,
       date,
     }));
-    
+
     // Persistence manager handles localStorage vs Firebase based on auth
     await persistence.save(DataTypes.WINS, winsArray);
 
