@@ -464,7 +464,7 @@ function closeModal(modal) {
  */
 async function loadExistingCards() {
   const cards = await loadCards();
-  
+
   if (cards.length === 0) {
     console.log("[Board] No existing cards found");
     return;
@@ -483,7 +483,7 @@ async function loadExistingCards() {
 
   // Render all loaded cards
   cards.forEach((card) => addCardToWorkspace(card));
-  
+
   console.log(`[Board] Loaded ${cards.length} cards from Firebase`);
 }
 
