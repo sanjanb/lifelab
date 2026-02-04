@@ -106,8 +106,12 @@ export function getGoogleProvider() {
 
 /**
  * Get shared document ID
+ * @deprecated Use user-scoped paths from userDataNamespace.js instead
  * @returns {string} Shared document ID
  */
 export function getSharedDocId() {
+  console.warn(
+    "[Firebase Config] getSharedDocId is deprecated - use user-scoped paths"
+  );
   return SHARED_DOC_ID;
 }
