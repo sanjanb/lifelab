@@ -1450,6 +1450,24 @@
   line-height: 1.5;
 }
 
+/* Danger Zone Sections */
+.danger-section {
+  margin-bottom: 1.5rem;
+}
+
+.danger-section h3 {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: var(--text-color, #2d3748);
+}
+
+.danger-divider {
+  height: 1px;
+  background: var(--border-subtle, #e2e8f0);
+  margin: 1.5rem 0;
+}
+
 /* Responsive Bento Grid */
 @media (max-width: 768px) {
   .bento-grid {
