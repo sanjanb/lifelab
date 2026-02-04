@@ -32,7 +32,9 @@ let dragOffset = { x: 0, y: 0 };
  * Initialize the Visualization Board
  */
 async function init() {
-  console.log("Visualization Board - Phase 6: Firebase persistence initialized");
+  console.log(
+    "Visualization Board - Phase 6: Firebase persistence initialized",
+  );
   console.log("Constraints active:", BOARD_CONSTRAINTS);
   console.log("Supported card types:", CARD_TYPES);
 
@@ -430,9 +432,9 @@ function showCardInputModal(cardType) {
  * @param {string} type - Card type
  * @param {string} content - Card content
  */
-function createCard(type, content) {
+async function createCard(type, content) {
   const card = {
-    id: `card-${++cardIdCounter}`,
+    id: `card-${Date.now()}-${++cardIdCounter}`, // Unique ID with timestamp
     type,
     content,
     // Place new cards in center of visible area
@@ -443,6 +445,9 @@ function createCard(type, content) {
   };
 
   addCardToWorkspace(card);
+  
+  // Save to Firebase (explicit user action)
+  await saveCard(card);
 }
 
 /**
