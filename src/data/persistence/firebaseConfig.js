@@ -68,6 +68,9 @@ export async function initFirebase() {
         prompt: "select_account",
       });
 
+      // Initialize auth state listener (Phase 2)
+      initAuthState();
+
       console.log("[Firebase] Initialized with auth support");
     }
     return { app, db, auth };
