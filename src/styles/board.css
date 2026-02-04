@@ -176,13 +176,8 @@
 @media (max-width: 768px) {
   .board-header {
     padding: 1.5rem 1rem 0.75rem;
-  }.5rem;
-    min-height: calc(100vh - 180px);
   }
 
-  .board-canvas-workspace {
-    min-width: 100%;
-    min-height: 600px
   .board-header h1 {
     font-size: 1.5rem;
   }
@@ -192,8 +187,31 @@
   }
 
   .board-canvas {
-    padding: 1rem;
+    padding: 1.5rem;
     min-height: calc(100vh - 180px);
+  }
+
+  .board-canvas-workspace {
+    min-width: 100%;
+    min-height: 600px;
+  }
+
+  /* Adjust card sizes for mobile */
+  .board-card.card-text {
+    min-width: 150px;
+    max-width: 280px;
+    padding: 0.875rem 1rem;
+  }
+
+  .board-card.card-image {
+    max-width: 300px;
+  }
+
+  .board-card.card-color {
+    min-width: 100px;
+    min-height: 100px;
+    max-width: 200px;
+    max-height: 200px;
   }
 
   .board-container .nav-links {
