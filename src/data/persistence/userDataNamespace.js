@@ -1,13 +1,13 @@
 /**
  * User Data Namespace
- * 
+ *
  * PHILOSOPHY:
  * ===========
  * Strict separation of data per user.
  * One user = one private data space.
  * All reads and writes are scoped to UID.
  * No shared collections for user-generated content.
- * 
+ *
  * CANONICAL DATA SHAPE:
  * =====================
  * users/
@@ -44,7 +44,7 @@
  *       domains
  *       firstDayOfWeek
  *       memoryAidsEnabled
- * 
+ *
  * @see docs/AUTHENTICATION.md - Phase 4
  * @see src/data/persistence/authPhilosophy.js
  */
@@ -73,11 +73,11 @@ export const USER_COLLECTIONS = {
  */
 export function getUserBasePath(uid = null) {
   const userId = uid || getCurrentUserId();
-  
+
   if (!userId) {
     throw new Error("Cannot get user path: No user authenticated");
   }
-  
+
   return `users/${userId}`;
 }
 
@@ -115,12 +115,14 @@ export function getUserDocPath(collection, docId, uid = null) {
 export function validateUserScopedPath(path) {
   // Must start with "users/{uid}/"
   const userPathPattern = /^users\/[^/]+\//;
-  
+
   if (!userPathPattern.test(path)) {
-    console.error(`[User Namespace] Invalid path: ${path} - must be user-scoped`);
+    console.error(
+      `[User Namespace] Invalid path: ${path} - must be user-scoped`,
+    );
     return false;
   }
-  
+
   return true;
 }
 
@@ -143,12 +145,12 @@ export function getSharedDocId() {
  */
 export function shouldUseUserNamespace(uid = null) {
   const userId = uid || getCurrentUserId();
-  
+
   // If authenticated, always use user namespace
   if (userId) {
     return true;
   }
-  
+
   // If not authenticated, use shared collection (backward compatibility)
   return false;
 }
@@ -162,79 +164,89 @@ export const UserNamespace = {
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to user profile
    */
-  profilePath: (uid = null) => getUserCollectionPath(USER_COLLECTIONS.PROFILE, uid),
-  
+  profilePath: (uid = null) =>
+    getUserCollectionPath(USER_COLLECTIONS.PROFILE, uid),
+
   /**
    * Get wins collection path
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to wins collection
    */
   winsPath: (uid = null) => getUserCollectionPath(USER_COLLECTIONS.WINS, uid),
-  
+
   /**
    * Get specific win path
    * @param {string} winId - Win document ID
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to win document
    */
-  winPath: (winId, uid = null) => getUserDocPath(USER_COLLECTIONS.WINS, winId, uid),
-  
+  winPath: (winId, uid = null) =>
+    getUserDocPath(USER_COLLECTIONS.WINS, winId, uid),
+
   /**
    * Get journal collection path
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to journal collection
    */
-  journalPath: (uid = null) => getUserCollectionPath(USER_COLLECTIONS.JOURNAL, uid),
-  
+  journalPath: (uid = null) =>
+    getUserCollectionPath(USER_COLLECTIONS.JOURNAL, uid),
+
   /**
    * Get specific journal entry path
    * @param {string} entryId - Entry document ID
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to journal entry document
    */
-  journalEntryPath: (entryId, uid = null) => getUserDocPath(USER_COLLECTIONS.JOURNAL, entryId, uid),
-  
+  journalEntryPath: (entryId, uid = null) =>
+    getUserDocPath(USER_COLLECTIONS.JOURNAL, entryId, uid),
+
   /**
    * Get reflections collection path
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to reflections collection
    */
-  reflectionsPath: (uid = null) => getUserCollectionPath(USER_COLLECTIONS.REFLECTIONS, uid),
-  
+  reflectionsPath: (uid = null) =>
+    getUserCollectionPath(USER_COLLECTIONS.REFLECTIONS, uid),
+
   /**
    * Get specific reflection path
    * @param {string} reflectionId - Reflection document ID
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to reflection document
    */
-  reflectionPath: (reflectionId, uid = null) => getUserDocPath(USER_COLLECTIONS.REFLECTIONS, reflectionId, uid),
-  
+  reflectionPath: (reflectionId, uid = null) =>
+    getUserDocPath(USER_COLLECTIONS.REFLECTIONS, reflectionId, uid),
+
   /**
    * Get board cards collection path
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to board cards collection
    */
-  boardCardsPath: (uid = null) => getUserCollectionPath(USER_COLLECTIONS.BOARD_CARDS, uid),
-  
+  boardCardsPath: (uid = null) =>
+    getUserCollectionPath(USER_COLLECTIONS.BOARD_CARDS, uid),
+
   /**
    * Get specific board card path
    * @param {string} cardId - Card document ID
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to board card document
    */
-  boardCardPath: (cardId, uid = null) => getUserDocPath(USER_COLLECTIONS.BOARD_CARDS, cardId, uid),
-  
+  boardCardPath: (cardId, uid = null) =>
+    getUserDocPath(USER_COLLECTIONS.BOARD_CARDS, cardId, uid),
+
   /**
    * Get board settings path
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to board settings collection
    */
-  boardSettingsPath: (uid = null) => getUserCollectionPath(USER_COLLECTIONS.BOARD_SETTINGS, uid),
-  
+  boardSettingsPath: (uid = null) =>
+    getUserCollectionPath(USER_COLLECTIONS.BOARD_SETTINGS, uid),
+
   /**
    * Get settings path
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to settings collection
    */
-  settingsPath: (uid = null) => getUserCollectionPath(USER_COLLECTIONS.SETTINGS, uid),
+  settingsPath: (uid = null) =>
+    getUserCollectionPath(USER_COLLECTIONS.SETTINGS, uid),
 };
