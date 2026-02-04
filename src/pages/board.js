@@ -208,7 +208,7 @@ function showCardTypeModal() {
   const textOption = createCardTypeOption(
     CARD_TYPES.TEXT,
     "Text",
-    "Short reflection or phrase"
+    "Short reflection or phrase",
   );
   textOption.addEventListener("click", () => {
     closeModal(modal);
@@ -219,7 +219,7 @@ function showCardTypeModal() {
   const imageOption = createCardTypeOption(
     CARD_TYPES.IMAGE,
     "Image",
-    "Visual element from URL"
+    "Visual element from URL",
   );
   imageOption.addEventListener("click", () => {
     closeModal(modal);
@@ -230,7 +230,7 @@ function showCardTypeModal() {
   const colorOption = createCardTypeOption(
     CARD_TYPES.COLOR,
     "Color",
-    "Single color block"
+    "Single color block",
   );
   colorOption.addEventListener("click", () => {
     closeModal(modal);
