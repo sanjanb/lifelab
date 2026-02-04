@@ -31,6 +31,7 @@ import {
 import { getFirebaseAuth } from "../data/persistence/firebaseConfig.js";
 import { signOut, deleteUser } from "firebase/auth";
 import { exportToFile } from "../data/exportImport.js";
+import { deleteUserData } from "../data/persistence/userDataCleanup.js";
 
 let currentSettings = {};
 
@@ -412,10 +413,20 @@ async function handleDeleteAccount() {
     const deleteBtn = document.getElementById("delete-account-btn");
     const originalText = deleteBtn.textContent;
     deleteBtn.disabled = true;
-    deleteBtn.textContent = "Deleting...";
+    deleteBtn.textContent = "Deleting data...";
 
-    // Delete user account (Firebase Auth automatically deletes user data)
-    // Note: Firestore security rules ensure users can only delete their own data
+    // Delete user's Firestore data first
+    console.log("Deleting user data from Firestore...");
+    const dataResult = await deleteUserData();
+    
+    if (dataResult.success) {
+      console.log(`Deleted ${dataResult.deletedCount} documents from Firestore`);
+    } else {
+      console.warn("Some data may not have been deleted:", dataResult.errors);
+    }
+
+    // Delete user account from Firebase Auth
+    deleteBtn.textContent = "Deleting account...";
     await deleteUser(user);
 
     console.log("Account deleted successfully");
