@@ -1,14 +1,14 @@
 /**
  * Authentication State Management
- * 
+ *
  * PHILOSOPHY:
  * ===========
  * Simple, reactive auth state tracking WITHOUT building a "user system".
  * No Redux, no complex frameworks, just Firebase's built-in state listener.
- * 
+ *
  * This module knows who the user is, nothing more.
  * No profiles, no social features, no analytics.
- * 
+ *
  * @see docs/AUTHENTICATION.md - Phase 2
  * @see src/data/persistence/authPhilosophy.js
  */
@@ -21,10 +21,10 @@ import { getFirebaseAuth } from "./firebaseConfig.js";
  * Simple object - no framework needed
  */
 let authState = {
-  user: null,        // Firebase User object or null
-  uid: null,         // User ID or null
+  user: null, // Firebase User object or null
+  uid: null, // User ID or null
   isAuthenticated: false,
-  isLoading: true,   // True until first auth state check completes
+  isLoading: true, // True until first auth state check completes
 };
 
 /**
@@ -40,7 +40,7 @@ const subscribers = [];
  */
 export function initAuthState() {
   const auth = getFirebaseAuth();
-  
+
   if (!auth) {
     console.warn("[Auth State] Firebase auth not initialized");
     authState.isLoading = false;
@@ -50,19 +50,21 @@ export function initAuthState() {
   // Listen to auth state changes
   const unsubscribe = onAuthStateChanged(auth, (user) => {
     const previousUid = authState.uid;
-    
+
     if (user) {
       // User is signed in
       authState.user = user;
       authState.uid = user.uid;
       authState.isAuthenticated = true;
       authState.isLoading = false;
-      
+
       console.log(`[Auth State] User authenticated: ${user.uid}`);
-      
+
       // Log transition if user changed
       if (previousUid && previousUid !== user.uid) {
-        console.log(`[Auth State] User switched from ${previousUid} to ${user.uid}`);
+        console.log(
+          `[Auth State] User switched from ${previousUid} to ${user.uid}`,
+        );
       }
     } else {
       // User is signed out
@@ -70,9 +72,9 @@ export function initAuthState() {
       authState.uid = null;
       authState.isAuthenticated = false;
       authState.isLoading = false;
-      
+
       console.log("[Auth State] User signed out");
-      
+
       if (previousUid) {
         console.log(`[Auth State] User ${previousUid} signed out`);
       }
@@ -92,10 +94,10 @@ export function initAuthState() {
  */
 export function onAuthStateChange(callback) {
   subscribers.push(callback);
-  
+
   // Immediately call with current state
   callback(authState);
-  
+
   // Return unsubscribe function
   return () => {
     const index = subscribers.indexOf(callback);
@@ -110,7 +112,7 @@ export function onAuthStateChange(callback) {
  * @param {Object} state - Current auth state
  */
 function notifySubscribers(state) {
-  subscribers.forEach(callback => {
+  subscribers.forEach((callback) => {
     try {
       callback(state);
     } catch (error) {

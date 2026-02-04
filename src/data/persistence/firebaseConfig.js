@@ -61,13 +61,13 @@ export async function initFirebase() {
       app = initializeApp(firebaseConfig);
       db = getFirestore(app);
       auth = getAuth(app);
-      
+
       // Prepare Google provider (not exposed in UI yet)
       googleProvider = new GoogleAuthProvider();
       googleProvider.setCustomParameters({
-        prompt: 'select_account'
+        prompt: "select_account",
       });
-      
+
       console.log("[Firebase] Initialized with auth support");
     }
     return { app, db, auth };
