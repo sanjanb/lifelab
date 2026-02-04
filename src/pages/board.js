@@ -32,9 +32,7 @@ let dragOffset = { x: 0, y: 0 };
  * Initialize the Visualization Board
  */
 async function init() {
-  console.log(
-    "Visualization Board - Phase 6: Firebase persistence initialized",
-  );
+  console.log("Visualization Board - Phase 7: Edit & Delete initialized");
   console.log("Constraints active:", BOARD_CONSTRAINTS);
   console.log("Supported card types:", CARD_TYPES);
 
