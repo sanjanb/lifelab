@@ -176,8 +176,13 @@ function renderImageCard(cardElement, imageUrl) {
   // Handle image load errors gracefully
   img.addEventListener("error", () => {
     cardElement.style.backgroundColor = "#f1f1f1";
-    cardElement.innerHTML =
-      '<div style="padding: 1rem; color: #999;">Image unavailable</div>';
+    // Replace only the image, not the entire card content
+    img.remove();
+    const errorMsg = document.createElement("div");
+    errorMsg.style.padding = "1rem";
+    errorMsg.style.color = "#999";
+    errorMsg.textContent = "Image unavailable";
+    cardElement.insertBefore(errorMsg, cardElement.firstChild);
   });
 
   cardElement.appendChild(img);
