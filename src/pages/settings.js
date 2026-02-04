@@ -312,5 +312,36 @@ function capitalizeFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+/**
+ * Handle sign out
+ */
+async function handleSignOut() {
+  const confirmed = confirm("Sign out of your notebook?");
+  
+  if (!confirmed) return;
+
+  try {
+    const auth = getFirebaseAuth();
+    await signOut(auth);
+    console.log("Signed out successfully");
+    
+    // Redirect to auth page
+    window.location.href = "./auth.html";
+  } catch (error) {
+    console.error("Sign out error:", error);
+    alert("Unable to sign out. Please try again.");
+  }
+}
+
+/**
+ * Update UI based on auth state
+ */
+onAuthStateChange((authState) => {
+  // Re-render danger zone when auth state changes
+  if (!authState.isLoading) {
+    renderDangerZone();
+  }
+});
+
 // Initialize
 init();
