@@ -50,6 +50,12 @@ export async function saveCard(card) {
   }
 
   try {
+    // Load all cards
+    const cards = await loadCards();
+    
+    // Find existing card or add new one
+    const existingIndex = cards.findIndex(c => c.id === card.id);
+    
     const cardData = {
       id: card.id,
       type: card.type,
@@ -59,26 +65,17 @@ export async function saveCard(card) {
         y: card.position.y,
       },
     };
-
-    // Persistence manager handles localStorage vs Firebase based on auth
-    const success = await persistence.save(CARDS_COLLECTION, cardData);
-
-    if (success) {
-      console.log(`[Board Store] Card ${card.id} saved`);
+    
+    if (existingIndex >= 0) {
+      // Update existing card
+      cards[existingIndex] = cardData;
+    } else {
+      // Add new card
+      cards.push(cardData);
     }
 
-    return success;
-  } catch (error) {
-    console.error("[Board Store] Save failed:", error);
-    return false;
-  }
-}
-
-/**
- * Load all cards from persistence
- * Called once on page load
- *
- * @returns {Promise<Array>} Array of card objects
+    // Persistence manager handles localStorage vs Firebase based on auth
+    const success = await persistence.save(CARDS_COLLECTION, cards);
  */
 export async function loadCards() {
   if (!initialized) {
@@ -125,7 +122,9 @@ export async function deleteCard(cardId) {
     
     if (success) {
       console.log(`[Board Store] Card ${cardId} deleted`);
-    return true;
+    }
+    
+    return success;
   } catch (error) {
     console.error("[Board Store] Delete failed:", error);
     return false;
@@ -141,22 +140,9 @@ export async function getStarterDismissed() {
     await initBoardStore();
   }
 
-  if (!db) {
-    return false;
-  }
-
   try {
-    const sharedId = getSharedDocId();
-    const settingsRef = doc(
-      db,
-      "lifelab_data",
-      sharedId,
-      "board_settings",
-      "starter_template",
-    );
-    const settingsDoc = await getDoc(settingsRef);
-
-    return settingsDoc.exists() ? settingsDoc.data().dismissed === true : false;
+    const settings = await persistence.fetch(SETTINGS_COLLECTION);
+    return settings?.starter_template_dismissed === true;
   } catch (error) {
     console.error("[Board Store] Error checking starter dismissal:", error);
     return false;
@@ -172,28 +158,18 @@ export async function saveStarterDismissed() {
     await initBoardStore();
   }
 
-  if (!db) {
-    console.warn("[Board Store] Not initialized, cannot save dismissal state");
-    return false;
-  }
-
   try {
-    const sharedId = getSharedDocId();
-    const settingsRef = doc(
-      db,
-      "lifelab_data",
-      sharedId,
-      "board_settings",
-      "starter_template",
-    );
-
-    await setDoc(settingsRef, {
-      dismissed: true,
-      dismissedAt: serverTimestamp(),
-    });
-
-    console.log("[Board Store] Starter template dismissed");
-    return true;
+    const settings = await persistence.fetch(SETTINGS_COLLECTION) || {};
+    settings.starter_template_dismissed = true;
+    settings.dismissedAt = new Date().toISOString();
+    
+    const success = await persistence.save(SETTINGS_COLLECTION, settings);
+    
+    if (success) {
+      console.log("[Board Store] Starter template dismissed");
+    }
+    
+    return success;
   } catch (error) {
     console.error("[Board Store] Error saving dismissal state:", error);
     return false;
@@ -213,42 +189,28 @@ export async function updateCardPosition(cardId, position) {
     await initBoardStore();
   }
 
-  // If Firebase unavailable, skip
-  if (!db) {
-    return false;
-  }
-
   try {
-    const sharedId = getSharedDocId();
-    const cardRef = doc(db, "lifelab_data", sharedId, COLLECTION_NAME, cardId);
-
-    // Get existing card data
-    const cardSnap = await getDoc(cardRef);
-    if (!cardSnap.exists()) {
-      console.warn(
-        `[Board Store] Card ${cardId} not found for position update`,
-      );
+    // Load all cards
+    const cards = await loadCards();
+    
+    // Find and update the card
+    const card = cards.find(c => c.id === cardId);
+    if (!card) {
+      console.warn(`[Board Store] Card ${cardId} not found for position update`);
       return false;
     }
-
-    const cardData = cardSnap.data();
-
-    // Update only position and timestamp
-    await setDoc(
-      cardRef,
-      {
-        ...cardData,
-        position: {
-          x: position.x,
-          y: position.y,
-        },
-        updatedAt: serverTimestamp(),
-      },
-      { merge: false },
-    );
-
-    console.log(`[Board Store] Card ${cardId} position updated`);
-    return true;
+    
+    // Update position
+    card.position = { x: position.x, y: position.y };
+    
+    // Save updated array
+    const success = await persistence.save(CARDS_COLLECTION, cards);
+    
+    if (success) {
+      console.log(`[Board Store] Card ${cardId} position updated`);
+    }
+    
+    return success;
   } catch (error) {
     console.error("[Board Store] Position update failed:", error);
     return false;
@@ -266,29 +228,15 @@ export async function clearAllCards() {
     await initBoardStore();
   }
 
-  if (!db) {
-    return false;
-  }
-
   try {
-    const sharedId = getSharedDocId();
-    const cardsCollection = collection(
-      db,
-      "lifelab_data",
-      sharedId,
-      COLLECTION_NAME,
-    );
-
-    const snapshot = await getDocs(cardsCollection);
-    const deletePromises = [];
-
-    snapshot.forEach((docSnap) => {
-      deletePromises.push(deleteDoc(docSnap.ref));
-    });
-
-    await Promise.all(deletePromises);
-    console.log("[Board Store] All cards cleared");
-    return true;
+    // Save empty array
+    const success = await persistence.save(CARDS_COLLECTION, []);
+    
+    if (success) {
+      console.log("[Board Store] All cards cleared");
+    }
+    
+    return success;
   } catch (error) {
     console.error("[Board Store] Clear failed:", error);
     return false;
