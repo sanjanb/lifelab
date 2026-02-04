@@ -14,9 +14,11 @@
  * • Analytics or tracking (not implemented)
  * • Cross-user visibility (explicitly forbidden)
  *
- * CURRENT STATE: No authentication yet
- * All data uses shared collection for demo/development
- * Future: User-scoped collections under {uid}/
+ * CURRENT STATE: Authentication enabled (Phase 1)
+ * - Email/Password auth available
+ * - Google Sign-In prepared but not exposed in UI yet
+ * - Shared collection still active for backward compatibility
+ * - User-scoped collections will replace shared after migration (Phase 6)
  *
  * @see src/data/persistence/authPhilosophy.js
  * @see docs/AUTHENTICATION.md
@@ -27,6 +29,8 @@
 
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { initAuthState } from "./authState.js";
 
 // Load Firebase config from environment variables
 const firebaseConfig = {
@@ -41,6 +45,8 @@ const firebaseConfig = {
 
 let app = null;
 let db = null;
+let auth = null;
+let googleProvider = null;
 
 // Shared collection ID for all data (no user separation)
 const SHARED_DOC_ID = "shared_data";
@@ -54,12 +60,20 @@ export async function initFirebase() {
     if (!app) {
       app = initializeApp(firebaseConfig);
       db = getFirestore(app);
-      console.log("[Firebase] Initialized without auth");
+      auth = getAuth(app);
+      
+      // Prepare Google provider (not exposed in UI yet)
+      googleProvider = new GoogleAuthProvider();
+      googleProvider.setCustomParameters({
+        prompt: 'select_account'
+      });
+      
+      console.log("[Firebase] Initialized with auth support");
     }
-    return { app, db };
+    return { app, db, auth };
   } catch (error) {
     console.error("[Firebase] Initialization failed:", error);
-    return { app: null, db: null };
+    return { app: null, db: null, auth: null };
   }
 }
 
@@ -67,7 +81,23 @@ export async function initFirebase() {
  * Get Firebase instances
  */
 export function getFirebaseInstances() {
-  return { app, db };
+  return { app, db, auth };
+}
+
+/**
+ * Get Firebase Auth instance
+ * @returns {Object|null} Auth instance or null if not initialized
+ */
+export function getFirebaseAuth() {
+  return auth;
+}
+
+/**
+ * Get Google Auth Provider (prepared but not exposed in UI yet)
+ * @returns {GoogleAuthProvider|null} Google provider or null
+ */
+export function getGoogleProvider() {
+  return googleProvider;
 }
 
 /**
