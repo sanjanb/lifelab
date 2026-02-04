@@ -1,9 +1,28 @@
 /**
  * Firebase Configuration
  *
+ * AUTHENTICATION PHILOSOPHY:
+ * ==========================
+ * Authentication in LifeLab exists ONLY for:
+ * • Preserving data across devices
+ * • Keeping data private
+ * • Maintaining continuity over time
+ *
+ * Authentication is NOT for:
+ * • Social features (none exist)
+ * • Public profiles (none exist)
+ * • Analytics or tracking (not implemented)
+ * • Cross-user visibility (explicitly forbidden)
+ *
+ * CURRENT STATE: No authentication yet
+ * All data uses shared collection for demo/development
+ * Future: User-scoped collections under {uid}/
+ *
+ * @see src/data/persistence/authPhilosophy.js
+ * @see docs/AUTHENTICATION.md
+ *
  * CRITICAL: Firebase is persistence only.
  * No business logic here.
- * No authentication - uses shared collection for cross-device sync
  */
 
 import { initializeApp } from "firebase/app";
