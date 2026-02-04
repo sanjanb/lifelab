@@ -23,7 +23,9 @@ let cardIdCounter = 0;
  * Initialize the Visualization Board
  */
 function init() {
-  console.log("Visualization Board - Phase 4: Manual card creation initialized");
+  console.log(
+    "Visualization Board - Phase 4: Manual card creation initialized",
+  );
   console.log("Constraints active:", BOARD_CONSTRAINTS);
   console.log("Supported card types:", CARD_TYPES);
 
