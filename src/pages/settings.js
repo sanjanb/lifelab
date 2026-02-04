@@ -317,14 +317,14 @@ function capitalizeFirst(str) {
  */
 async function handleSignOut() {
   const confirmed = confirm("Sign out of your notebook?");
-  
+
   if (!confirmed) return;
 
   try {
     const auth = getFirebaseAuth();
     await signOut(auth);
     console.log("Signed out successfully");
-    
+
     // Redirect to auth page
     window.location.href = "./auth.html";
   } catch (error) {
