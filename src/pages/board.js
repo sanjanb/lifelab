@@ -2,7 +2,7 @@
  * Visualization Board - Page Logic
  * A calm, manual, non-performative visualization space
  *
- * Phase 4: Manual card creation
+ * Phase 5: Drag & arrange (spatial meaning)
  *
  * @see docs/VISUALIZATION_BOARD_PHILOSOPHY.md
  * @see src/data/boardConstraints.js
@@ -18,6 +18,8 @@ import { BOARD_CONSTRAINTS, CARD_TYPES } from "../data/boardConstraints.js";
 
 // State management
 let cardIdCounter = 0;
+let draggedCard = null;
+let dragOffset = { x: 0, y: 0 };
 
 /**
  * Initialize the Visualization Board
@@ -117,6 +119,9 @@ function renderCard(card) {
     default:
       console.warn(`Unknown card type: ${type}`);
   }
+
+  // Enable dragging for this card
+  makeDraggable(cardElement);
 
   return cardElement;
 }
