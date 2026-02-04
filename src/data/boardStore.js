@@ -7,20 +7,12 @@
  * @see docs/VISUALIZATION_BOARD_PHILOSOPHY.md
  */
 
-import {
-  collection,
-  doc,
-  getDoc,
-  setDoc,
-  deleteDoc,
-  getDocs,
-  serverTimestamp,
-} from "firebase/firestore";
-import { initFirebase, getSharedDocId } from "./persistence/firebaseConfig.js";
+import { persistence } from "./persistence/manager.js";
 
-let db = null;
+const CARDS_COLLECTION = "board_cards";
+const SETTINGS_COLLECTION = "board_settings";
+
 let initialized = false;
-const COLLECTION_NAME = "board_cards";
 
 /**
  * Initialize board store
@@ -30,16 +22,10 @@ export async function initBoardStore() {
   if (initialized) return true;
 
   try {
-    const { db: firebaseDb } = await initFirebase();
-
-    if (!firebaseDb) {
-      console.warn("[Board Store] Firebase not available, using memory only");
-      return false;
-    }
-
-    db = firebaseDb;
+    // Persistence manager is auth-aware and auto-initializes
+    await persistence.init();
     initialized = true;
-    console.log("[Board Store] Initialized with Firebase");
+    console.log("[Board Store] Initialized");
     return true;
   } catch (error) {
     console.error("[Board Store] Initialization failed:", error);
@@ -48,7 +34,7 @@ export async function initBoardStore() {
 }
 
 /**
- * Save a card to Firebase
+ * Save a card to persistence
  * Called only on explicit user actions (create, move, edit)
  *
  * @param {Object} card - Card object
@@ -63,16 +49,7 @@ export async function saveCard(card) {
     await initBoardStore();
   }
 
-  // If Firebase unavailable, skip (app works without it)
-  if (!db) {
-    console.log("[Board Store] Save skipped - no Firebase connection");
-    return false;
-  }
-
   try {
-    const sharedId = getSharedDocId();
-    const cardRef = doc(db, "lifelab_data", sharedId, COLLECTION_NAME, card.id);
-
     const cardData = {
       id: card.id,
       type: card.type,
@@ -81,12 +58,16 @@ export async function saveCard(card) {
         x: card.position.x,
         y: card.position.y,
       },
-      updatedAt: serverTimestamp(),
     };
 
-    await setDoc(cardRef, cardData);
-    console.log(`[Board Store] Card ${card.id} saved`);
-    return true;
+    // Persistence manager handles localStorage vs Firebase based on auth
+    const success = await persistence.save(CARDS_COLLECTION, cardData);
+    
+    if (success) {
+      console.log(`[Board Store] Card ${card.id} saved`);
+    }
+    
+    return success;
   } catch (error) {
     console.error("[Board Store] Save failed:", error);
     return false;
@@ -94,7 +75,7 @@ export async function saveCard(card) {
 }
 
 /**
- * Load all cards from Firebase
+ * Load all cards from persistence
  * Called once on page load
  *
  * @returns {Promise<Array>} Array of card objects
@@ -104,39 +85,16 @@ export async function loadCards() {
     await initBoardStore();
   }
 
-  // If Firebase unavailable, return empty array
-  if (!db) {
-    console.log("[Board Store] Load skipped - no Firebase connection");
-    return [];
-  }
-
   try {
-    const sharedId = getSharedDocId();
-    const cardsCollection = collection(
-      db,
-      "lifelab_data",
-      sharedId,
-      COLLECTION_NAME,
-    );
-
-    const snapshot = await getDocs(cardsCollection);
-    const cards = [];
-
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      cards.push({
-        id: data.id,
-        type: data.type,
-        content: data.content,
-        position: {
-          x: data.position.x,
-          y: data.position.y,
-        },
-      });
-    });
-
-    console.log(`[Board Store] Loaded ${cards.length} cards`);
-    return cards;
+    // Persistence manager handles fetching from localStorage or Firebase
+    const result = await persistence.fetch(CARDS_COLLECTION);
+    
+    if (result && Array.isArray(result)) {
+      console.log(`[Board Store] Loaded ${result.length} cards`);
+      return result;
+    }
+    
+    return [];
   } catch (error) {
     console.error("[Board Store] Load failed:", error);
     return [];
