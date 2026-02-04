@@ -23,6 +23,9 @@ import {
   createDomainConfig,
   migrateDomainSettings,
 } from "../data/domainTypes.js";
+import { isAuthenticated, onAuthStateChange } from "../data/persistence/authState.js";
+import { getFirebaseAuth } from "../data/persistence/firebaseConfig.js";
+import { signOut } from "firebase/auth";
 
 let currentSettings = {};
 
