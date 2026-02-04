@@ -185,40 +185,257 @@ function addCardToWorkspace(card) {
 }
 
 /**
- * Demo: Render example cards to showcase card types
- * This will be removed in Phase 4 when manual card creation is implemented
+ * Show modal to select card type
+ * User explicitly chooses what type of card to create
  */
-function renderDemoCards() {
-  // Example cards demonstrating each type
-  const demoCards = [
-    {
-      id: "demo-text-1",
-      type: CARD_TYPES.TEXT,
-      content: "Notice what you notice",
-      position: { x: 100, y: 100 },
-    },
-    {
-      id: "demo-text-2",
-      type: CARD_TYPES.TEXT,
-      content: "Meaning emerges through arrangement, not measurement",
-      position: { x: 400, y: 150 },
-    },
-    {
-      id: "demo-color-1",
-      type: CARD_TYPES.COLOR,
-      content: "#e8f4f8",
-      position: { x: 150, y: 300 },
-    },
-    {
-      id: "demo-color-2",
-      type: CARD_TYPES.COLOR,
-      content: "#f9f3e8",
-      position: { x: 500, y: 280 },
-    },
-  ];
+function showCardTypeModal() {
+  const modal = document.createElement("div");
+  modal.className = "card-type-modal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-labelledby", "card-type-title");
 
-  // Render demo cards
-  demoCards.forEach((card) => addCardToWorkspace(card));
+  const modalContent = document.createElement("div");
+  modalContent.className = "card-type-modal-content";
+
+  const title = document.createElement("h3");
+  title.id = "card-type-title";
+  title.textContent = "Choose card type";
+
+  const options = document.createElement("div");
+  options.className = "card-type-options";
+
+  // Text card option
+  const textOption = createCardTypeOption(
+    CARD_TYPES.TEXT,
+    "Text",
+    "Short reflection or phrase"
+  );
+  textOption.addEventListener("click", () => {
+    closeModal(modal);
+    showCardInputModal(CARD_TYPES.TEXT);
+  });
+
+  // Image card option
+  const imageOption = createCardTypeOption(
+    CARD_TYPES.IMAGE,
+    "Image",
+    "Visual element from URL"
+  );
+  imageOption.addEventListener("click", () => {
+    closeModal(modal);
+    showCardInputModal(CARD_TYPES.IMAGE);
+  });
+
+  // Color card option
+  const colorOption = createCardTypeOption(
+    CARD_TYPES.COLOR,
+    "Color",
+    "Single color block"
+  );
+  colorOption.addEventListener("click", () => {
+    closeModal(modal);
+    showCardInputModal(CARD_TYPES.COLOR);
+  });
+
+  options.appendChild(textOption);
+  options.appendChild(imageOption);
+  options.appendChild(colorOption);
+
+  const actions = document.createElement("div");
+  actions.className = "modal-actions";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.className = "modal-cancel-button";
+  cancelButton.textContent = "Cancel";
+  cancelButton.addEventListener("click", () => closeModal(modal));
+
+  actions.appendChild(cancelButton);
+
+  modalContent.appendChild(title);
+  modalContent.appendChild(options);
+  modalContent.appendChild(actions);
+
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+
+  // Close on backdrop click
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeModal(modal);
+    }
+  });
+
+  // Close on Escape key
+  const escapeHandler = (e) => {
+    if (e.key === "Escape") {
+      closeModal(modal);
+      document.removeEventListener("keydown", escapeHandler);
+    }
+  };
+  document.addEventListener("keydown", escapeHandler);
+}
+
+/**
+ * Create a card type option element
+ */
+function createCardTypeOption(type, title, description) {
+  const option = document.createElement("div");
+  option.className = "card-type-option";
+  option.setAttribute("tabindex", "0");
+  option.setAttribute("role", "button");
+
+  const titleEl = document.createElement("div");
+  titleEl.className = "card-type-option-title";
+  titleEl.textContent = title;
+
+  const descEl = document.createElement("div");
+  descEl.className = "card-type-option-desc";
+  descEl.textContent = description;
+
+  option.appendChild(titleEl);
+  option.appendChild(descEl);
+
+  // Keyboard support
+  option.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      option.click();
+    }
+  });
+
+  return option;
+}
+
+/**
+ * Show modal to input card content
+ * @param {string} cardType - Type of card being created
+ */
+function showCardInputModal(cardType) {
+  const modal = document.createElement("div");
+  modal.className = "card-input-modal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-labelledby", "card-input-title");
+
+  const modalContent = document.createElement("div");
+  modalContent.className = "card-input-modal-content";
+
+  const title = document.createElement("h3");
+  title.id = "card-input-title";
+  title.textContent = `Add ${cardType} card`;
+
+  const inputGroup = document.createElement("div");
+  inputGroup.className = "card-input-group";
+
+  let input;
+
+  if (cardType === CARD_TYPES.TEXT) {
+    const label = document.createElement("label");
+    label.textContent = "Your text";
+    input = document.createElement("textarea");
+    input.placeholder = "Enter your reflection...";
+    inputGroup.appendChild(label);
+    inputGroup.appendChild(input);
+  } else if (cardType === CARD_TYPES.IMAGE) {
+    const label = document.createElement("label");
+    label.textContent = "Image URL";
+    input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "https://example.com/image.jpg";
+    inputGroup.appendChild(label);
+    inputGroup.appendChild(input);
+  } else if (cardType === CARD_TYPES.COLOR) {
+    const label = document.createElement("label");
+    label.textContent = "Choose a color";
+    input = document.createElement("input");
+    input.type = "color";
+    input.value = "#e8f4f8";
+    inputGroup.appendChild(label);
+    inputGroup.appendChild(input);
+  }
+
+  const actions = document.createElement("div");
+  actions.className = "card-input-actions";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.className = "card-input-cancel";
+  cancelButton.textContent = "Cancel";
+  cancelButton.addEventListener("click", () => closeModal(modal));
+
+  const saveButton = document.createElement("button");
+  saveButton.className = "card-input-save";
+  saveButton.textContent = "Add Card";
+  saveButton.addEventListener("click", () => {
+    const content = input.value.trim();
+    if (content || cardType === CARD_TYPES.COLOR) {
+      createCard(cardType, input.value);
+      closeModal(modal);
+    }
+  });
+
+  // Enable/disable save button based on input
+  if (cardType !== CARD_TYPES.COLOR) {
+    input.addEventListener("input", () => {
+      saveButton.disabled = !input.value.trim();
+    });
+    saveButton.disabled = true;
+  }
+
+  actions.appendChild(cancelButton);
+  actions.appendChild(saveButton);
+
+  modalContent.appendChild(title);
+  modalContent.appendChild(inputGroup);
+  modalContent.appendChild(actions);
+
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+
+  // Focus input
+  setTimeout(() => input.focus(), 100);
+
+  // Close on backdrop click
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeModal(modal);
+    }
+  });
+
+  // Close on Escape key
+  const escapeHandler = (e) => {
+    if (e.key === "Escape") {
+      closeModal(modal);
+      document.removeEventListener("keydown", escapeHandler);
+    }
+  };
+  document.addEventListener("keydown", escapeHandler);
+}
+
+/**
+ * Create a new card and add it to the board
+ * @param {string} type - Card type
+ * @param {string} content - Card content
+ */
+function createCard(type, content) {
+  const card = {
+    id: `card-${++cardIdCounter}`,
+    type,
+    content,
+    // Place new cards in center of visible area
+    position: {
+      x: 200 + Math.random() * 100,
+      y: 200 + Math.random() * 100,
+    },
+  };
+
+  addCardToWorkspace(card);
+}
+
+/**
+ * Close and remove a modal
+ * @param {HTMLElement} modal - Modal element to close
+ */
+function closeModal(modal) {
+  modal.remove();
 }
 
 // Initialize on page load
