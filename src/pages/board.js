@@ -1,9 +1,9 @@
 /**
  * Visualization Board - Page Logic
  * A calm, manual, non-performative visualization space
- * 
+ *
  * Phase 1: Page skeleton with no interactivity
- * 
+ *
  * @see docs/VISUALIZATION_BOARD_PHILOSOPHY.md
  * @see src/data/boardConstraints.js
  */
@@ -22,7 +22,7 @@ import { BOARD_CONSTRAINTS } from "../data/boardConstraints.js";
 function init() {
   console.log("Visualization Board initialized");
   console.log("Constraints active:", BOARD_CONSTRAINTS);
-  
+
   renderEmptyState();
 }
 
@@ -32,11 +32,11 @@ function init() {
  */
 function renderEmptyState() {
   const canvas = document.querySelector(".board-canvas");
-  
+
   const emptyState = document.createElement("div");
   emptyState.className = "board-empty-state";
   emptyState.textContent = "A quiet space, ready when you are";
-  
+
   canvas.appendChild(emptyState);
 }
 

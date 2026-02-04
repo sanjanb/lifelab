@@ -58,7 +58,7 @@
   min-height: calc(100vh - 200px);
   background-color: #f7f9fa;
   /* Subtle texture for calm visual interest */
-  background-image: 
+  background-image:
     linear-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
   background-size: 40px 40px;
