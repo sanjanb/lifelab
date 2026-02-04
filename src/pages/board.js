@@ -2,7 +2,7 @@
  * Visualization Board - Page Logic
  * A calm, manual, non-performative visualization space
  *
- * Phase 8: Optional Starter Template
+ * Phase 9-10: Accessibility & Final Integrity Review
  *
  * @see docs/VISUALIZATION_BOARD_PHILOSOPHY.md
  * @see src/data/boardConstraints.js
@@ -35,7 +35,7 @@ let dragOffset = { x: 0, y: 0 };
  */
 async function init() {
   console.log(
-    "Visualization Board - Phase 8: Optional Starter Template initialized",
+    "Visualization Board - Phase 9-10: Accessibility & Final Review complete",
   );
   console.log("Constraints active:", BOARD_CONSTRAINTS);
   console.log("Supported card types:", CARD_TYPES);
@@ -44,6 +44,7 @@ async function init() {
   renderEmptyState();
   renderAddButton();
   setupDragAndDrop();
+  setupKeyboardNavigation();
 
   // Initialize Firebase and load existing cards
   await initBoardStore();
@@ -755,6 +756,89 @@ function setupDragAndDrop() {
   // Touch events for mobile
   workspace.addEventListener("touchmove", handleDragMove, { passive: false });
   workspace.addEventListener("touchend", handleDragEnd);
+}
+
+/**
+ * Setup keyboard navigation for accessibility
+ * Allows keyboard-only users to interact with cards
+ */
+function setupKeyboardNavigation() {
+  document.addEventListener("keydown", handleCardKeyboard);
+}
+
+/**
+ * Handle keyboard events on cards
+ * @param {KeyboardEvent} e - Keyboard event
+ */
+function handleCardKeyboard(e) {
+  const focusedCard = document.activeElement;
+
+  // Only handle if a card is focused
+  if (!focusedCard || !focusedCard.classList.contains("board-card")) {
+    return;
+  }
+
+  const cardId = focusedCard.getAttribute("data-card-id");
+
+  // Enter key - Edit card
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const type = focusedCard.classList.contains("card-text")
+      ? CARD_TYPES.TEXT
+      : focusedCard.classList.contains("card-image")
+        ? CARD_TYPES.IMAGE
+        : CARD_TYPES.COLOR;
+    const content =
+      type === CARD_TYPES.TEXT
+        ? focusedCard.querySelector(".board-card-content").textContent
+        : type === CARD_TYPES.IMAGE
+          ? focusedCard.querySelector(".board-card-image").src
+          : focusedCard.style.backgroundColor;
+    showEditModal({ id: cardId, type, content });
+    return;
+  }
+
+  // Delete key - Delete card
+  if (e.key === "Delete" || e.key === "Backspace") {
+    e.preventDefault();
+    showDeleteConfirmation(cardId);
+    return;
+  }
+
+  // Arrow keys - Move card
+  const moveAmount = e.shiftKey ? 10 : 1; // Shift for larger movements
+  let moved = false;
+
+  if (e.key === "ArrowLeft") {
+    e.preventDefault();
+    const currentX = parseInt(focusedCard.style.left);
+    focusedCard.style.left = `${currentX - moveAmount}px`;
+    moved = true;
+  } else if (e.key === "ArrowRight") {
+    e.preventDefault();
+    const currentX = parseInt(focusedCard.style.left);
+    focusedCard.style.left = `${currentX + moveAmount}px`;
+    moved = true;
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    const currentY = parseInt(focusedCard.style.top);
+    focusedCard.style.top = `${currentY - moveAmount}px`;
+    moved = true;
+  } else if (e.key === "ArrowDown") {
+    e.preventDefault();
+    const currentY = parseInt(focusedCard.style.top);
+    focusedCard.style.top = `${currentY + moveAmount}px`;
+    moved = true;
+  }
+
+  // Save position after keyboard move
+  if (moved) {
+    const position = {
+      x: parseInt(focusedCard.style.left),
+      y: parseInt(focusedCard.style.top),
+    };
+    updateCardPosition(cardId, position);
+  }
 }
 
 /**

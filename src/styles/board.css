@@ -103,12 +103,28 @@
   cursor: move;
   cursor: grab;
   user-select: none;
+  outline: none;
 }
 
 .board-card:hover {
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.1),
     0 2px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Keyboard focus - high contrast outline */
+.board-card:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 2px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.board-card:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
 }
 
 .board-card.dragging {
@@ -131,7 +147,7 @@
 .board-card-content {
   font-size: 0.95rem;
   line-height: 1.5;
-  color: var(--text-color, #2d3748);
+  color: #1a202c;\n  /* High contrast text - WCAG AAA compliant */
   word-wrap: break-word;
   white-space: pre-wrap;
 }
@@ -654,17 +670,53 @@
   }
 }
 
-/* Reduced Motion Support */
+/* Accessibility - Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
   .board-canvas {
-    transition: none;
+    transition: none !important;
   }
 
   .board-card {
-    transition: none;
+    transition: none !important;
   }
 
   .board-card.dragging {
-    transition: none;
+    transition: none !important;
+  }
+
+  .starter-dismiss-banner {
+    animation: none !important;
+  }
+
+  @keyframes slide-up {
+    from,
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .board-card {
+    border: 2px solid currentColor;
+  }
+
+  .board-card:focus {
+    outline: 3px solid;
+    outline-offset: 3px;
+  }
+
+  .add-card-button {
+    border: 2px solid currentColor;
   }
 }
