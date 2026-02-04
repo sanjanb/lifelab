@@ -34,7 +34,9 @@ let dragOffset = { x: 0, y: 0 };
  * Initialize the Visualization Board
  */
 async function init() {
-  console.log("Visualization Board - Phase 8: Optional Starter Template initialized");
+  console.log(
+    "Visualization Board - Phase 8: Optional Starter Template initialized",
+  );
   console.log("Constraints active:", BOARD_CONSTRAINTS);
   console.log("Supported card types:", CARD_TYPES);
 
@@ -46,7 +48,7 @@ async function init() {
   // Initialize Firebase and load existing cards
   await initBoardStore();
   await loadExistingCards();
-  
+
   // Check if we should show starter template
   await checkAndShowStarterTemplate();
 }
