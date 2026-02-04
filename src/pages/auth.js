@@ -109,6 +109,156 @@ async function handleSubmit(e) {
 }
 
 /**
+ * Show migration prompt if local data exists
+ */
+function showMigrationPrompt() {
+  const data = detectLocalData();
+  
+  // Create modal
+  const modal = document.createElement("div");
+  modal.className = "migration-modal";
+  modal.innerHTML = `
+    <div class="migration-content">
+      <h2>Welcome Back!</h2>
+      <p class="migration-description">We found data in your browser from before you signed in. Would you like to migrate it to your account?</p>
+      
+      <div class="migration-stats">
+        ${data.wins > 0 ? `<div class="migration-stat"><strong>${data.wins}</strong> wins</div>` : ''}
+        ${data.journalEntries > 0 ? `<div class="migration-stat"><strong>${data.journalEntries}</strong> journal entries</div>` : ''}
+        ${data.reflections > 0 ? `<div class="migration-stat"><strong>${data.reflections}</strong> reflections</div>` : ''}
+        ${data.hasSettings ? `<div class="migration-stat">Personal settings</div>` : ''}
+      </div>
+      
+      <div class="migration-actions">
+        <button class="migration-btn migration-btn-primary" id="migrateBtn">
+          Migrate My Data
+        </button>
+        <button class="migration-btn migration-btn-secondary" id="dismissBtn">
+          Not Now
+        </button>
+      </div>
+      
+      <p class="migration-note">Your browser data will remain safe. You can always migrate later from Settings.</p>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Handle migrate
+  document.getElementById("migrateBtn").addEventListener("click", async () => {
+    await handleMigration(modal);
+  });
+  
+  // Handle dismiss
+  document.getElementById("dismissBtn").addEventListener("click", () => {
+    dismissMigration();
+    modal.remove();
+    window.location.href = "./index.html";
+  });
+}
+
+/**
+ * Handle the migration process with progress and error handling
+ */
+async function handleMigration(modal) {
+  const content = modal.querySelector(".migration-content");
+  
+  // Show progress
+  content.innerHTML = `
+    <h2>Migrating Your Data...</h2>
+    <div class="migration-progress">
+      <div class="migration-spinner"></div>
+      <p>Copying your data to your account...</p>
+    </div>
+  `;
+  
+  try {
+    const result = await migrateToFirebase();
+    
+    if (result.success) {
+      // Show success
+      content.innerHTML = `
+        <h2>Migration Complete!</h2>
+        <div class="migration-success">
+          <p>✓ Your data has been safely copied to your account.</p>
+        </div>
+        
+        <div class="migration-delete-section">
+          <p class="migration-delete-note">
+            Your browser data is still stored locally. Would you like to remove it?
+          </p>
+          <div class="migration-actions">
+            <button class="migration-btn migration-btn-danger" id="deleteLocalBtn">
+              Delete Browser Data
+            </button>
+            <button class="migration-btn migration-btn-secondary" id="keepLocalBtn">
+              Keep It
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById("deleteLocalBtn").addEventListener("click", () => {
+        clearLocalData();
+        modal.remove();
+        window.location.href = "./index.html";
+      });
+      
+      document.getElementById("keepLocalBtn").addEventListener("click", () => {
+        modal.remove();
+        window.location.href = "./index.html";
+      });
+    } else {
+      // Show errors
+      content.innerHTML = `
+        <h2>Migration Issues</h2>
+        <div class="migration-error">
+          <p>Some items couldn't be migrated:</p>
+          <ul>
+            ${result.errors.map(err => `<li>${err}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="migration-actions">
+          <button class="migration-btn migration-btn-primary" id="continueBtn">
+            Continue to Dashboard
+          </button>
+        </div>
+      `;
+      
+      document.getElementById("continueBtn").addEventListener("click", () => {
+        modal.remove();
+        window.location.href = "./index.html";
+      });
+    }
+  } catch (error) {
+    console.error("Migration failed:", error);
+    content.innerHTML = `
+      <h2>Migration Failed</h2>
+      <div class="migration-error">
+        <p>Sorry, we couldn't migrate your data: ${error.message}</p>
+      </div>
+      <div class="migration-actions">
+        <button class="migration-btn migration-btn-primary" id="retryBtn">
+          Try Again
+        </button>
+        <button class="migration-btn migration-btn-secondary" id="skipBtn">
+          Skip for Now
+        </button>
+      </div>
+    `;
+    
+    document.getElementById("retryBtn").addEventListener("click", () => {
+      handleMigration(modal);
+    });
+    
+    document.getElementById("skipBtn").addEventListener("click", () => {
+      modal.remove();
+      window.location.href = "./index.html";
+    });
+  }
+}
+
+/**
  * Toggle between sign in and sign up modes
  */
 function toggleMode() {
