@@ -94,7 +94,7 @@ export async function saveWin(date, text) {
     return { success: false, error: "Date and text are required" };
   }
 
-  const wins = loadWins();
+  const wins = await loadWins();
 
   // Prevent more than one win per day
   if (wins[date]) {
@@ -125,38 +125,38 @@ export async function saveWin(date, text) {
 /**
  * Get a win for a specific date
  * @param {string} date - ISO date string (YYYY-MM-DD)
- * @returns {WinEntry|null} Win entry or null if not found
+ * @returns {Promise<WinEntry|null>} Win entry or null if not found
  */
-export function getWinByDate(date) {
-  const wins = loadWins();
+export async function getWinByDate(date) {
+  const wins = await loadWins();
   return wins[date] || null;
 }
 
 /**
  * Check if a win exists for a specific date
  * @param {string} date - ISO date string (YYYY-MM-DD)
- * @returns {boolean} True if win exists
+ * @returns {Promise<boolean>} True if win exists
  */
-export function hasWinForDate(date) {
-  const wins = loadWins();
+export async function hasWinForDate(date) {
+  const wins = await loadWins();
   return !!wins[date];
 }
 
 /**
  * Get all wins sorted chronologically (oldest to newest)
- * @returns {Array<WinEntry>} Array of win entries
+ * @returns {Promise<Array<WinEntry>>} Array of win entries
  */
-export function getAllWins() {
-  const wins = loadWins();
+export async function getAllWins() {
+  const wins = await loadWins();
   return Object.values(wins).sort((a, b) => a.date.localeCompare(b.date));
 }
 
 /**
  * Get win statistics (archival counts, no performance metrics)
- * @returns {Object} Statistics object
+ * @returns {Promise<Object>} Statistics object
  */
-export function getWinStats() {
-  const wins = loadWins();
+export async function getWinStats() {
+  const wins = await loadWins();
   const allWins = Object.values(wins);
 
   const now = new Date();
@@ -189,10 +189,10 @@ export function getWinStats() {
  * Get wins filtered by year and/or month
  * @param {number} year - Year to filter by (optional)
  * @param {number} month - Month to filter by (1-12, optional)
- * @returns {Array<WinEntry>} Filtered wins
+ * @returns {Promise<Array<WinEntry>>} Filtered wins
  */
-export function getWinsFiltered(year = null, month = null) {
-  const allWins = getAllWins();
+export async function getWinsFiltered(year = null, month = null) {
+  const allWins = await getAllWins();
 
   return allWins.filter((win) => {
     const winDate = new Date(win.date);
