@@ -62,11 +62,11 @@ export async function saveCard(card) {
 
     // Persistence manager handles localStorage vs Firebase based on auth
     const success = await persistence.save(CARDS_COLLECTION, cardData);
-    
+
     if (success) {
       console.log(`[Board Store] Card ${card.id} saved`);
     }
-    
+
     return success;
   } catch (error) {
     console.error("[Board Store] Save failed:", error);
@@ -88,12 +88,12 @@ export async function loadCards() {
   try {
     // Persistence manager handles fetching from localStorage or Firebase
     const result = await persistence.fetch(CARDS_COLLECTION);
-    
+
     if (result && Array.isArray(result)) {
       console.log(`[Board Store] Loaded ${result.length} cards`);
       return result;
     }
-    
+
     return [];
   } catch (error) {
     console.error("[Board Store] Load failed:", error);
@@ -102,7 +102,7 @@ export async function loadCards() {
 }
 
 /**
- * Delete a card from Firebase
+ * Delete a card
  * Called only on explicit user action (delete confirmation)
  *
  * @param {string} cardId - Card ID to delete
@@ -113,18 +113,18 @@ export async function deleteCard(cardId) {
     await initBoardStore();
   }
 
-  // If Firebase unavailable, skip
-  if (!db) {
-    console.log("[Board Store] Delete skipped - no Firebase connection");
-    return false;
-  }
-
   try {
-    const sharedId = getSharedDocId();
-    const cardRef = doc(db, "lifelab_data", sharedId, COLLECTION_NAME, cardId);
-
-    await deleteDoc(cardRef);
-    console.log(`[Board Store] Card ${cardId} deleted`);
+    // Load all cards
+    const cards = await loadCards();
+    
+    // Filter out the deleted card
+    const updatedCards = cards.filter(card => card.id !== cardId);
+    
+    // Save updated array
+    const success = await persistence.save(CARDS_COLLECTION, updatedCards);
+    
+    if (success) {
+      console.log(`[Board Store] Card ${cardId} deleted`);
     return true;
   } catch (error) {
     console.error("[Board Store] Delete failed:", error);
