@@ -443,5 +443,125 @@ function closeModal(modal) {
   modal.remove();
 }
 
+/**
+ * Setup global drag-and-drop event listeners
+ * Handles workspace-level mouse/touch events
+ */
+function setupDragAndDrop() {
+  const workspace = document.querySelector(".board-canvas-workspace");
+
+  // Mouse events
+  workspace.addEventListener("mousemove", handleDragMove);
+  workspace.addEventListener("mouseup", handleDragEnd);
+
+  // Touch events for mobile
+  workspace.addEventListener("touchmove", handleDragMove, { passive: false });
+  workspace.addEventListener("touchend", handleDragEnd);
+}
+
+/**
+ * Make a card element draggable
+ * @param {HTMLElement} cardElement - The card element
+ */
+function makeDraggable(cardElement) {
+  // Mouse events
+  cardElement.addEventListener("mousedown", handleDragStart);
+
+  // Touch events
+  cardElement.addEventListener("touchstart", handleDragStart, {
+    passive: false,
+  });
+}
+
+/**
+ * Handle drag start event
+ * @param {MouseEvent|TouchEvent} e - Event object
+ */
+function handleDragStart(e) {
+  // Prevent default to avoid text selection
+  e.preventDefault();
+
+  const card = e.currentTarget;
+  draggedCard = card;
+
+  // Get the pointer position
+  const clientX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
+  const clientY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
+
+  // Calculate offset from card's top-left corner
+  const rect = card.getBoundingClientRect();
+  const workspace = document.querySelector(".board-canvas-workspace");
+  const workspaceRect = workspace.getBoundingClientRect();
+
+  dragOffset.x = clientX - rect.left;
+  dragOffset.y = clientY - rect.top;
+
+  // Add dragging class for visual feedback
+  card.classList.add("dragging");
+
+  // Bring card to front
+  card.style.zIndex = "1000";
+}
+
+/**
+ * Handle drag move event
+ * @param {MouseEvent|TouchEvent} e - Event object
+ */
+function handleDragMove(e) {
+  if (!draggedCard) return;
+
+  // Prevent default scrolling on touch
+  if (e.type === "touchmove") {
+    e.preventDefault();
+  }
+
+  // Get pointer position
+  const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+  const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+
+  // Get workspace bounds for positioning
+  const workspace = document.querySelector(".board-canvas-workspace");
+  const workspaceRect = workspace.getBoundingClientRect();
+  const scrollLeft = workspace.scrollLeft || 0;
+  const scrollTop = workspace.scrollTop || 0;
+
+  // Calculate new position (relative to workspace, not viewport)
+  // Free-form positioning - no snapping or alignment
+  const newX = clientX - workspaceRect.left + scrollLeft - dragOffset.x;
+  const newY = clientY - workspaceRect.top + scrollTop - dragOffset.y;
+
+  // Update card position (calm, direct movement)
+  draggedCard.style.left = `${newX}px`;
+  draggedCard.style.top = `${newY}px`;
+}
+
+/**
+ * Handle drag end event
+ * @param {MouseEvent|TouchEvent} e - Event object
+ */
+function handleDragEnd(e) {
+  if (!draggedCard) return;
+
+  // Remove dragging class
+  draggedCard.classList.remove("dragging");
+
+  // Reset z-index
+  draggedCard.style.zIndex = "";
+
+  // Save the new position (Phase 6 will persist to Firebase)
+  const cardId = draggedCard.getAttribute("data-card-id");
+  const position = {
+    x: parseInt(draggedCard.style.left),
+    y: parseInt(draggedCard.style.top),
+  };
+
+  console.log(`Card ${cardId} moved to:`, position);
+  // TODO: Save to Firebase in Phase 6
+
+  // Clear drag state
+  draggedCard = null;
+  dragOffset = { x: 0, y: 0 };
+}
+
 // Initialize on page load
 init();
