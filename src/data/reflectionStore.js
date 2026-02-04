@@ -25,7 +25,7 @@ export async function listReflections() {
     const result = await persistence.fetch(FIREBASE_COLLECTION);
     if (result && Array.isArray(result)) {
       return result.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
       );
     }
   } catch (error) {
@@ -97,4 +97,3 @@ export async function deleteReflection(id) {
     return false;
   }
 }
-
