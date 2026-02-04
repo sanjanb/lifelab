@@ -2,7 +2,7 @@
  * Visualization Board - Page Logic
  * A calm, manual, non-performative visualization space
  *
- * Phase 3: Card types and rendering layer
+ * Phase 4: Manual card creation
  *
  * @see docs/VISUALIZATION_BOARD_PHILOSOPHY.md
  * @see src/data/boardConstraints.js
@@ -16,19 +16,20 @@ import "../styles/board.css";
 
 import { BOARD_CONSTRAINTS, CARD_TYPES } from "../data/boardConstraints.js";
 
+// State management
+let cardIdCounter = 0;
+
 /**
  * Initialize the Visualization Board
  */
 function init() {
-  console.log("Visualization Board - Phase 3: Card rendering initialized");
+  console.log("Visualization Board - Phase 4: Manual card creation initialized");
   console.log("Constraints active:", BOARD_CONSTRAINTS);
   console.log("Supported card types:", CARD_TYPES);
 
   renderCanvas();
   renderEmptyState();
-
-  // Demo: Render example cards (will be removed in Phase 4)
-  renderDemoCards();
+  renderAddButton();
 }
 
 /**
@@ -59,6 +60,22 @@ function renderEmptyState() {
   emptyState.textContent = "A quiet space, ready when you are";
 
   workspace.appendChild(emptyState);
+}
+
+/**
+ * Render the "Add Card" button
+ * Small, unobtrusive button for intentional card creation
+ */
+function renderAddButton() {
+  const button = document.createElement("button");
+  button.className = "add-card-button";
+  button.innerHTML = "+";
+  button.setAttribute("aria-label", "Add a card");
+  button.setAttribute("title", "Add a card");
+
+  button.addEventListener("click", showCardTypeModal);
+
+  document.body.appendChild(button);
 }
 
 /**
