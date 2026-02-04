@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#fafafa" />
+    <title>Sign In — LifeLab</title>
+  </head>
+  <body>
+    <div class="container auth-container">
+      <header class="header auth-header">
+        <h1 id="auth-title">Open your notebook</h1>
+        <p id="auth-subtitle">Continue your work across devices</p>
+      </header>
+
+      <main class="auth-main">
+        <form id="auth-form" class="auth-form">
+          <div class="auth-input-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              autocomplete="email"
+              required
+              autofocus
+            />
+          </div>
+
+          <div class="auth-input-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              autocomplete="current-password"
+              minlength="6"
+              required
+            />
+          </div>
+
+          <div id="error-message" class="auth-error" role="alert"></div>
+
+          <button type="submit" class="auth-submit" id="submit-button">
+            Sign In
+          </button>
+
+          <div class="auth-toggle">
+            <span id="toggle-text">New here?</span>
+            <button type="button" class="auth-toggle-button" id="toggle-button">
+              Create notebook
+            </button>
+          </div>
+        </form>
+      </main>
+
+      <nav class="nav-links">
+        <a href="./index.html">Dashboard</a>
+        <a href="./about.html">About</a>
+      </nav>
+    </div>
+
+    <script type="module" src="/src/pages/auth.js"></script>
+  </body>
+</html>
