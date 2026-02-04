@@ -340,9 +340,11 @@ function capitalizeFirst(str) {
 async function handleExportData() {
   try {
     const result = await exportToFile();
-    
+
     if (result.success) {
-      alert("Your data has been exported successfully.\n\nThe file contains all your wins, reflections, journal entries, and settings.");
+      alert(
+        "Your data has been exported successfully.\n\nThe file contains all your wins, reflections, journal entries, and settings.",
+      );
     } else {
       alert(`Export failed: ${result.error}`);
     }
@@ -379,20 +381,18 @@ async function handleSignOut() {
 async function handleDeleteAccount() {
   const confirmed = confirm(
     "⚠️ DELETE ACCOUNT\n\n" +
-    "This will PERMANENTLY DELETE:\n" +
-    "• Your account\n" +
-    "• All cloud data (wins, journal, reflections)\n" +
-    "• Board cards and settings\n\n" +
-    "This action CANNOT be undone.\n\n" +
-    "Are you absolutely sure?"
+      "This will PERMANENTLY DELETE:\n" +
+      "• Your account\n" +
+      "• All cloud data (wins, journal, reflections)\n" +
+      "• Board cards and settings\n\n" +
+      "This action CANNOT be undone.\n\n" +
+      "Are you absolutely sure?",
   );
 
   if (!confirmed) return;
 
   // Double confirmation
-  const doubleCheck = prompt(
-    "Type DELETE to confirm account deletion:"
-  );
+  const doubleCheck = prompt("Type DELETE to confirm account deletion:");
 
   if (doubleCheck !== "DELETE") {
     alert("Account deletion cancelled.");
@@ -424,21 +424,25 @@ async function handleDeleteAccount() {
     clearAllData();
 
     // Redirect to auth page
-    alert("Your account and all associated data have been permanently deleted.");
+    alert(
+      "Your account and all associated data have been permanently deleted.",
+    );
     window.location.href = "./auth.html";
   } catch (error) {
     console.error("Delete account error:", error);
-    
+
     // Handle re-authentication required error
     if (error.code === "auth/requires-recent-login") {
       alert(
         "For security, you need to sign in again before deleting your account.\n\n" +
-        "Please sign out and sign in again, then try deleting your account."
+          "Please sign out and sign in again, then try deleting your account.",
       );
     } else {
-      alert(`Unable to delete account: ${error.message}\n\nPlease try again or contact support.`);
+      alert(
+        `Unable to delete account: ${error.message}\n\nPlease try again or contact support.`,
+      );
     }
-    
+
     // Reset button
     const deleteBtn = document.getElementById("delete-account-btn");
     if (deleteBtn) {
