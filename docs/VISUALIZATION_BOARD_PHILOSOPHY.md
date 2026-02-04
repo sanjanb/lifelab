@@ -34,6 +34,7 @@ Every card on the board is **intentionally placed** by you. Nothing appears auto
 ### 2. No Numbers
 
 The board shows **no metrics** of any kind:
+
 - No card counts
 - No placement scores
 - No usage statistics
@@ -90,6 +91,7 @@ The board supports three simple card types:
 3. **Color Card** — Single color block
 
 All cards support:
+
 - Free-form positioning
 - Manual editing
 - Permanent deletion (with confirmation)

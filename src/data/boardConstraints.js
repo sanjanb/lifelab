@@ -1,9 +1,9 @@
 /**
  * Visualization Board Constraints
- * 
+ *
  * These constants define the philosophical boundaries of the Visualization Board.
  * They exist to prevent feature drift toward productivity/performance tools.
- * 
+ *
  * @see docs/VISUALIZATION_BOARD_PHILOSOPHY.md
  */
 
@@ -21,7 +21,7 @@ export const BOARD_CONSTRAINTS = Object.freeze({
   NO_PERFORMANCE_LANGUAGE: true,
   NO_NOTIFICATIONS: true,
   NO_GAMIFICATION: true,
-  
+
   // 要求的行为 (Required Behaviors)
   MANUAL_EDITS_ONLY: true,
   EXPLICIT_USER_ACTION_REQUIRED: true,
@@ -34,9 +34,9 @@ export const BOARD_CONSTRAINTS = Object.freeze({
  * Limited set to maintain simplicity
  */
 export const CARD_TYPES = Object.freeze({
-  TEXT: 'text',
-  IMAGE: 'image',
-  COLOR: 'color',
+  TEXT: "text",
+  IMAGE: "image",
+  COLOR: "color",
 });
 
 /**
@@ -45,13 +45,13 @@ export const CARD_TYPES = Object.freeze({
 export const VISUAL_CONSTRAINTS = Object.freeze({
   // No bright, attention-grabbing colors
   NEUTRAL_PALETTE: true,
-  
+
   // No urgency cues
   NO_ALERT_COLORS: true,
-  
+
   // No animation that creates pressure
   CALM_ANIMATIONS: true,
-  
+
   // Generous whitespace
   SPACIOUS_LAYOUT: true,
 });
@@ -62,13 +62,13 @@ export const VISUAL_CONSTRAINTS = Object.freeze({
 export const INTERACTION_CONSTRAINTS = Object.freeze({
   // No quick-add shortcuts
   DELIBERATE_ACTIONS_ONLY: true,
-  
+
   // Confirm before permanent changes
   CONFIRM_DELETIONS: true,
-  
+
   // No forced alignment
   FREE_FORM_POSITIONING: true,
-  
+
   // No auto-save loops
   EXPLICIT_SAVE: false, // Save on action, not continuously
 });
@@ -81,10 +81,10 @@ export const DATA_CONSTRAINTS = Object.freeze({
   NO_TIMESTAMP_ANALYSIS: true,
   NO_EDIT_HISTORY_ANALYTICS: true,
   NO_USAGE_PATTERNS: true,
-  
+
   // No comparison features
   NO_COMPARISON: true,
-  
+
   // No smart suggestions
   NO_AI_SUGGESTIONS: true,
 });
@@ -94,18 +94,18 @@ export const DATA_CONSTRAINTS = Object.freeze({
  * Reject these patterns in code reviews
  */
 export const FORBIDDEN_UI_PATTERNS = Object.freeze([
-  'progress-bar',
-  'completion-percentage',
-  'streak-counter',
-  'achievement-badge',
-  'suggested-action',
-  'smart-template',
-  'usage-stats',
-  'card-count',
-  'activity-graph',
-  'reminder-notification',
-  'urgency-indicator',
-  'comparison-chart',
+  "progress-bar",
+  "completion-percentage",
+  "streak-counter",
+  "achievement-badge",
+  "suggested-action",
+  "smart-template",
+  "usage-stats",
+  "card-count",
+  "activity-graph",
+  "reminder-notification",
+  "urgency-indicator",
+  "comparison-chart",
 ]);
 
 /**
@@ -113,21 +113,21 @@ export const FORBIDDEN_UI_PATTERNS = Object.freeze([
  * Avoid these in UI text and documentation
  */
 export const FORBIDDEN_LANGUAGE = Object.freeze([
-  'achieve',
-  'goal',
-  'target',
-  'improve',
-  'optimize',
-  'progress',
-  'grow',
-  'complete',
-  'finish',
-  'win',
-  'success',
-  'performance',
-  'productivity',
-  'streak',
-  'consistency',
+  "achieve",
+  "goal",
+  "target",
+  "improve",
+  "optimize",
+  "progress",
+  "grow",
+  "complete",
+  "finish",
+  "win",
+  "success",
+  "performance",
+  "productivity",
+  "streak",
+  "consistency",
 ]);
 
 /**
@@ -135,16 +135,16 @@ export const FORBIDDEN_LANGUAGE = Object.freeze([
  * Use these instead
  */
 export const ALLOWED_LANGUAGE = Object.freeze([
-  'notice',
-  'reflect',
-  'arrange',
-  'consider',
-  'explore',
-  'observe',
-  'acknowledge',
-  'place',
-  'compose',
-  'think',
+  "notice",
+  "reflect",
+  "arrange",
+  "consider",
+  "explore",
+  "observe",
+  "acknowledge",
+  "place",
+  "compose",
+  "think",
 ]);
 
 /**
@@ -154,31 +154,31 @@ export const ALLOWED_LANGUAGE = Object.freeze([
  */
 export function validateFeature(feature) {
   const violations = [];
-  
+
   if (feature.hasMetrics) {
-    violations.push('Violates NO_METRICS constraint');
+    violations.push("Violates NO_METRICS constraint");
   }
-  
+
   if (feature.hasGoals) {
-    violations.push('Violates NO_GOALS constraint');
+    violations.push("Violates NO_GOALS constraint");
   }
-  
+
   if (feature.tracksProgress) {
-    violations.push('Violates NO_PROGRESS_TRACKING constraint');
+    violations.push("Violates NO_PROGRESS_TRACKING constraint");
   }
-  
+
   if (feature.hasStreaks) {
-    violations.push('Violates NO_STREAKS constraint');
+    violations.push("Violates NO_STREAKS constraint");
   }
-  
+
   if (feature.autoGeneratesContent) {
-    violations.push('Violates NO_AUTO_GENERATED_CONTENT constraint');
+    violations.push("Violates NO_AUTO_GENERATED_CONTENT constraint");
   }
-  
+
   if (feature.hasNotifications) {
-    violations.push('Violates NO_NOTIFICATIONS constraint');
+    violations.push("Violates NO_NOTIFICATIONS constraint");
   }
-  
+
   return {
     isValid: violations.length === 0,
     violations,
@@ -192,14 +192,14 @@ export function validateFeature(feature) {
  */
 export function validateUIText(text) {
   const lowerText = text.toLowerCase();
-  const foundForbidden = FORBIDDEN_LANGUAGE.filter(word => 
-    lowerText.includes(word)
+  const foundForbidden = FORBIDDEN_LANGUAGE.filter((word) =>
+    lowerText.includes(word),
   );
-  
+
   return {
     isValid: foundForbidden.length === 0,
-    violations: foundForbidden.map(word => 
-      `Contains forbidden word: "${word}"`
+    violations: foundForbidden.map(
+      (word) => `Contains forbidden word: "${word}"`,
     ),
   };
 }
