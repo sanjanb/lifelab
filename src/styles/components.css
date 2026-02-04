@@ -1462,6 +1462,16 @@
   color: var(--text-color, #2d3748);
 }
 
+.danger-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.danger-actions button {
+  flex: 0 1 auto;
+}
+
 .danger-divider {
   height: 1px;
   background: var(--border-subtle, #e2e8f0);
