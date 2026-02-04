@@ -48,7 +48,8 @@ let db = null;
 let auth = null;
 let googleProvider = null;
 
-// Shared collection ID for all data (no user separation)
+// DEPRECATED: Shared collection for backward compatibility (Phase 6 migration)
+// Use user-scoped paths from userDataNamespace.js instead
 const SHARED_DOC_ID = "shared_data";
 
 /**
