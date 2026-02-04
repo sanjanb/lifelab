@@ -17,14 +17,18 @@ import { renderWinSummary } from "./components/winCounter.js";
 import { persistence } from "./data/persistence/manager.js";
 import { getTodaysMemory } from "./data/memoryQuery.js";
 import { renderMemoryCard } from "./components/memoryCard.js";
+import { initAuthState } from "./data/persistence/authState.js";
 
 /**
  * Initialize the application
  */
 async function init() {
   try {
-    // Initialize Firebase persistence (must wait for it)
-    await persistence.init(true);
+    // Initialize auth state first (starts listening to auth changes)
+    initAuthState();
+
+    // Initialize persistence (auth-aware, will auto-select provider)
+    await persistence.init();
 
     showLoading();
 

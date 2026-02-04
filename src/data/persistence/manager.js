@@ -8,11 +8,21 @@
  * - Switch to Firebase only after successful auth
  * - Never oscillate between providers
  * - App works WITHOUT Firebase
+ *
+ * PHASE 7: Auth-Aware Feature Access
+ * - Check auth state before Firebase operations
+ * - Fall back to localStorage when unauthenticated
+ * - Sync automatically when user logs in
  */
 
 import { LocalStorageProvider } from "./localStorageProvider.js";
 import { FirebaseProvider } from "./firebaseProvider.js";
 import { DataTypes, MigrationState, validateData } from "./interface.js";
+import { 
+  isAuthenticated, 
+  onAuthStateChange, 
+  getCurrentUserId 
+} from "./authState.js";
 
 class PersistenceManager {
   constructor() {
@@ -22,14 +32,15 @@ class PersistenceManager {
       firebase: new FirebaseProvider(),
     };
     this.initialized = false;
+    this.authUnsubscribe = null;
+    this.isSyncing = false; // Prevent concurrent sync operations
   }
 
   /**
-   * Initialize persistence (try Firebase, fallback to localStorage)
-   * @param {boolean} preferFirebase - Whether to try Firebase first
+   * Initialize persistence (auth-aware)
    * @returns {Promise<string>} Name of active provider
    */
-  async init(preferFirebase = false) {
+  async init() {
     if (this.initialized) {
       console.log(
         `[Persistence] Already initialized with ${this.currentProvider.getName()}`
@@ -37,13 +48,19 @@ class PersistenceManager {
       return this.currentProvider.getName();
     }
 
-    if (preferFirebase) {
-      // Try Firebase first
+    // Set up auth state listener
+    this.authUnsubscribe = onAuthStateChange((authState) => {
+      this.handleAuthStateChange(authState);
+    });
+
+    // Choose provider based on current auth state
+    if (isAuthenticated()) {
+      // User is authenticated, try Firebase
       const firebaseReady = await this.providers.firebase.init();
       if (firebaseReady) {
         this.currentProvider = this.providers.firebase;
         this.initialized = true;
-        console.log("[Persistence] Using Firebase");
+        console.log("[Persistence] Using Firebase (authenticated)");
         return "firebase";
       }
       console.log(
@@ -51,16 +68,137 @@ class PersistenceManager {
       );
     }
 
-    // Fallback to localStorage
+    // Fallback to localStorage (unauthenticated or Firebase unavailable)
     const localReady = await this.providers.localStorage.init();
     if (localReady) {
       this.currentProvider = this.providers.localStorage;
       this.initialized = true;
-      console.log("[Persistence] Using localStorage");
+      console.log("[Persistence] Using localStorage (unauthenticated)");
       return "localStorage";
     }
 
     throw new Error("No persistence provider available");
+  }
+
+  /**
+   * Handle authentication state changes
+   * Switch providers and sync data when user logs in/out
+   * @param {Object} authState - Current auth state
+   */
+  async handleAuthStateChange(authState) {
+    if (!this.initialized) {
+      return; // Let init() handle the initial setup
+    }
+
+    if (authState.isLoading) {
+      return; // Wait for auth to finish loading
+    }
+
+    if (authState.isAuthenticated) {
+      // User just logged in
+      if (!this.isUsingFirebase()) {
+        console.log("[Persistence] User logged in, switching to Firebase");
+        await this.switchToFirebase();
+      }
+    } else {
+      // User just logged out
+      if (this.isUsingFirebase()) {
+        console.log("[Persistence] User logged out, switching to localStorage");
+        await this.switchToLocalStorage();
+      }
+    }
+  }
+
+  /**
+   * Switch to Firebase provider and sync local data
+   * @returns {Promise<boolean>} Success status
+   */
+  async switchToFirebase() {
+    const firebaseReady = await this.providers.firebase.init();
+    if (!firebaseReady) {
+      console.warn("[Persistence] Cannot switch to Firebase - not available");
+      return false;
+    }
+
+    // Sync local data to Firebase
+    await this.syncLocalToFirebase();
+
+    // Switch provider
+    this.currentProvider = this.providers.firebase;
+    console.log("[Persistence] Switched to Firebase");
+    return true;
+  }
+
+  /**
+   * Switch to localStorage provider
+   * @returns {Promise<boolean>} Success status
+   */
+  async switchToLocalStorage() {
+    const localReady = await this.providers.localStorage.init();
+    if (!localReady) {
+      console.warn("[Persistence] Cannot switch to localStorage - not available");
+      return false;
+    }
+
+    // Switch provider (no data copy on logout for privacy)
+    this.currentProvider = this.providers.localStorage;
+    console.log("[Persistence] Switched to localStorage");
+    return true;
+  }
+
+  /**
+   * Sync localStorage data to Firebase (when user logs in)
+   * @returns {Promise<Object>} Sync result
+   */
+  async syncLocalToFirebase() {
+    if (this.isSyncing) {
+      console.log("[Persistence] Sync already in progress");
+      return { success: false, error: "Sync already in progress" };
+    }
+
+    this.isSyncing = true;
+
+    try {
+      // Get local data
+      const localReady = await this.providers.localStorage.init();
+      if (!localReady) {
+        return { success: false, error: "localStorage not available" };
+      }
+
+      const localExport = await this.providers.localStorage.export();
+      if (!localExport || !localExport.data) {
+        console.log("[Persistence] No local data to sync");
+        return { success: true, itemsSynced: 0 };
+      }
+
+      // Check if there's actually data to sync
+      const hasData = Object.values(localExport.data).some(
+        (typeData) => typeData && Object.keys(typeData).length > 0
+      );
+
+      if (!hasData) {
+        console.log("[Persistence] No local data to sync");
+        return { success: true, itemsSynced: 0 };
+      }
+
+      console.log("[Persistence] Syncing local data to Firebase...");
+
+      // Migrate to Firebase (this copies data without deleting local copy)
+      const result = await this.providers.firebase.migrate(localExport.data);
+
+      if (result.success) {
+        console.log(
+          `[Persistence] Synced ${result.itemsMigrated || 0} items to Firebase`
+        );
+      }
+
+      return result;
+    } catch (error) {
+      console.error("[Persistence] Sync failed:", error);
+      return { success: false, error: error.message };
+    } finally {
+      this.isSyncing = false;
+    }
   }
 
   /**
@@ -304,6 +442,16 @@ class PersistenceManager {
     return await this.providers.localStorage.setMigrationState(
       MigrationState.ARCHIVED
     );
+  }
+
+  /**
+   * Cleanup: unsubscribe from auth state changes
+   */
+  cleanup() {
+    if (this.authUnsubscribe) {
+      this.authUnsubscribe();
+      this.authUnsubscribe = null;
+    }
   }
 }
 
