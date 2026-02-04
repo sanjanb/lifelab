@@ -68,7 +68,9 @@
   border-radius: 4px;
   background-color: #ffffff;
   color: var(--text-color, #2d3748);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   font-family: inherit;
 }
 
@@ -107,7 +109,9 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
   font-family: inherit;
 }
 

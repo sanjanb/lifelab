@@ -1,12 +1,12 @@
 /**
  * Authentication Page
- * 
+ *
  * PHILOSOPHY:
  * ===========
  * Authentication should feel like opening a notebook, not joining a platform.
  * No marketing copy. No upsells. No "benefits" language.
  * Just calm, neutral access to your private data.
- * 
+ *
  * @see docs/AUTHENTICATION.md - Phase 3
  */
 
