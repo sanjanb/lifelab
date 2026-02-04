@@ -113,7 +113,7 @@ async function handleSubmit(e) {
  */
 function showMigrationPrompt() {
   const data = detectLocalData();
-  
+
   // Create modal
   const modal = document.createElement("div");
   modal.className = "migration-modal";
@@ -123,10 +123,10 @@ function showMigrationPrompt() {
       <p class="migration-description">We found data in your browser from before you signed in. Would you like to migrate it to your account?</p>
       
       <div class="migration-stats">
-        ${data.wins > 0 ? `<div class="migration-stat"><strong>${data.wins}</strong> wins</div>` : ''}
-        ${data.journalEntries > 0 ? `<div class="migration-stat"><strong>${data.journalEntries}</strong> journal entries</div>` : ''}
-        ${data.reflections > 0 ? `<div class="migration-stat"><strong>${data.reflections}</strong> reflections</div>` : ''}
-        ${data.hasSettings ? `<div class="migration-stat">Personal settings</div>` : ''}
+        ${data.wins > 0 ? `<div class="migration-stat"><strong>${data.wins}</strong> wins</div>` : ""}
+        ${data.journalEntries > 0 ? `<div class="migration-stat"><strong>${data.journalEntries}</strong> journal entries</div>` : ""}
+        ${data.reflections > 0 ? `<div class="migration-stat"><strong>${data.reflections}</strong> reflections</div>` : ""}
+        ${data.hasSettings ? `<div class="migration-stat">Personal settings</div>` : ""}
       </div>
       
       <div class="migration-actions">
@@ -141,14 +141,14 @@ function showMigrationPrompt() {
       <p class="migration-note">Your browser data will remain safe. You can always migrate later from Settings.</p>
     </div>
   `;
-  
+
   document.body.appendChild(modal);
-  
+
   // Handle migrate
   document.getElementById("migrateBtn").addEventListener("click", async () => {
     await handleMigration(modal);
   });
-  
+
   // Handle dismiss
   document.getElementById("dismissBtn").addEventListener("click", () => {
     dismissMigration();
@@ -162,7 +162,7 @@ function showMigrationPrompt() {
  */
 async function handleMigration(modal) {
   const content = modal.querySelector(".migration-content");
-  
+
   // Show progress
   content.innerHTML = `
     <h2>Migrating Your Data...</h2>
@@ -171,10 +171,10 @@ async function handleMigration(modal) {
       <p>Copying your data to your account...</p>
     </div>
   `;
-  
+
   try {
     const result = await migrateToFirebase();
-    
+
     if (result.success) {
       // Show success
       content.innerHTML = `
@@ -197,13 +197,15 @@ async function handleMigration(modal) {
           </div>
         </div>
       `;
-      
-      document.getElementById("deleteLocalBtn").addEventListener("click", () => {
-        clearLocalData();
-        modal.remove();
-        window.location.href = "./index.html";
-      });
-      
+
+      document
+        .getElementById("deleteLocalBtn")
+        .addEventListener("click", () => {
+          clearLocalData();
+          modal.remove();
+          window.location.href = "./index.html";
+        });
+
       document.getElementById("keepLocalBtn").addEventListener("click", () => {
         modal.remove();
         window.location.href = "./index.html";
@@ -215,7 +217,7 @@ async function handleMigration(modal) {
         <div class="migration-error">
           <p>Some items couldn't be migrated:</p>
           <ul>
-            ${result.errors.map(err => `<li>${err}</li>`).join('')}
+            ${result.errors.map((err) => `<li>${err}</li>`).join("")}
           </ul>
         </div>
         <div class="migration-actions">
@@ -224,7 +226,7 @@ async function handleMigration(modal) {
           </button>
         </div>
       `;
-      
+
       document.getElementById("continueBtn").addEventListener("click", () => {
         modal.remove();
         window.location.href = "./index.html";
@@ -246,11 +248,11 @@ async function handleMigration(modal) {
         </button>
       </div>
     `;
-    
+
     document.getElementById("retryBtn").addEventListener("click", () => {
       handleMigration(modal);
     });
-    
+
     document.getElementById("skipBtn").addEventListener("click", () => {
       modal.remove();
       window.location.href = "./index.html";
