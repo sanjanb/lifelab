@@ -10,10 +10,10 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#fafafa" />
-    <title>Win Ledger — LifeLab</title>
+    <title>Visualization Board — LifeLab</title>
   </head>
   <body>
-    <div class="container">
+    <div class="container board-container">
       <a
         href="./settings.html"
         class="settings-icon"
@@ -36,37 +36,27 @@
           ></path>
         </svg>
       </a>
-      <header class="header">
-        <h1>Win Ledger</h1>
-        <p>Acknowledgements over time</p>
-        <nav class="nav-links">
-          <a href="./index.html">← Home</a>
-          <a href="./notebook.html">Notebook</a>
-          <a href="./reflection.html">Reflection</a>
-          <a href="./board.html">Board</a>
-        </nav>
+      <header class="header board-header">
+        <h1>Visualization Board</h1>
+        <p>A calm space for visual reflection</p>
       </header>
 
-      <main>
-        <!-- Win Entry (Today) -->
-        <section class="section">
-          <div id="win-entry-container"></div>
-        </section>
-
-        <!-- Win Stats -->
-        <section class="section">
-          <div id="win-stats-container"></div>
-        </section>
-
-        <!-- Win Timeline -->
-        <section class="section">
-          <h2 class="section-title">Archive</h2>
-          <div id="win-filters-container"></div>
-          <div id="win-timeline-container"></div>
-        </section>
+      <main id="board-main">
+        <div class="board-canvas">
+          <!-- Board content will be rendered here -->
+        </div>
       </main>
+
+      <nav class="nav-links">
+        <a href="./index.html">Dashboard</a>
+        <a href="./notebook.html">Notebook</a>
+        <a href="./wins.html">Win Ledger</a>
+        <a href="./reflection.html">Reflection</a>
+        <a href="./year.html">Year Review</a>
+        <a href="./about.html">About</a>
+      </nav>
     </div>
 
-    <script type="module" src="/src/pages/wins.js"></script>
+    <script type="module" src="/src/pages/board.js"></script>
   </body>
 </html>

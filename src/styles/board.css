@@ -1,0 +1,133 @@
+/**
+ * Visualization Board Styles
+ * A calm, non-performative visualization space
+ * No metrics, no goals, no pressure
+ * 
+ * @see docs/VISUALIZATION_BOARD_PHILOSOPHY.md
+ */
+
+/* Board Container */
+.board-container {
+  max-width: 100%;
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Board Header */
+.board-header {
+  padding: 2rem 2rem 1rem;
+  text-align: left;
+  background-color: var(--bg-color, #fafafa);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.board-header h1 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-color, #2d3748);
+}
+
+.board-header p {
+  font-size: 0.95rem;
+  opacity: 0.65;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Board Main Area */
+#board-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #f7f9fa;
+}
+
+/* Board Canvas */
+.board-canvas {
+  flex: 1;
+  position: relative;
+  overflow: auto;
+  min-height: calc(100vh - 200px);
+  background-color: #f7f9fa;
+  /* Subtle texture for calm visual interest */
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: -1px -1px;
+  padding: 2rem;
+}
+
+/* Empty State (shown when no cards exist) */
+.board-empty-state {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: rgba(0, 0, 0, 0.3);
+  font-size: 0.95rem;
+  font-style: italic;
+  max-width: 400px;
+  pointer-events: none;
+}
+
+/* Navigation Links - Adjusted for board layout */
+.board-container .nav-links {
+  padding: 1.5rem 2rem;
+  background-color: var(--bg-color, #fafafa);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+}
+
+/* Settings Icon Positioning */
+.board-container .settings-icon {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 100;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .board-header {
+    padding: 1.5rem 1rem 0.75rem;
+  }
+
+  .board-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .board-header p {
+    font-size: 0.875rem;
+  }
+
+  .board-canvas {
+    padding: 1rem;
+    min-height: calc(100vh - 180px);
+  }
+
+  .board-container .nav-links {
+    padding: 1rem;
+  }
+
+  .board-container .settings-icon {
+    top: 1.5rem;
+    right: 1rem;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .board-canvas {
+    transition: none;
+  }
+}
