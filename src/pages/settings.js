@@ -26,9 +26,11 @@ import {
 import {
   isAuthenticated,
   onAuthStateChange,
+  getCurrentUserId,
 } from "../data/persistence/authState.js";
 import { getFirebaseAuth } from "../data/persistence/firebaseConfig.js";
-import { signOut } from "firebase/auth";
+import { signOut, deleteUser } from "firebase/auth";
+import { exportToFile } from "../data/exportImport.js";
 
 let currentSettings = {};
 
@@ -210,7 +212,16 @@ function renderDangerZone() {
     ? `
     <div class="danger-section">
       <h3>Account</h3>
-      <button class="btn-secondary" id="sign-out-btn">Sign Out</button>
+      <div class="danger-actions">
+        <button class="btn-secondary" id="export-account-data">Export My Data</button>
+        <button class="btn-secondary" id="sign-out-btn">Sign Out</button>
+      </div>
+    </div>
+    <div class="danger-divider"></div>
+    <div class="danger-section">
+      <h3>Delete Account</h3>
+      <p class="danger-warning">This will permanently delete your account and all associated data from the cloud. This cannot be undone.</p>
+      <button class="btn-danger" id="delete-account-btn">Delete Account & Data</button>
     </div>
     <div class="danger-divider"></div>
     `
@@ -219,20 +230,31 @@ function renderDangerZone() {
   container.innerHTML = `
     ${authSection}
     <div class="danger-section">
-      <h3>Data</h3>
-      <p class="danger-warning">This will permanently delete all your data. This cannot be undone.</p>
-      <button class="btn-danger" id="clear-all-data">Clear All Data</button>
+      <h3>Local Data</h3>
+      <p class="danger-warning">This will clear all data from this browser. Make sure you have exported your data first.</p>
+      <button class="btn-danger" id="clear-all-data">Clear Local Data</button>
     </div>
   `;
 
-  // Sign out handler
+  // Auth-specific handlers
   if (isAuthenticated()) {
+    // Export data
+    container
+      .querySelector("#export-account-data")
+      .addEventListener("click", handleExportData);
+
+    // Sign out
     container
       .querySelector("#sign-out-btn")
       .addEventListener("click", handleSignOut);
+
+    // Delete account
+    container
+      .querySelector("#delete-account-btn")
+      .addEventListener("click", handleDeleteAccount);
   }
 
-  // Clear all data
+  // Clear local data
   container.querySelector("#clear-all-data").addEventListener("click", () => {
     const confirmed = confirm(
       "Are you ABSOLUTELY SURE you want to delete all data?\n\n" +
@@ -313,6 +335,24 @@ function capitalizeFirst(str) {
 }
 
 /**
+ * Handle export data
+ */
+async function handleExportData() {
+  try {
+    const result = await exportToFile();
+    
+    if (result.success) {
+      alert("Your data has been exported successfully.\n\nThe file contains all your wins, reflections, journal entries, and settings.");
+    } else {
+      alert(`Export failed: ${result.error}`);
+    }
+  } catch (error) {
+    console.error("Export error:", error);
+    alert("Unable to export data. Please try again.");
+  }
+}
+
+/**
  * Handle sign out
  */
 async function handleSignOut() {
@@ -330,6 +370,81 @@ async function handleSignOut() {
   } catch (error) {
     console.error("Sign out error:", error);
     alert("Unable to sign out. Please try again.");
+  }
+}
+
+/**
+ * Handle delete account
+ */
+async function handleDeleteAccount() {
+  const confirmed = confirm(
+    "⚠️ DELETE ACCOUNT\n\n" +
+    "This will PERMANENTLY DELETE:\n" +
+    "• Your account\n" +
+    "• All cloud data (wins, journal, reflections)\n" +
+    "• Board cards and settings\n\n" +
+    "This action CANNOT be undone.\n\n" +
+    "Are you absolutely sure?"
+  );
+
+  if (!confirmed) return;
+
+  // Double confirmation
+  const doubleCheck = prompt(
+    "Type DELETE to confirm account deletion:"
+  );
+
+  if (doubleCheck !== "DELETE") {
+    alert("Account deletion cancelled.");
+    return;
+  }
+
+  try {
+    const auth = getFirebaseAuth();
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert("No user signed in.");
+      return;
+    }
+
+    // Show progress
+    const deleteBtn = document.getElementById("delete-account-btn");
+    const originalText = deleteBtn.textContent;
+    deleteBtn.disabled = true;
+    deleteBtn.textContent = "Deleting...";
+
+    // Delete user account (Firebase Auth automatically deletes user data)
+    // Note: Firestore security rules ensure users can only delete their own data
+    await deleteUser(user);
+
+    console.log("Account deleted successfully");
+
+    // Clear local data as well
+    clearAllData();
+
+    // Redirect to auth page
+    alert("Your account and all associated data have been permanently deleted.");
+    window.location.href = "./auth.html";
+  } catch (error) {
+    console.error("Delete account error:", error);
+    
+    // Handle re-authentication required error
+    if (error.code === "auth/requires-recent-login") {
+      alert(
+        "For security, you need to sign in again before deleting your account.\n\n" +
+        "Please sign out and sign in again, then try deleting your account."
+      );
+    } else {
+      alert(`Unable to delete account: ${error.message}\n\nPlease try again or contact support.`);
+    }
+    
+    // Reset button
+    const deleteBtn = document.getElementById("delete-account-btn");
+    if (deleteBtn) {
+      deleteBtn.disabled = false;
+      deleteBtn.textContent = "Delete Account & Data";
+    }
   }
 }
 
