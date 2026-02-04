@@ -1,18 +1,18 @@
 /**
  * Local Storage → Firebase Migration
- * 
+ *
  * PHILOSOPHY:
  * ===========
  * Respect existing users' data.
  * Never auto-delete. Never auto-migrate. Always ask.
- * 
+ *
  * MIGRATION STRATEGY:
  * ===================
  * 1. Detect local data on sign-in
  * 2. Prompt user once
  * 3. Migrate explicitly with user consent
  * 4. Preserve local copy unless user confirms deletion
- * 
+ *
  * @see docs/AUTHENTICATION.md - Phase 6
  */
 
@@ -178,7 +178,7 @@ export async function migrateToFirebase() {
               entry.date || `entry_${Date.now()}_${Math.random()}`;
             const entryRef = doc(
               db,
-              UserNamespace.journalEntryPath(entryId, uid)
+              UserNamespace.journalEntryPath(entryId, uid),
             );
             await setDoc(entryRef, {
               ...entry,
@@ -204,7 +204,7 @@ export async function migrateToFirebase() {
               reflection.id || `reflection_${Date.now()}_${Math.random()}`;
             const reflectionRef = doc(
               db,
-              UserNamespace.reflectionPath(reflectionId, uid)
+              UserNamespace.reflectionPath(reflectionId, uid),
             );
             await setDoc(reflectionRef, {
               ...reflection,
