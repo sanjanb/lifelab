@@ -18,10 +18,10 @@
 import { LocalStorageProvider } from "./localStorageProvider.js";
 import { FirebaseProvider } from "./firebaseProvider.js";
 import { DataTypes, MigrationState, validateData } from "./interface.js";
-import { 
-  isAuthenticated, 
-  onAuthStateChange, 
-  getCurrentUserId 
+import {
+  isAuthenticated,
+  onAuthStateChange,
+  getCurrentUserId,
 } from "./authState.js";
 
 class PersistenceManager {
@@ -43,7 +43,7 @@ class PersistenceManager {
   async init() {
     if (this.initialized) {
       console.log(
-        `[Persistence] Already initialized with ${this.currentProvider.getName()}`
+        `[Persistence] Already initialized with ${this.currentProvider.getName()}`,
       );
       return this.currentProvider.getName();
     }
@@ -64,7 +64,7 @@ class PersistenceManager {
         return "firebase";
       }
       console.log(
-        "[Persistence] Firebase not available, falling back to localStorage"
+        "[Persistence] Firebase not available, falling back to localStorage",
       );
     }
 
@@ -136,7 +136,9 @@ class PersistenceManager {
   async switchToLocalStorage() {
     const localReady = await this.providers.localStorage.init();
     if (!localReady) {
-      console.warn("[Persistence] Cannot switch to localStorage - not available");
+      console.warn(
+        "[Persistence] Cannot switch to localStorage - not available",
+      );
       return false;
     }
 
@@ -173,7 +175,7 @@ class PersistenceManager {
 
       // Check if there's actually data to sync
       const hasData = Object.values(localExport.data).some(
-        (typeData) => typeData && Object.keys(typeData).length > 0
+        (typeData) => typeData && Object.keys(typeData).length > 0,
       );
 
       if (!hasData) {
@@ -188,7 +190,7 @@ class PersistenceManager {
 
       if (result.success) {
         console.log(
-          `[Persistence] Synced ${result.itemsMigrated || 0} items to Firebase`
+          `[Persistence] Synced ${result.itemsMigrated || 0} items to Firebase`,
         );
       }
 
@@ -262,13 +264,13 @@ class PersistenceManager {
 
     // Mark as migrating
     await this.providers.localStorage.setMigrationState(
-      MigrationState.MIGRATING
+      MigrationState.MIGRATING,
     );
 
     const localData = await this.providers.localStorage.export();
     if (!localData || !localData.data) {
       await this.providers.localStorage.setMigrationState(
-        MigrationState.NOT_MIGRATED
+        MigrationState.NOT_MIGRATED,
       );
       return {
         success: false,
@@ -282,7 +284,7 @@ class PersistenceManager {
     if (result.success) {
       // Mark as migrated
       await this.providers.localStorage.setMigrationState(
-        MigrationState.MIGRATED
+        MigrationState.MIGRATED,
       );
 
       // Switch to Firebase provider
@@ -291,7 +293,7 @@ class PersistenceManager {
     } else {
       // Revert migration state on failure
       await this.providers.localStorage.setMigrationState(
-        MigrationState.NOT_MIGRATED
+        MigrationState.NOT_MIGRATED,
       );
     }
 
@@ -400,7 +402,7 @@ class PersistenceManager {
         if (!validation.valid) {
           console.warn(
             `[Persistence] Skipping invalid ${type}:`,
-            validation.errors
+            validation.errors,
           );
           continue;
         }
@@ -413,7 +415,7 @@ class PersistenceManager {
 
       // Update schema version
       await this.providers.localStorage.setSchemaVersion(
-        exportData.schemaVersion
+        exportData.schemaVersion,
       );
 
       return {
@@ -440,7 +442,7 @@ class PersistenceManager {
     }
 
     return await this.providers.localStorage.setMigrationState(
-      MigrationState.ARCHIVED
+      MigrationState.ARCHIVED,
     );
   }
 
