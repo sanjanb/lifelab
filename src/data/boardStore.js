@@ -1,9 +1,9 @@
 /**
  * Visualization Board Data Store
  * Handles persistence for board cards using Firebase
- * 
+ *
  * CRITICAL: No autosave loops - saves only on explicit user actions
- * 
+ *
  * @see docs/VISUALIZATION_BOARD_PHILOSOPHY.md
  */
 
@@ -31,7 +31,7 @@ export async function initBoardStore() {
 
   try {
     const { db: firebaseDb } = await initFirebase();
-    
+
     if (!firebaseDb) {
       console.warn("[Board Store] Firebase not available, using memory only");
       return false;
@@ -50,7 +50,7 @@ export async function initBoardStore() {
 /**
  * Save a card to Firebase
  * Called only on explicit user actions (create, move, edit)
- * 
+ *
  * @param {Object} card - Card object
  * @param {string} card.id - Card ID
  * @param {string} card.type - Card type (text, image, color)
@@ -96,7 +96,7 @@ export async function saveCard(card) {
 /**
  * Load all cards from Firebase
  * Called once on page load
- * 
+ *
  * @returns {Promise<Array>} Array of card objects
  */
 export async function loadCards() {
@@ -116,7 +116,7 @@ export async function loadCards() {
       db,
       "lifelab_data",
       sharedId,
-      COLLECTION_NAME
+      COLLECTION_NAME,
     );
 
     const snapshot = await getDocs(cardsCollection);
@@ -146,7 +146,7 @@ export async function loadCards() {
 /**
  * Delete a card from Firebase
  * Called only on explicit user action (delete confirmation)
- * 
+ *
  * @param {string} cardId - Card ID to delete
  * @returns {Promise<boolean>} Success status
  */
@@ -177,7 +177,7 @@ export async function deleteCard(cardId) {
 /**
  * Update card position
  * Called only when drag ends (not during drag)
- * 
+ *
  * @param {string} cardId - Card ID
  * @param {Object} position - New position {x, y}
  * @returns {Promise<boolean>} Success status
@@ -199,12 +199,14 @@ export async function updateCardPosition(cardId, position) {
     // Get existing card data
     const cardSnap = await getDoc(cardRef);
     if (!cardSnap.exists()) {
-      console.warn(`[Board Store] Card ${cardId} not found for position update`);
+      console.warn(
+        `[Board Store] Card ${cardId} not found for position update`,
+      );
       return false;
     }
 
     const cardData = cardSnap.data();
-    
+
     // Update only position and timestamp
     await setDoc(
       cardRef,
@@ -216,7 +218,7 @@ export async function updateCardPosition(cardId, position) {
         },
         updatedAt: serverTimestamp(),
       },
-      { merge: false }
+      { merge: false },
     );
 
     console.log(`[Board Store] Card ${cardId} position updated`);
@@ -230,7 +232,7 @@ export async function updateCardPosition(cardId, position) {
 /**
  * Clear all cards (for testing/reset)
  * Requires explicit confirmation from user
- * 
+ *
  * @returns {Promise<boolean>} Success status
  */
 export async function clearAllCards() {
@@ -248,7 +250,7 @@ export async function clearAllCards() {
       db,
       "lifelab_data",
       sharedId,
-      COLLECTION_NAME
+      COLLECTION_NAME,
     );
 
     const snapshot = await getDocs(cardsCollection);
