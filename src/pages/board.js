@@ -459,6 +459,35 @@ function closeModal(modal) {
 }
 
 /**
+ * Load existing cards from Firebase
+ * Called once on page load
+ */
+async function loadExistingCards() {
+  const cards = await loadCards();
+  
+  if (cards.length === 0) {
+    console.log("[Board] No existing cards found");
+    return;
+  }
+
+  // Update card counter to avoid ID conflicts
+  cards.forEach((card) => {
+    const match = card.id.match(/-(\d+)$/);
+    if (match) {
+      const num = parseInt(match[1]);
+      if (num > cardIdCounter) {
+        cardIdCounter = num;
+      }
+    }
+  });
+
+  // Render all loaded cards
+  cards.forEach((card) => addCardToWorkspace(card));
+  
+  console.log(`[Board] Loaded ${cards.length} cards from Firebase`);
+}
+
+/**
  * Setup global drag-and-drop event listeners
  * Handles workspace-level mouse/touch events
  */
