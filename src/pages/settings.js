@@ -23,7 +23,10 @@ import {
   createDomainConfig,
   migrateDomainSettings,
 } from "../data/domainTypes.js";
-import { isAuthenticated, onAuthStateChange } from "../data/persistence/authState.js";
+import {
+  isAuthenticated,
+  onAuthStateChange,
+} from "../data/persistence/authState.js";
 import { getFirebaseAuth } from "../data/persistence/firebaseConfig.js";
 import { signOut } from "firebase/auth";
 
@@ -67,14 +70,14 @@ function renderDomainConfig() {
           </label>
           <select class="domain-type-select" data-domain="${domain}">
             <option value="${DomainType.PERCENTAGE}" ${
-            config.type === DomainType.PERCENTAGE ? "selected" : ""
-          }>Percentage (0-100%)</option>
+              config.type === DomainType.PERCENTAGE ? "selected" : ""
+            }>Percentage (0-100%)</option>
             <option value="${DomainType.CHECKBOX}" ${
-            config.type === DomainType.CHECKBOX ? "selected" : ""
-          }>Checkbox (Done/Not Done)</option>
+              config.type === DomainType.CHECKBOX ? "selected" : ""
+            }>Checkbox (Done/Not Done)</option>
           </select>
         </div>
-      `
+      `,
         )
         .join("")}
     </div>
@@ -153,7 +156,7 @@ async function saveDomainSettings() {
 
   if (await saveSettings(currentSettings)) {
     alert(
-      "Domain settings saved!\n\nYour changes will be reflected in:\n• Quick Entry form\n• Notebook table\n• Grid overview and visualizations\n\nRefresh the page to see the updates."
+      "Domain settings saved!\n\nYour changes will be reflected in:\n• Quick Entry form\n• Notebook table\n• Grid overview and visualizations\n\nRefresh the page to see the updates.",
     );
   } else {
     alert("Failed to save settings");
@@ -170,7 +173,7 @@ function renderDataStats() {
   const dataSize = JSON.stringify(allData).length;
   const entriesCount = Object.values(allData).reduce(
     (sum, month) => sum + month.length,
-    0
+    0,
   );
 
   container.innerHTML = `
@@ -203,17 +206,38 @@ function renderExportImport() {
 function renderDangerZone() {
   const container = document.getElementById("danger-zone");
 
+  const authSection = isAuthenticated()
+    ? `
+    <div class="danger-section">
+      <h3>Account</h3>
+      <button class="btn-secondary" id="sign-out-btn">Sign Out</button>
+    </div>
+    <div class="danger-divider"></div>
+    `
+    : "";
+
   container.innerHTML = `
-    <p class="danger-warning">This will permanently delete all your data. This cannot be undone.</p>
-    <button class="btn-danger" id="clear-all-data">Clear All Data</button>
+    ${authSection}
+    <div class="danger-section">
+      <h3>Data</h3>
+      <p class="danger-warning">This will permanently delete all your data. This cannot be undone.</p>
+      <button class="btn-danger" id="clear-all-data">Clear All Data</button>
+    </div>
   `;
+
+  // Sign out handler
+  if (isAuthenticated()) {
+    container
+      .querySelector("#sign-out-btn")
+      .addEventListener("click", handleSignOut);
+  }
 
   // Clear all data
   container.querySelector("#clear-all-data").addEventListener("click", () => {
     const confirmed = confirm(
       "Are you ABSOLUTELY SURE you want to delete all data?\n\n" +
         "This action cannot be undone!\n\n" +
-        "Make sure you have exported your data first."
+        "Make sure you have exported your data first.",
     );
 
     if (!confirmed) return;
@@ -268,7 +292,7 @@ function renderPreferences() {
 
   container.querySelector("#save-preferences").addEventListener("click", () => {
     currentSettings.firstDayOfWeek = parseInt(
-      document.getElementById("first-day-select").value
+      document.getElementById("first-day-select").value,
     );
     currentSettings.memoryAidsEnabled =
       document.getElementById("memory-aids-toggle").checked;
