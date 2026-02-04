@@ -445,7 +445,7 @@ async function createCard(type, content) {
   };
 
   addCardToWorkspace(card);
-  
+
   // Save to Firebase (explicit user action)
   await saveCard(card);
 }
@@ -554,7 +554,7 @@ function handleDragMove(e) {
  * Handle drag end event
  * @param {MouseEvent|TouchEvent} e - Event object
  */
-function handleDragEnd(e) {
+async function handleDragEnd(e) {
   if (!draggedCard) return;
 
   // Remove dragging class
@@ -563,15 +563,15 @@ function handleDragEnd(e) {
   // Reset z-index
   draggedCard.style.zIndex = "";
 
-  // Save the new position (Phase 6 will persist to Firebase)
+  // Save the new position to Firebase (explicit user action - drag complete)
   const cardId = draggedCard.getAttribute("data-card-id");
   const position = {
     x: parseInt(draggedCard.style.left),
     y: parseInt(draggedCard.style.top),
   };
 
-  console.log(`Card ${cardId} moved to:`, position);
-  // TODO: Save to Firebase in Phase 6
+  // Update position in Firebase (not during drag, only when dropped)
+  await updateCardPosition(cardId, position);
 
   // Clear drag state
   draggedCard = null;
