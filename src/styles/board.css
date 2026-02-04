@@ -55,15 +55,26 @@
   flex: 1;
   position: relative;
   overflow: auto;
+  /* Large scrollable area - generous minimum dimensions */
   min-height: calc(100vh - 200px);
+  min-width: 100%;
+  /* Calm, neutral background - no grid, no texture */
   background-color: #f7f9fa;
-  /* Subtle texture for calm visual interest */
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-position: -1px -1px;
-  padding: 2rem;
+  /* Generous padding for spacious feel */
+  padding: 3rem;
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Canvas Inner Workspace (allows for expansion beyond viewport) */
+.board-canvas-workspace {
+  position: relative;
+  min-height: 800px;
+  min-width: 1200px;
+  /* Allow canvas to grow as cards are added */
+  width: 100%;
+  height: 100%;
 }
 
 /* Empty State (shown when no cards exist) */
@@ -100,8 +111,13 @@
 @media (max-width: 768px) {
   .board-header {
     padding: 1.5rem 1rem 0.75rem;
+  }.5rem;
+    min-height: calc(100vh - 180px);
   }
 
+  .board-canvas-workspace {
+    min-width: 100%;
+    min-height: 600px
   .board-header h1 {
     font-size: 1.5rem;
   }
