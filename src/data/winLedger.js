@@ -16,8 +16,6 @@
 
 import { persistence, DataTypes } from "./persistence/manager.js";
 
-const WIN_STORAGE_KEY = "lifelab_wins";
-
 /**
  * Win Entry Data Model
  * @typedef {Object} WinEntry
@@ -36,13 +34,26 @@ function generateId() {
 }
 
 /**
- * Load all wins from localStorage
- * @returns {Object} Object mapping dates to win entries
+ * Load all wins from persistence
+ * @returns {Promise<Object>} Object mapping dates to win entries
  */
-function loadWins() {
+async function loadWins() {
   try {
-    const data = localStorage.getItem(WIN_STORAGE_KEY);
-    return data ? JSON.parse(data) : {};
+    const winsArray = await persistence.fetch(DataTypes.WINS);
+    
+    if (!winsArray || !Array.isArray(winsArray)) {
+      return {};
+    }
+    
+    // Convert array to date-keyed object
+    const wins = {};
+    winsArray.forEach(win => {
+      if (win.date) {
+        wins[win.date] = win;
+      }
+    });
+    
+    return wins;
   } catch (error) {
     console.error("Failed to load wins:", error);
     return {};
@@ -50,20 +61,19 @@ function loadWins() {
 }
 
 /**
- * Save wins to localStorage and Firebase
+ * Save wins to persistence
  * @param {Object} wins - Object mapping dates to win entries
  * @returns {Promise<boolean>} Success status
  */
 async function saveWinsToStorage(wins) {
   try {
-    // Save to localStorage immediately
-    localStorage.setItem(WIN_STORAGE_KEY, JSON.stringify(wins));
-
-    // Save to Firebase (synchronous)
+    // Convert to array for persistence
     const winsArray = Object.entries(wins).map(([date, win]) => ({
       ...win,
       date,
     }));
+    
+    // Persistence manager handles localStorage vs Firebase based on auth
     await persistence.save(DataTypes.WINS, winsArray);
 
     return true;
