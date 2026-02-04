@@ -2,7 +2,7 @@
  * Visualization Board - Page Logic
  * A calm, manual, non-performative visualization space
  *
- * Phase 5: Drag & arrange (spatial meaning)
+ * Phase 6: Firebase persistence
  *
  * @see docs/VISUALIZATION_BOARD_PHILOSOPHY.md
  * @see src/data/boardConstraints.js
@@ -15,6 +15,13 @@ import "../styles/mobile.css";
 import "../styles/board.css";
 
 import { BOARD_CONSTRAINTS, CARD_TYPES } from "../data/boardConstraints.js";
+import {
+  initBoardStore,
+  saveCard,
+  loadCards,
+  deleteCard,
+  updateCardPosition,
+} from "../data/boardStore.js";
 
 // State management
 let cardIdCounter = 0;
@@ -24,16 +31,19 @@ let dragOffset = { x: 0, y: 0 };
 /**
  * Initialize the Visualization Board
  */
-function init() {
-  console.log(
-    "Visualization Board - Phase 4: Manual card creation initialized",
-  );
+async function init() {
+  console.log("Visualization Board - Phase 6: Firebase persistence initialized");
   console.log("Constraints active:", BOARD_CONSTRAINTS);
   console.log("Supported card types:", CARD_TYPES);
 
   renderCanvas();
   renderEmptyState();
   renderAddButton();
+  setupDragAndDrop();
+
+  // Initialize Firebase and load existing cards
+  await initBoardStore();
+  await loadExistingCards();
 }
 
 /**
