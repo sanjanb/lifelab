@@ -52,7 +52,6 @@ import { getCurrentUserId, isAuthenticated } from "./authState.js";
  * All nested under users/{uid}/
  */
 export const USER_COLLECTIONS = {
-  PROFILE: "profile",
   WINS: "wins",
   JOURNAL: "journal",
   REFLECTIONS: "reflections",
