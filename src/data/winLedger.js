@@ -115,10 +115,13 @@ export async function saveWin(date, text) {
   wins[date] = win;
 
   const saved = await saveWinsToStorage(wins);
+  
+  // Return result with trigger flag for contextual auth invitation
   return {
     success: saved,
     error: saved ? null : "Failed to save win to storage",
     win: saved ? win : null,
+    isFirstWin: saved && Object.keys(wins).length === 1, // Flag for auth invitation
   };
 }
 
