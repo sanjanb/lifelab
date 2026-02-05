@@ -1,12 +1,12 @@
 /**
  * Auth Invitation Component
- * 
+ *
  * PHILOSOPHY:
  * ===========
  * Invite authentication only when it matters.
  * Never block actions. Always dismissible.
  * Contextual, not forced.
- * 
+ *
  * @see docs/AUTHENTICATION.md - Soft Gate Phase 3
  */
 
@@ -41,15 +41,15 @@ function shouldShowInvitation() {
  */
 function isFirstTrigger(triggerType) {
   const triggers = JSON.parse(localStorage.getItem(INVITE_TRIGGER_KEY) || "{}");
-  
+
   if (triggers[triggerType]) {
     return false; // Already triggered before
   }
-  
+
   // Mark as triggered
   triggers[triggerType] = true;
   localStorage.setItem(INVITE_TRIGGER_KEY, JSON.stringify(triggers));
-  
+
   return true;
 }
 
