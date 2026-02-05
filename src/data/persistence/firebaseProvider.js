@@ -69,7 +69,7 @@ export class FirebaseProvider extends PersistenceProvider {
     if (!validation.valid) {
       console.error(
         `[Firebase] Validation failed for ${type}:`,
-        validation.errors
+        validation.errors,
       );
       // Fail hard on Firebase writes - we control the schema
       return false;
@@ -255,7 +255,7 @@ export class FirebaseProvider extends PersistenceProvider {
       this.db,
       "lifelab_data",
       this.sharedId,
-      "entries"
+      "entries",
     );
 
     for (const [monthKey, monthData] of Object.entries(entries)) {
@@ -274,7 +274,7 @@ export class FirebaseProvider extends PersistenceProvider {
       this.db,
       "lifelab_data",
       this.sharedId,
-      "entries"
+      "entries",
     );
     const snapshot = await getDocs(entriesRef);
 
