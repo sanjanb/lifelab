@@ -145,7 +145,7 @@
 .auth-toggle-button {
   background: none;
   border: none;
-  color: #2563eb;
+  color: var(--color-accent, #4299e1);
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -155,11 +155,11 @@
 }
 
 .auth-toggle-button:hover {
-  color: #1d4ed8;
+  color: var(--color-accent-hover, #3182ce);
 }
 
 .auth-toggle-button:active {
-  color: #1e40af;
+  color: var(--color-accent-hover, #3182ce);
 }
 
 /* Navigation Links - Minimal */
