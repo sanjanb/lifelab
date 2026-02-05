@@ -52,10 +52,10 @@ export async function saveCard(card) {
   try {
     // Load all cards
     const cards = await loadCards();
-    
+
     // Find existing card or add new one
-    const existingIndex = cards.findIndex(c => c.id === card.id);
-    
+    const existingIndex = cards.findIndex((c) => c.id === card.id);
+
     const cardData = {
       id: card.id,
       type: card.type,
@@ -65,7 +65,7 @@ export async function saveCard(card) {
         y: card.position.y,
       },
     };
-    
+
     if (existingIndex >= 0) {
       // Update existing card
       cards[existingIndex] = cardData;
@@ -76,11 +76,11 @@ export async function saveCard(card) {
 
     // Persistence manager handles localStorage vs Firebase based on auth
     const success = await persistence.save(CARDS_COLLECTION, cards);
-    
+
     if (success) {
       console.log(`[Board Store] Card ${card.id} saved`);
     }
-    
+
     return success;
   } catch (error) {
     console.error("[Board Store] Save failed:", error);
@@ -130,17 +130,17 @@ export async function deleteCard(cardId) {
   try {
     // Load all cards
     const cards = await loadCards();
-    
+
     // Filter out the deleted card
-    const updatedCards = cards.filter(card => card.id !== cardId);
-    
+    const updatedCards = cards.filter((card) => card.id !== cardId);
+
     // Save updated array
     const success = await persistence.save(CARDS_COLLECTION, updatedCards);
-    
+
     if (success) {
       console.log(`[Board Store] Card ${cardId} deleted`);
     }
-    
+
     return success;
   } catch (error) {
     console.error("[Board Store] Delete failed:", error);
@@ -176,16 +176,16 @@ export async function saveStarterDismissed() {
   }
 
   try {
-    const settings = await persistence.fetch(SETTINGS_COLLECTION) || {};
+    const settings = (await persistence.fetch(SETTINGS_COLLECTION)) || {};
     settings.starter_template_dismissed = true;
     settings.dismissedAt = new Date().toISOString();
-    
+
     const success = await persistence.save(SETTINGS_COLLECTION, settings);
-    
+
     if (success) {
       console.log("[Board Store] Starter template dismissed");
     }
-    
+
     return success;
   } catch (error) {
     console.error("[Board Store] Error saving dismissal state:", error);
@@ -209,24 +209,26 @@ export async function updateCardPosition(cardId, position) {
   try {
     // Load all cards
     const cards = await loadCards();
-    
+
     // Find and update the card
-    const card = cards.find(c => c.id === cardId);
+    const card = cards.find((c) => c.id === cardId);
     if (!card) {
-      console.warn(`[Board Store] Card ${cardId} not found for position update`);
+      console.warn(
+        `[Board Store] Card ${cardId} not found for position update`,
+      );
       return false;
     }
-    
+
     // Update position
     card.position = { x: position.x, y: position.y };
-    
+
     // Save updated array
     const success = await persistence.save(CARDS_COLLECTION, cards);
-    
+
     if (success) {
       console.log(`[Board Store] Card ${cardId} position updated`);
     }
-    
+
     return success;
   } catch (error) {
     console.error("[Board Store] Position update failed:", error);
@@ -248,11 +250,11 @@ export async function clearAllCards() {
   try {
     // Save empty array
     const success = await persistence.save(CARDS_COLLECTION, []);
-    
+
     if (success) {
       console.log("[Board Store] All cards cleared");
     }
-    
+
     return success;
   } catch (error) {
     console.error("[Board Store] Clear failed:", error);
