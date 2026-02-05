@@ -12,10 +12,6 @@
  * =====================
  * users/
  *   {uid}/
- *     profile/
- *       displayName
- *       createdAt
- *       lastLoginAt
  *     wins/
  *       {winId}/
  *         date
