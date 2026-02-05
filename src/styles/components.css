@@ -2400,6 +2400,91 @@
   transition: border-color var(--transition-fast);
 }
 
+/* ============================================
+   OFFLINE INDICATOR
+   Subtle, non-blocking status toast
+   ============================================ */
+
+.offline-indicator {
+  position: fixed;
+  bottom: var(--spacing-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  
+  transition: all var(--transition-base);
+  animation: slideUpFade 0.3s ease-out;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.offline-indicator[data-hidden="true"] {
+  display: none;
+}
+
+.offline-indicator svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.offline-indicator.status-offline svg {
+  stroke: #f59e0b;
+  fill: none;
+}
+
+.offline-indicator.status-syncing svg {
+  stroke: var(--color-accent);
+  fill: none;
+  animation: spin 1s linear infinite;
+}
+
+.offline-indicator.status-synced svg {
+  stroke: #10b981;
+  fill: none;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .offline-indicator {
+    bottom: var(--spacing-md);
+    max-width: calc(100% - 2 * var(--spacing-md));
+    font-size: 0.8125rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}
+
 .domain-type-select:hover {
   border-color: var(--color-border-dark);
 }

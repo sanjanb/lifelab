@@ -18,6 +18,7 @@ import { persistence } from "./data/persistence/manager.js";
 import { getTodaysMemory } from "./data/memoryQuery.js";
 import { renderMemoryCard } from "./components/memoryCard.js";
 import { initAuthState } from "./data/persistence/authState.js";
+import { initOfflineIndicator } from "./components/offlineIndicator.js";
 
 /**
  * Initialize the application
@@ -26,6 +27,9 @@ async function init() {
   try {
     // Initialize auth state first (starts listening to auth changes)
     initAuthState();
+
+    // Initialize offline indicator (monitors queue and network state)
+    initOfflineIndicator();
 
     // Initialize persistence (auth-aware, will auto-select provider)
     await persistence.init();
