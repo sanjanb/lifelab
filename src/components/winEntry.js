@@ -100,7 +100,7 @@ function attachEventListeners(container, today, onSaved) {
       // Silent success - just re-render to show read-only view
       renderWinEntry(container, onSaved);
       if (onSaved) onSaved(result.win);
-      
+
       // Show contextual auth invitation on first win
       if (result.isFirstWin) {
         inviteAfterWin();
