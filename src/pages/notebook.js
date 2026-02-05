@@ -25,7 +25,10 @@ import {
 import { getTodaysMemory } from "../data/memoryQuery.js";
 import { renderMemoryCard } from "../components/memoryCard.js";
 import { formatValue, DomainType } from "../data/domainTypes.js";
-import { inviteAfterEntry, inviteAfterFullDay } from "../components/authInvitation.js";
+import {
+  inviteAfterEntry,
+  inviteAfterFullDay,
+} from "../components/authInvitation.js";
 
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth() + 1;
@@ -165,7 +168,7 @@ function renderTableRow(day, domainList) {
       weekday: "short",
       month: "short",
       day: "numeric",
-    }
+    },
   );
 
   return `
@@ -202,7 +205,7 @@ function renderTableRow(day, domainList) {
 function calculateAverage(day) {
   if (!day.domains) return null;
   const scores = Object.values(day.domains).filter(
-    (s) => typeof s === "number"
+    (s) => typeof s === "number",
   );
   if (scores.length === 0) return null;
   return scores.reduce((sum, s) => sum + s, 0) / scores.length;
@@ -238,7 +241,7 @@ function showEditForm(date, existingData) {
       await saveDayEntry(data);
       loadMonthData();
       formContainer.remove();
-    }
+    },
   );
 
   // Close on background click
@@ -254,9 +257,33 @@ function showEditForm(date, existingData) {
  */
 function renderQuickEntryWidget() {
   const container = document.getElementById("quick-entry-container");
+  
+  // Track if this is the first entry
+  const isFirstEntry = currentData.length === 0;
+  
   renderQuickEntry(container, async (data) => {
     await saveDayEntry(data);
     loadMonthData();
+    
+    // Show auth invitation on first entry
+    if (isFirstEntry) {
+      inviteAfterEntry();
+    }
+    
+    // Check if this is a full day (all domains filled)
+    const settings = loadSettings();
+    const enabledDomains = Object.entries(settings.domains)
+      .filter(([_, config]) => config.enabled)
+      .map(([name, _]) => name);
+    
+    const allDomainsFilled = enabledDomains.every(domain => 
+      data.entries.some(entry => entry.domain === domain)
+    );
+    
+    if (allDomainsFilled) {
+      inviteAfterFullDay();
+    }
+    
     alert("Entry saved!");
   });
 }
@@ -283,7 +310,7 @@ function renderExportOptions() {
   container.querySelector("#export-month-csv").addEventListener("click", () => {
     const filename = `lifelab-${currentYear}-${String(currentMonth).padStart(
       2,
-      "0"
+      "0",
     )}.csv`;
     exportToCSV(currentData, filename);
   });
