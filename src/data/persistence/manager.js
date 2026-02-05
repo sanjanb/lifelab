@@ -22,7 +22,8 @@ import {
   isAuthenticated,
   onAuthStateChange,
   getCurrentUserId,
-} from "./authState.js";import { offlineQueue } from "./offlineQueue.js";
+} from "./authState.js";
+import { offlineQueue } from "./offlineQueue.js";
 class PersistenceManager {
   constructor() {
     this.currentProvider = null;
@@ -216,12 +217,9 @@ class PersistenceManager {
     // If using Firebase and offline, queue the operation
     if (this.isUsingFirebase() && !navigator.onLine) {
       console.log(`[Persistence] Offline - queueing save for ${type}`);
-      
-      return offlineQueue.enqueue(
-        'save',
-        type,
-        data,
-        () => this.currentProvider.save(type, data)
+
+      return offlineQueue.enqueue("save", type, data, () =>
+        this.currentProvider.save(type, data),
       );
     }
 
@@ -232,14 +230,11 @@ class PersistenceManager {
       // If save fails and we're using Firebase, queue it
       if (this.isUsingFirebase()) {
         console.warn(`[Persistence] Save failed, queueing for retry:`, error);
-        return offlineQueue.enqueue(
-          'save',
-          type,
-          data,
-          () => this.currentProvider.save(type, data)
+        return offlineQueue.enqueue("save", type, data, () =>
+          this.currentProvider.save(type, data),
         );
       }
-      
+
       // For localStorage, just fail
       throw error;
     }
