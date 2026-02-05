@@ -226,7 +226,16 @@ function renderDangerZone() {
     </div>
     <div class="danger-divider"></div>
     `
-    : "";
+    : `
+    <div class="danger-section">
+      <h3>Private Sync</h3>
+      <p class="danger-warning">Store your data privately across devices. Your data stays in your browser by default.</p>
+      <div class="danger-actions">
+        <button class="btn-secondary" id="sign-in-btn">Sign In</button>
+      </div>
+    </div>
+    <div class="danger-divider"></div>
+    `;
 
   container.innerHTML = `
     ${authSection}
@@ -253,6 +262,11 @@ function renderDangerZone() {
     container
       .querySelector("#delete-account-btn")
       .addEventListener("click", handleDeleteAccount);
+  } else {
+    // Sign in
+    container.querySelector("#sign-in-btn").addEventListener("click", () => {
+      window.location.href = "./auth.html";
+    });
   }
 
   // Clear local data
