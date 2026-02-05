@@ -329,3 +329,188 @@ Identity exists to protect thought — nothing more.
 ```
 
 ```
+
+# Authentication Entry Flow (Soft Gate Model)
+
+---
+
+## PHASE 1: Default Anonymous / Local Mode
+
+### Goal
+Allow the site to function without authentication.
+
+### Behavior
+- All data stored in localStorage
+- UI fully usable
+- No login required
+
+### Copilot Prompt
+```
+
+Ensure the application runs in unauthenticated mode by default.
+Store all data locally when no user is authenticated.
+Do not block any core feature behind login.
+
+```
+
+---
+
+## PHASE 2: Auth Awareness (Silent)
+
+### Goal
+Make the app aware of auth state without changing UI yet.
+
+### Behavior
+- Track auth state internally
+- Expose `isAuthenticated` flag
+- No visible UI change
+
+### Copilot Prompt
+```
+
+Implement silent auth state detection.
+Expose a simple boolean for authentication status.
+Do not render auth UI automatically.
+
+```
+
+---
+
+## PHASE 3: Contextual Auth Prompt
+
+### Goal
+Invite authentication only when it matters.
+
+### Trigger moments
+- First win saved
+- First journal entry saved
+- First full day completed
+
+### UX Rules
+- Inline prompt (not modal)
+- Dismissible
+- Never blocks action
+
+### Example Copy
+> “Save this privately across devices?”
+
+### Copilot Prompt
+```
+
+When a user creates meaningful data:
+
+* Show a subtle inline prompt inviting authentication
+* Do not interrupt the action
+* Allow dismissal without penalty
+
+```
+
+---
+
+## PHASE 4: Minimal Auth Entry UI
+
+### Goal
+Make authentication feel like continuation, not signup.
+
+### UI
+- Inline card or side panel
+- Email + password
+- Neutral copy
+
+### Language Rules
+Avoid:
+- “Join”
+- “Sign up now”
+- “Create account”
+
+Prefer:
+- “Continue”
+- “Save privately”
+- “Keep this safe”
+
+### Copilot Prompt
+```
+
+Render authentication UI as an inline continuation step.
+Use neutral language focused on saving and continuity.
+Avoid marketing or persuasive language.
+
+```
+
+---
+
+## PHASE 5: Post-Auth Migration
+
+### Goal
+Seamlessly move local data to Firebase.
+
+### Behavior
+- On successful auth:
+  - Migrate local data
+  - Confirm completion
+- Do not delete local data automatically
+
+### Copilot Prompt
+```
+
+After authentication:
+
+* Migrate local data to Firebase under user UID
+* Confirm migration success
+* Preserve local data unless explicitly removed
+
+```
+
+---
+
+## PHASE 6: Persistent Mode Indicator
+
+### Goal
+Provide quiet reassurance.
+
+### UI
+- Small indicator in settings or footer
+- Example: “Saved privately”
+
+No action required.
+
+### Copilot Prompt
+```
+
+Display a subtle indicator when data is being stored remotely.
+Avoid badges, colors, or gamification.
+
+```
+
+---
+
+## PHASE 7: Settings-Based Auth Control
+
+### Goal
+Never force identity decisions in the main flow.
+
+### Actions
+- Sign out
+- Switch back to local-only mode
+- Export data
+
+### Copilot Prompt
+```
+
+Expose authentication controls only inside settings.
+Do not place login/logout in the main navigation.
+
+```
+
+---
+
+## Definition of Done
+
+- Site is usable without auth
+- Auth appears only when value exists
+- User never feels forced
+- Data continuity feels earned, not demanded
+```
+
+---
+
