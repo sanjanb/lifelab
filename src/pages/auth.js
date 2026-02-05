@@ -93,12 +93,16 @@ async function handleSubmit(e) {
       console.log("Signed in successfully");
     }
 
+    // Success - clear loading before next action
+    setLoading(false);
+    
     // Check for migration after sign-in
     if (shouldShowMigrationPrompt()) {
       console.log("Local data detected, showing migration prompt");
       showMigrationPrompt();
     } else {
       // Redirect to dashboard if no migration needed
+      console.log("Redirecting to dashboard...");
       window.location.href = "./index.html";
     }
   } catch (error) {
@@ -327,7 +331,7 @@ function setLoading(loading) {
     inputs.forEach((input) => (input.disabled = true));
   } else {
     submitButton.disabled = false;
-    submitButton.textContent = isSignUpMode ? "Create Notebook" : "Sign In";
+    submitButton.textContent = "Continue";
     inputs.forEach((input) => (input.disabled = false));
   }
 }
