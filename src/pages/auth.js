@@ -281,8 +281,23 @@ function toggleMode() {
   const toggleButton = document.getElementById("toggle-button");
   const passwordInput = document.getElementById("password");
 
+  console.log("Elements found:", {
+    title: !!title,
+    subtitle: !!subtitle,
+    submitButton: !!submitButton,
+    toggleText: !!toggleText,
+    toggleButton: !!toggleButton,
+    passwordInput: !!passwordInput,
+  });
+
+  if (!title || !subtitle || !submitButton || !toggleText || !toggleButton || !passwordInput) {
+    console.error("Some elements not found, cannot toggle mode");
+    return;
+  }
+
   if (isSignUpMode) {
     // Switch to sign up mode
+    console.log("Switching to sign-up mode");
     title.textContent = "Keep this safe";
     subtitle.textContent = "Set up private storage for your data";
     submitButton.textContent = "Continue";
@@ -291,6 +306,7 @@ function toggleMode() {
     passwordInput.setAttribute("autocomplete", "new-password");
   } else {
     // Switch to sign in mode
+    console.log("Switching to sign-in mode");
     title.textContent = "Save your work privately";
     subtitle.textContent = "Keep your data safe across devices";
     submitButton.textContent = "Continue";
@@ -299,6 +315,7 @@ function toggleMode() {
     passwordInput.setAttribute("autocomplete", "current-password");
   }
 
+  console.log("Mode toggled successfully");
   clearError();
 }
 
