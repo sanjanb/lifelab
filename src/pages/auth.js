@@ -290,7 +290,14 @@ function toggleMode() {
     passwordInput: !!passwordInput,
   });
 
-  if (!title || !subtitle || !submitButton || !toggleText || !toggleButton || !passwordInput) {
+  if (
+    !title ||
+    !subtitle ||
+    !submitButton ||
+    !toggleText ||
+    !toggleButton ||
+    !passwordInput
+  ) {
     console.error("Some elements not found, cannot toggle mode");
     return;
   }
