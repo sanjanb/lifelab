@@ -155,14 +155,6 @@ export function shouldUseUserNamespace(uid = null) {
  */
 export const UserNamespace = {
   /**
-   * Get profile path
-   * @param {string} uid - User ID (optional)
-   * @returns {string} Path to user profile
-   */
-  profilePath: (uid = null) =>
-    getUserCollectionPath(USER_COLLECTIONS.PROFILE, uid),
-
-  /**
    * Get wins collection path
    * @param {string} uid - User ID (optional)
    * @returns {string} Path to wins collection
