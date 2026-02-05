@@ -179,6 +179,11 @@ function renderDataStats() {
     0,
   );
 
+  // Storage mode indicator - quiet reassurance
+  const storageMode = isAuthenticated() 
+    ? '<div class="storage-mode-indicator">Saved privately</div>'
+    : '<div class="storage-mode-indicator">Stored locally</div>';
+
   container.innerHTML = `
     <div class="bento-stats">
       <div class="bento-stat">
@@ -190,6 +195,7 @@ function renderDataStats() {
         <div class="stat-label">KB</div>
       </div>
     </div>
+    ${storageMode}
   `;
 }
 
