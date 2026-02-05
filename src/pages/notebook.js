@@ -25,6 +25,7 @@ import {
 import { getTodaysMemory } from "../data/memoryQuery.js";
 import { renderMemoryCard } from "../components/memoryCard.js";
 import { formatValue, DomainType } from "../data/domainTypes.js";
+import { inviteAfterEntry, inviteAfterFullDay } from "../components/authInvitation.js";
 
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth() + 1;
