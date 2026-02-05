@@ -275,19 +275,19 @@ function toggleMode() {
 
   if (isSignUpMode) {
     // Switch to sign up mode
-    title.textContent = "Create your notebook";
-    subtitle.textContent = "Your data, kept private";
-    submitButton.textContent = "Create Notebook";
-    toggleText.textContent = "Already have one?";
-    toggleButton.textContent = "Sign in";
+    title.textContent = "Keep this safe";
+    subtitle.textContent = "Set up private storage for your data";
+    submitButton.textContent = "Continue";
+    toggleText.textContent = "Already set up?";
+    toggleButton.textContent = "Sign in instead";
     passwordInput.setAttribute("autocomplete", "new-password");
   } else {
     // Switch to sign in mode
-    title.textContent = "Open your notebook";
-    subtitle.textContent = "Continue your work across devices";
-    submitButton.textContent = "Sign In";
-    toggleText.textContent = "New here?";
-    toggleButton.textContent = "Create notebook";
+    title.textContent = "Save your work privately";
+    subtitle.textContent = "Keep your data safe across devices";
+    submitButton.textContent = "Continue";
+    toggleText.textContent = "First time?";
+    toggleButton.textContent = "Set up private storage";
     passwordInput.setAttribute("autocomplete", "current-password");
   }
 
