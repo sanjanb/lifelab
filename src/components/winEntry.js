@@ -8,6 +8,7 @@
  */
 
 import { saveWin, getWinByDate, hasWinForDate } from "../data/winLedger.js";
+import { inviteAfterWin } from "./authInvitation.js";
 
 /**
  * Renders the win entry component
