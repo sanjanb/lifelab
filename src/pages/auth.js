@@ -95,7 +95,7 @@ async function handleSubmit(e) {
 
     // Success - clear loading before next action
     setLoading(false);
-    
+
     // Check for migration after sign-in
     if (shouldShowMigrationPrompt()) {
       console.log("Local data detected, showing migration prompt");
