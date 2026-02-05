@@ -3,12 +3,12 @@
  *
  * Implements persistence interface using Firebase Firestore.
  *
- * Schema (Shared - No Authentication):
- * lifelab_data/
- *   ├─ shared_data/wins (collection)
- *   ├─ shared_data/entries (collection)
- *   ├─ shared_data/settings (document)
- *   └─ shared_data/meta (document)
+ * USER-SCOPED DATA SCHEMA:
+ * All data is stored under users/{uid}/ for strict privacy isolation.
+ * See userDataNamespace.js for complete data structure.
+ *
+ * @see src/data/persistence/userDataNamespace.js
+ * @see firestore.rules
  */
 
 import {

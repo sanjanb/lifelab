@@ -119,8 +119,8 @@ function showMigrationPrompt() {
   modal.className = "migration-modal";
   modal.innerHTML = `
     <div class="migration-content">
-      <h2>Welcome Back!</h2>
-      <p class="migration-description">We found data in your browser from before you signed in. Would you like to migrate it to your account?</p>
+      <h2>Data Found</h2>
+      <p class="migration-description">Your browser has stored data from previous sessions. Would you like to copy it to your account?</p>
       
       <div class="migration-stats">
         ${data.wins > 0 ? `<div class="migration-stat"><strong>${data.wins}</strong> wins</div>` : ""}
