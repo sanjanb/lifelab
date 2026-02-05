@@ -180,7 +180,7 @@ function renderDataStats() {
   );
 
   // Storage mode indicator - quiet reassurance
-  const storageMode = isAuthenticated() 
+  const storageMode = isAuthenticated()
     ? '<div class="storage-mode-indicator">Saved privately</div>'
     : '<div class="storage-mode-indicator">Stored locally</div>';
 
