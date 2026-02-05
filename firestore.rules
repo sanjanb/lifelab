@@ -50,14 +50,6 @@ service cloud.firestore {
       allow read, write: if false;
       
       /**
-       * User Profile
-       * users/{uid}/profile/{document}
-       */
-      match /profile/{document=**} {
-        allow read, write: if isOwner(uid);
-      }
-      
-      /**
        * Win Ledger
        * users/{uid}/wins/{winId}
        */
@@ -104,19 +96,13 @@ service cloud.firestore {
     }
     
     /**
-     * SHARED COLLECTION (DEPRECATED)
-     * Temporary backward compatibility for Phase 6 migration
+     * MIGRATION COMPLETE - SHARED COLLECTION REMOVED
      * 
-     * WARNING: This is NOT secure and will be removed after migration.
-     * Do NOT use for new features.
+     * The shared collection was temporary backward compatibility.
+     * All data is now properly namespaced under users/{uid}/.
      * 
-     * lifelab_data/shared_data/*
+     * Historical note: lifelab_data/shared_data/* was removed after Phase 6.
      */
-    match /lifelab_data/shared_data/{document=**} {
-      // Allow read/write for backward compatibility
-      // This will be removed in Phase 6
-      allow read, write: if true;
-    }
     
     /**
      * DENY ALL OTHER ACCESS
