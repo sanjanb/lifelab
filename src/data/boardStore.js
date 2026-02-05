@@ -76,6 +76,23 @@ export async function saveCard(card) {
 
     // Persistence manager handles localStorage vs Firebase based on auth
     const success = await persistence.save(CARDS_COLLECTION, cards);
+    
+    if (success) {
+      console.log(`[Board Store] Card ${card.id} saved`);
+    }
+    
+    return success;
+  } catch (error) {
+    console.error("[Board Store] Save failed:", error);
+    return false;
+  }
+}
+
+/**
+ * Load all cards from persistence
+ * Called once on page load
+ *
+ * @returns {Promise<Array>} Array of card objects
  */
 export async function loadCards() {
   if (!initialized) {
