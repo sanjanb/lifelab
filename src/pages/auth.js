@@ -268,6 +268,7 @@ async function handleMigration(modal) {
  * Toggle between sign in and sign up modes
  */
 function toggleMode() {
+  console.log("Toggle mode clicked, switching to:", !isSignUpMode ? "sign-up" : "sign-in");
   isSignUpMode = !isSignUpMode;
 
   const title = document.getElementById("auth-title");

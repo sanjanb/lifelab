@@ -151,7 +151,8 @@
   cursor: pointer;
   text-decoration: underline;
   font-family: inherit;
-  padding: 0;
+  padding: 0.25rem 0.5rem;
+  display: inline-block;
 }
 
 .auth-toggle-button:hover {
