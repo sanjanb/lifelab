@@ -1,18 +1,18 @@
 /**
  * Offline Queue Manager
- * 
+ *
  * PHILOSOPHY:
  * ===========
  * Never punish users for network issues.
  * Queue operations silently, retry automatically, never block.
- * 
+ *
  * RULES:
  * ======
  * - Silent retries (no error modals)
  * - Operations queue when offline
  * - Auto-retry on reconnect
  * - Clear but non-blocking offline indicator
- * 
+ *
  * @see docs/AUTHENTICATION.md - Phase 9
  */
 
@@ -37,7 +37,7 @@ class OfflineQueueManager {
     this.maxRetries = 3;
     this.retryDelay = 1000; // Start with 1 second
     this.subscribers = [];
-    
+
     // Set up online/offline listeners
     this.setupNetworkListeners();
   }
@@ -46,15 +46,15 @@ class OfflineQueueManager {
    * Set up network status listeners
    */
   setupNetworkListeners() {
-    window.addEventListener('online', () => {
-      console.log('[Offline Queue] Network connection restored');
+    window.addEventListener("online", () => {
+      console.log("[Offline Queue] Network connection restored");
       this.isOnline = true;
       this.notifySubscribers({ isOnline: true, queueSize: this.queue.length });
       this.processQueue();
     });
 
-    window.addEventListener('offline', () => {
-      console.log('[Offline Queue] Network connection lost');
+    window.addEventListener("offline", () => {
+      console.log("[Offline Queue] Network connection lost");
       this.isOnline = false;
       this.notifySubscribers({ isOnline: false, queueSize: this.queue.length });
     });
@@ -67,14 +67,14 @@ class OfflineQueueManager {
    */
   subscribe(callback) {
     this.subscribers.push(callback);
-    
+
     // Immediately call with current state
     callback({
       isOnline: this.isOnline,
       queueSize: this.queue.length,
-      isProcessing: this.isProcessing
+      isProcessing: this.isProcessing,
     });
-    
+
     return () => {
       const index = this.subscribers.indexOf(callback);
       if (index > -1) {
@@ -92,14 +92,14 @@ class OfflineQueueManager {
       isOnline: this.isOnline,
       queueSize: this.queue.length,
       isProcessing: this.isProcessing,
-      ...state
+      ...state,
     };
-    
-    this.subscribers.forEach(callback => {
+
+    this.subscribers.forEach((callback) => {
       try {
         callback(fullState);
       } catch (error) {
-        console.error('[Offline Queue] Subscriber error:', error);
+        console.error("[Offline Queue] Subscriber error:", error);
       }
     });
   }
@@ -123,12 +123,14 @@ class OfflineQueueManager {
         retryCount: 0,
         executor,
         resolve,
-        reject
+        reject,
       };
 
       this.queue.push(operation);
-      console.log(`[Offline Queue] Queued ${type} operation for ${collection} (queue size: ${this.queue.length})`);
-      
+      console.log(
+        `[Offline Queue] Queued ${type} operation for ${collection} (queue size: ${this.queue.length})`,
+      );
+
       this.notifySubscribers({ queueSize: this.queue.length });
 
       // Try to process immediately if online
@@ -149,7 +151,9 @@ class OfflineQueueManager {
     this.isProcessing = true;
     this.notifySubscribers({ isProcessing: true });
 
-    console.log(`[Offline Queue] Processing ${this.queue.length} queued operations...`);
+    console.log(
+      `[Offline Queue] Processing ${this.queue.length} queued operations...`,
+    );
 
     while (this.queue.length > 0 && this.isOnline) {
       const operation = this.queue[0];
@@ -157,32 +161,44 @@ class OfflineQueueManager {
       try {
         // Execute the operation
         const result = await operation.executor();
-        
+
         // Success - remove from queue and resolve
         this.queue.shift();
         operation.resolve(result);
-        
-        console.log(`[Offline Queue] ✓ Completed ${operation.type} for ${operation.collection}`);
+
+        console.log(
+          `[Offline Queue] ✓ Completed ${operation.type} for ${operation.collection}`,
+        );
         this.notifySubscribers({ queueSize: this.queue.length });
-        
       } catch (error) {
-        console.error(`[Offline Queue] ✗ Failed ${operation.type} for ${operation.collection}:`, error);
-        
+        console.error(
+          `[Offline Queue] ✗ Failed ${operation.type} for ${operation.collection}:`,
+          error,
+        );
+
         operation.retryCount++;
-        
+
         // Check if we should retry
         if (operation.retryCount >= this.maxRetries) {
           // Max retries reached - remove and reject
-          console.warn(`[Offline Queue] Max retries reached for ${operation.type}, giving up`);
+          console.warn(
+            `[Offline Queue] Max retries reached for ${operation.type}, giving up`,
+          );
           this.queue.shift();
-          operation.reject(new Error(`Operation failed after ${this.maxRetries} retries: ${error.message}`));
+          operation.reject(
+            new Error(
+              `Operation failed after ${this.maxRetries} retries: ${error.message}`,
+            ),
+          );
           this.notifySubscribers({ queueSize: this.queue.length });
         } else {
           // Retry with exponential backoff
           const delay = this.retryDelay * Math.pow(2, operation.retryCount - 1);
-          console.log(`[Offline Queue] Retrying in ${delay}ms (attempt ${operation.retryCount}/${this.maxRetries})`);
-          
-          await new Promise(resolve => setTimeout(resolve, delay));
+          console.log(
+            `[Offline Queue] Retrying in ${delay}ms (attempt ${operation.retryCount}/${this.maxRetries})`,
+          );
+
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
@@ -191,7 +207,7 @@ class OfflineQueueManager {
     this.notifySubscribers({ isProcessing: false });
 
     if (this.queue.length === 0) {
-      console.log('[Offline Queue] All operations processed successfully');
+      console.log("[Offline Queue] All operations processed successfully");
     }
   }
 
@@ -204,13 +220,13 @@ class OfflineQueueManager {
       isOnline: this.isOnline,
       queueSize: this.queue.length,
       isProcessing: this.isProcessing,
-      operations: this.queue.map(op => ({
+      operations: this.queue.map((op) => ({
         id: op.id,
         type: op.type,
         collection: op.collection,
         timestamp: op.timestamp,
-        retryCount: op.retryCount
-      }))
+        retryCount: op.retryCount,
+      })),
     };
   }
 
@@ -219,7 +235,7 @@ class OfflineQueueManager {
    */
   clear() {
     const count = this.queue.length;
-    this.queue.forEach(op => op.reject(new Error('Queue cleared')));
+    this.queue.forEach((op) => op.reject(new Error("Queue cleared")));
     this.queue = [];
     console.log(`[Offline Queue] Cleared ${count} operations`);
     this.notifySubscribers({ queueSize: 0 });
