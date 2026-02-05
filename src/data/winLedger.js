@@ -115,7 +115,7 @@ export async function saveWin(date, text) {
   wins[date] = win;
 
   const saved = await saveWinsToStorage(wins);
-  
+
   // Return result with trigger flag for contextual auth invitation
   return {
     success: saved,
